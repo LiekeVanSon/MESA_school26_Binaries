@@ -1,5 +1,10 @@
 .DS_Store
 
+# Hugo build output
+public/
+resources/
+.hugo_build.lock
+
 # MESA build and runtime output
 **/LOGS/
 **/photos/
