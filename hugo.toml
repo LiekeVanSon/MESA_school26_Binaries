@@ -1,0 +1,24 @@
+baseURL = "http://localhost:1313/"
+languageCode = "en-us"
+title = "MESA Summer School Thursday"
+theme = "Hextra"
+
+[params.search]
+enable = false
+
+[[menu.main]]
+name = "Thursday"
+pageRef = "/thursday/"
+weight = 1
+
+[markup.goldmark.extensions.passthrough]
+enable = true
+
+[markup.goldmark.extensions.passthrough.delimiters]
+block = [['\\[', '\\]'], ['$$', '$$']]
+inline = [['$', '$']]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
