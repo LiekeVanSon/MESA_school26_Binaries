@@ -1,4 +1,4 @@
-# MESA Summer School Day Content
+# MESA Summer School Thursday Content: It takes two to tango
 
 This repository contains the Hugo content and starter lab files for one day of the MESA summer school.
 
