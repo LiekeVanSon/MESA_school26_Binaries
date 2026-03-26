@@ -1,0 +1,11 @@
+.DS_Store
+
+# MESA build and runtime output
+**/LOGS/
+**/photos/
+**/png/
+**/*.mod
+**/star
+
+# Local editor files
+.vscode/
