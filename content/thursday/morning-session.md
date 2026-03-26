@@ -5,30 +5,41 @@ math: true
 toc: true
 ---
 
-# Morning Session
+# MESA/binary
 
-Use this page for the opening lecture, practical setup, and orientation for the day.
+Will be similar to last years 
+https://mesa-leuven.4d-star.org/tutorials/wednesday/morning-session/
+
+@Matthias Fabry ?
 
 ## Learning Goals
+- Introduce the binary executable
+- introduce binary controls
+- Additional binary and how to use it
+- run_binary_extras
 
-- Introduce the scientific theme for the day.
-- Confirm that participants can access MESA and the required tooling.
-- Prepare students for the lab sequence.
-
-## Suggested Structure
-
-### Welcome and agenda
-
-Add the short introduction for the day, including the teaching team, timing, and expected outcomes.
-
-### Software and environment check
-
-Document any prerequisites students need before starting the labs.
 
 ### Scientific background
 
-Add the core concepts that students should understand before beginning Lab 1.
+Lecture slides
+
+
+## Structure
+
+some exercises to get to know MESA binary
+
+### Further Agenda
+
+Morning session: intro to MESA binary
+
+Lab 1: "Give or Take"
+
+Lab 2: "Stellar Swirling"
+
+Lab 3: "Stable relationships"
+
+
 
 ## Notes
 
-Replace this placeholder content with the final session notes.
+Placeholder

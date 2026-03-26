@@ -1,12 +1,12 @@
 # Lab 3 Starter Files
 
-This folder contains markdown versions of the starter materials for Lab 3.
+This folder will contain MESA material needed for Lab 3
 
 ## Included files
 
-- `inlist.md`
-- `inlist_project.md`
-- `inlist_pgstar.md`
-- `notes.md`
+- [inlist](/thursday/lab3/inlist)
+- [inlist_project](/thursday/lab3/inlist_project)
+- [inlist_pgstar](/thursday/lab3/inlist_pgstar)
+- [notes.md](content/thursday/lab3/notes.md)
 
-Replace the placeholder content with the final lab-specific MESA setup.
+Raw MESA files are stored under [static/thursday/lab3](static/thursday/lab3) so Hugo serves them as files.

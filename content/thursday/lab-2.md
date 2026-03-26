@@ -5,28 +5,52 @@ math: true
 toc: true
 ---
 
-# Lab 2
+# Lab 2: Stellar Swirling
 
-Use this page as the written walkthrough for the second lab.
+some general intro
 
-## Overview
+## Overview/Learning goals
 
-Summarize the goal of the lab, the expected outputs, and any dependencies on Lab 1.
+- Birth rotation
+- massive stars going CHE
+- tides
+- effect of AM transport
+
 
 ## Session Plan
 
-### Part A
+### Stellar rotation & CHE
 
-Describe the preparation steps.
+Start with rapidly rotating star mini-grid
+See CHE boundary? 
 
-### Part B
+what are mixing processes in MESA? 
 
-Describe the main experiment or model changes.
+*Potentially bonus material:*
+how do we approximate a 3D mixing process in 1D?
+(diffusion etc.)
 
-### Part C
 
-Add extension tasks or bonus investigations.
+### Tides
+
+Perhaps combine CHE in here
+
+### The spins of BHs (or compact obj.)
+
+explore different AM transport mechanisms
+Add your own prescription
+
+Try to run at least until He exhaust (preferably C-depletion)
+
+What would the spin of a BH be if this core collapsed directly? I.e. explore J-profile
+
 
 ## Files
 
-Supporting starter files for this lab live in the `lab2/` folder next to this page.
+Supporting starter files for this lab are available here:
+
+- [inlist](/thursday/lab2/inlist)
+- [inlist_project](/thursday/lab2/inlist_project)
+- [inlist_pgstar](/thursday/lab2/inlist_pgstar)
+
+Notes for this lab remain in [content/thursday/lab2/notes.md](content/thursday/lab2/notes.md).

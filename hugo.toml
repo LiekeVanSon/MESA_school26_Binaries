@@ -1,6 +1,6 @@
 baseURL = "http://localhost:1313/"
 languageCode = "en-us"
-title = "MESA Summer School Thursday"
+title = "MESA Summer School: Thursday"
 theme = "Hextra"
 
 [params.search]

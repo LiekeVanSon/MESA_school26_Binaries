@@ -31,6 +31,3 @@ hugo server -D
 http://localhost:1313/thursday/
 ```
 
-## Notes
-
-This repo is scoped to a single day and can still be merged into a larger multi-day Hugo site later if needed.
