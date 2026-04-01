@@ -7,6 +7,9 @@ toc: true
 
 # Lab 3: Stable relationships
 
+1:00 PM–3:30 PM 
+10 min lecture + 2.15 h MESA material. 
+
 Or alternatively "Sticking together until the end"
 
 ## Overview

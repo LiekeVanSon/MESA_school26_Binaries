@@ -5,10 +5,14 @@ math: true
 toc: true
 ---
 
-# Give or Take
+# Give or Take 
+
+9:00 AM–10:30 AM
+Timing: 30 min lecture + 1 hour MESA material
 
 mass transfer and accretion efficiencies. 
 compare to observed post mass transfer systems
+
 
 ## Overview
 
