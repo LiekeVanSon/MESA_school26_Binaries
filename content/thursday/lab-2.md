@@ -5,11 +5,41 @@ math: true
 toc: true
 ---
 
-# Lab 2: Stellar Swirling
+# Lab 2: Stellar Swing
 
 10:45 AM–12:00 PM
 Timing: 10 min lecture + 1 hour MESA material
 
+## TO-DO
+
+- [x] adapt 2017 "Rotation in binaries" setup to MESA 25
+- [x] initial benchmark binary X single star
+- [ ] include j_rot profile in pgstar
+- [ ] simply D plot in pgstar to only relevant mixing modes, turn rest off
+- [ ] include am_log_D plot in pgstar - convection, overshooting, ES, shear, TS
+- [ ] test TS on/off
+- [ ] Fuller & Lu TS prescription?
+- [ ] run benchmark on a virtual budget laptop configuration with systemd-run
+
+## Setups
+
+- **2017 setup**: adapted version from the 2017 MESA Summer School "Stellar rotation in binary systems" maxilab, by Pablo Marchant 
+    - Note: TS dynamo OFF
+- **2017 setup point secondary**: 2017 setup but secondary is set to a point mass and mass transfer is turned off; binary module runs orbital evolution and tides; currently cannot stop the run in case of RLOF
+
+## Runtime benchmark
+MESA 25.12.1
+OMP_NUM_THREADS=2
+Ubuntu 24.04.1 LTS
+Lenovo ThinkPad X1 Carbon Gen 12
+Intel Core Ultra 7 155H @ 22x 4.5GHz
+32.0 GiB RAM
+
+Times to reach TAMS unless stated otherwise
+- 2017 setup
+ - m1=30, m2=30, Z=1d-3, p_zams=0.9 d, ~10 min
+- 2017 setup point secondary
+ - m1=30, m2=30, Z=1d-3, p_zams=0.9 d, ~5 min to TAMS, ~10 min to He depl
 
 ## Overview/Learning goals
 
