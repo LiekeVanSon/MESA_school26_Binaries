@@ -7,10 +7,6 @@ toc: false
 
 <span style="color: #e9240e;">To Add: specific angular momentum of mass lost (but not sure which lab..) </span>
 
-{{< cards >}}
-{{< card link="morning-session" title="Morning Session" >}}
-{{< /cards >}}
-
 # Binary stars: It Takes Two to Tango
 
 This repository contains the Hugo content for the Thursday session of the MESA summer school.

@@ -2,7 +2,7 @@
 title: Thursday Morning Session
 weight: 1
 math: true
-toc: true
+toc: false
 ---
 
 # MESA/binary

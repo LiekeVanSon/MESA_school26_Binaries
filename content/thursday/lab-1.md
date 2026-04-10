@@ -5,12 +5,9 @@ math: true
 toc: true
 ---
 
-mass transfer and accretion efficiencies.
-compare to observed post mass transfer systems
-
 ## Overview
 
-Summarize the scientific goal, expected runtime, and the key MESA concepts introduced in this lab.
+This lab will introduce you to the inner workings of `MESA/binary`, and give you an understanding of how massive stars exchange mass.
 
 ## Anatomy of a binary
 
@@ -36,36 +33,30 @@ We have to redo the step with a higher mass-transfer rate, so that (hopefully) t
 
 With the most basic concepts of `MESA/binary` out of the way, let us continue by exploring the science of massive binary stars and their interactions.
 
-## Learning goals/concepts
+## Case A and B
 
-- How stars accrete
-- how stars respond to mass loss and gain
-- stars out of thermal equilibruium
+When stars evolve, they become bigger over time.
+As soon as the most massive star evolves to fill its **Roche Lobe**, mass transfer will ensue.
+Depending on the evolutionary stage of the donor, we destinguish different mass transfer _cases_.
+When the donor is still hydrogen burning, we speak of case A mass transfer, while when it is core-helium burning, we have case B (there's even case C for mass transfer post core-helium exhaustion).
 
-## Session Plan
+The main parameter controlling when mass transfer will occur is the initial orbital period.
+For massive stars, the rule of thumb is that case A occurs for initial periods under 10 days, and case B occurs between 10 and 1000 days (with case C at a small interval of even larger periods).
 
-### stable mass transfer from star to star
+> [!Note]
+> To get started with binary-evolution runs, copy the contents of the binary `work` directory from `$MESA_DIR/binary/work` into your directory tree where you are running the school labs.
+> It should contain familiar files like `./rn` `inlist` and contain a `src/` directory
+> Next, download and extract the [inlist_tarball](/thursday/lab1/inlists.tar) for this lab.
+> Remember that `MESA` always looks for a file named `inlist` to start reading in parameters.
+> We've setup up the inlist chain to read the appropriate parameters from appropriately named inlist file.
 
-Explore both a case A and case B mass transfer case.
-See how conservative the mass transfer is in both cases
-(understand critical rotation, tides etc.)
+### Case A evolution: Tidal domination
 
-### Compare output to observed post mass transfer systems
+When interaction occurs during the main sequence, the initial period of the system must be small, because the stars are compact (relative to post-main-sequence (super-)giants).
 
-I.e. Algols or subdwarfs. Possibly we tell them what to assume for stellar params
-Should mass transfer be more conservative?
 
-### Add own model for accretion efficiency
+### Case B evolution: You spin me round
 
-explore more conservative case B mass transfer
-See if this matches better
+Set up `inlist_project` with `initial_period_days = 20d0`, and run the simulation with `./mk` and `./rn`, just as you'd do for a single-star evolution run.
 
-## Files
 
-Supporting starter files for this lab are available here:
-
-- [inlist](/thursday/lab1/inlist)
-- [inlist_project](/thursday/lab1/inlist_project)
-- [inlist_pgstar](/thursday/lab1/inlist_pgstar)
-
-Notes for this lab remain in [content/thursday/lab1/notes.md](content/thursday/lab1/notes.md).
