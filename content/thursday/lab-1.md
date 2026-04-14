@@ -47,16 +47,62 @@ For massive stars, the rule of thumb is that case A occurs for initial periods u
 > To get started with binary-evolution runs, copy the contents of the binary `work` directory from `$MESA_DIR/binary/work` into your directory tree where you are running the school labs.
 > It should contain familiar files like `./rn` `inlist` and contain a `src/` directory
 > Next, download and extract the [inlist_tarball](/thursday/lab1/inlists.tar) for this lab.
-> Remember that `MESA` always looks for a file named `inlist` to start reading in parameters.
-> We've setup up the inlist chain to read the appropriate parameters from appropriately named inlist file.
+> Remember that `MESA` always looks for a file named `inlist` first to start reading in parameters.
+> However, as is customary, we've setup up an inlist chain to read the appropriate parameters from appropriately named inlist files.
 
 ### Case A evolution: Tidal domination
 
 When interaction occurs during the main sequence, the initial period of the system must be small, because the stars are compact (relative to post-main-sequence (super-)giants).
+We also expect tidal interaction to be very strong between stars that orbit each other so tightly.
+Let's see what this does to the rotation rate of the stars in this system.
 
+In `inlist_project`, set the initial period to 5 days, and start the `MESA` run with `./mk` and `./rn`, just as you'd do for single-star evolution!
 
-### Case B evolution: You spin me round
+During the run, watch the following quantities in the `pgbinary` window:
 
-Set up `inlist_project` with `initial_period_days = 20d0`, and run the simulation with `./mk` and `./rn`, just as you'd do for a single-star evolution run.
+1. Mass-transfer rate: How much mass is the primary dumping onto the secondary, and what is its efficiency? Is is constant over time (or model number)? Are there more than one mass-transfer phases?
+{{< details title="Hints" closed="true" >}}
+look at `lg_mtransfer_rate`, `eff_xfer_fraction` (the "effective transfer fraction") and their associated graphs.
+Don't be alarmed if the `xfer_fraction` is negative when no mass transfer is happening, that is because it is naively calculated as `eff_xfer_fraction = - dot_M2 / dot_M1`, which contains contributions from the stellar winds.
+{{< details title="Result" closed="true" >}}
+You should see two distinct phases of mass transfer, case A and later case AB when the primary exhausts hydrogen and tries to become a giant.
+In fact, the first mass-transfer phase is split in 2: a mass-transfer rate _fast case A_ followed by a more mellow _slow case A_ where the mass transfer rate is a couple of orders of magnitude lower.
+{{< /details >}}
+{{< /details >}}
 
+2. Luminosity profiles: Are the stars in thermal equilibrium? If not, how does this manifest?
+{{< details title="Hint" closed="true" >}}
+Thermal equilibrium is defined as $\frac{dL}{dm} = \epsilon_{\rm nuc}$.
+Where is nuclear burning occuring?
+Compare the numbers for the `kh_timescale` and the `mdot_timescale` in the text summary of both stars.
+{{< details title="Result" closed="true" >}}
+
+You should see that neither star satisfies it during rapid mass-transfer phases.
+The donor's luminosity profile dips significantly in the envelope, so that $\frac{dL}{dm} \ne 0$, but we have that $\epsilon_{\rm nuc} = 0$ as no burning takes place in the envelope.
+
+The accretor is slightly more luminous than its nuclear luminosity, due to the accretion energy it gains.
+In the slow case A phase, thermal equilibrium is nearly satisfied, as the thermal timescale of the stars is shorter than the mass-transfer timescale.
+{{< /details >}}
+{{< /details >}}
+
+3. Rotation rates: Do the stars spin up or down significantly during mass transfer events?
+{{< details title="Hints" closed="true" >}}
+Look `omega_div_omega_crit` profiles of either star.
+{{< details title="Result" closed="true" >}}
+Tides keep the stars rotating very close to the keplerian (synchronized) velocity!
+{{< /details >}}
+{{< /details >}}
+
+4. How does the period evolve during the mass transfer events?
+5. At the end of the run, what is the state of both of the stars? Is the secondary star significantly evolved?
+
+### Case B evolution: _You spin me 'round_
+
+Copy the directory from case A into a new folder for case B mass transfer (so that you'll have nicely separated end models for either case).
+
+Edit `inlist_project` with so that this system has an initial period of 20 days.
+Also, change the tides prescription from `Orb_period` to `Hut_rad`.
+We make this choice here because at larger periods (and thus larger separations between the stars), tides are weaker, and the prescription of Hut, P. 1981, A&A, 99, 126, is a physically motivated computation of how tides operate in the radiative envelopes of massive stars.
+
+Run the simulation, and watch as the primary star first exhausts hydrogen before a phase of mass transfer starts.
 

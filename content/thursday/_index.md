@@ -1,5 +1,5 @@
 ---
-title: MESA Summer School Thursday
+title: "Binary stars: It Takes Two to Tango"
 cascade:
   type: docs
 toc: false
@@ -7,10 +7,7 @@ toc: false
 
 <span style="color: #e9240e;">To Add: specific angular momentum of mass lost (but not sure which lab..) </span>
 
-# Binary stars: It Takes Two to Tango
-
 This repository contains the Hugo content for the Thursday session of the MESA summer school.
-
 
 {{< cards >}}
 {{< card link="lab-1" title="Lab 1: 'Give or Take'" >}}
@@ -38,9 +35,7 @@ This repository contains the Hugo content for the Thursday session of the MESA s
 - [inlist_project](/thursday/lab3/inlist_project)
 - [inlist_pgstar](/thursday/lab3/inlist_pgstar)
 
-
-
-### Some MD usage Examples 
+### Some MD usage Examples
 
 <span style="color: #12a317;">This is how you get colored text </span>
 
