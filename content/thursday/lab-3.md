@@ -14,31 +14,53 @@ Or alternatively "Sticking together until the end"
 
 ## Overview
 
-This will be the larger lab format. Idea is explore a binary that can become a merging BBH from zams to finish. 
+SCIENCE BIT, not much because the lecture will cover it 
 
-## Session Plan
+<!-- ANNACHIARA -->
 
-### Binary evolution up to "SN1"
+## 1. Stable mass transfer
 
-Mass transfer from star 1 --> star 2
-(use concepts from previous labs)
-not really going to CCSN, that will take to long, but preferably C-depletion
+### Spun-up accretor with a BH companion
+The secondary of your minilab1 will be evolved from its saved final model.
+Find the mass of the primary at He-depletion from your Minilab1 and make it directly collapse into a BH.
 
-### Convert setup to point mass + star
+### The orbital shrinkage
+Let's compare how much orbital shrinkage you get with Eddington-limited accretion with respect to what you saw in Minilab1
+Let's make them realize that Eddington-limited in practice means fully non-conservative, and let's have them check with a higher beta instead what changes.
 
-Assume star 1 has formed a BH through direct collapse
-make new binary set up with point mass and stellar companion
+### The time delay and final mass ratio
+Let's compute the time delay of your BH + BH system to see if it will merge within the age of the Universe, in the beta>0 and Eddington-limited case. Compare!
+Maybe let's find a GW signal that can be matchy-matchy
+
+### Orbital tightening from L2 mass loss
+L2 shrinkage! Implementation in run_binary_extras.f90
+
+#### ➕ BONUS: CASE A comparison!
+Only if they had the time in minilab1 to do caseA.
 
 
-### Continue evolution up to "SN2"
+## 2. Common envelope evolution
+Brief explanation of the energy formalism
 
-Second phase of mass transfer. 
-Explore the edges of stability in this case if possible so we can discuss briefly 'where MT approximations in 1D breakdown', i.e. unstable mass transfer/ common envelope evolution
+### The unstable mass transfer rate
+Here we will define and implement what is an unstable mass transfer rate. run_binary_extras.f90 with a factor 10xthermal timescale, or x_ctrl(1) with a fixed number? We also implement a stopping condition at CE onset.
 
-also if this mass transfer phase lives at the boundary of stable mass transfer (i.e., relatively extreme mass ratios), we should be able to get a lot of orbital shrinking
+### A lower mass ratio favors instability!
+Here we will tell them to change the q. We want to give them a number that we know the outcome of. Then they run the model.
 
-- 
+### The orbital shrinkage
+Comparison with stable mass transfer. The idea is that they will use the energy formalism to get the post-CE orbital separation.
 
+### The time delay and final mass ratio
+In the CE case, compare with stable mass transfer.
+
+#### ➕ BONUS1: CASE A comparison!
+Only if they had the time in minilab1 to do caseA.
+
+#### ➕ BONUS2: Delayed mass transfer instability
+Have them look into the timescale of when instability develops, and the shift in properties (mass and orbital separation) from RLOF to CE onset
+
+## 3. Spinning black holes!
 
 ## Files
 
