@@ -5,20 +5,107 @@ math: true
 toc: true
 ---
 
-# Lab 2: Stellar Swing
+# Lab 2: Stellar Swirling
 
 10:45 AM–12:00 PM
 Timing: 10 min lecture + 1 hour MESA material
+
+In the previous lab, we explored the occurrence of mass transfer in binaries, and saw its effects not only on the stellar mass, but also on its radius and on the orbital separation. Another natural effect of accretion is the spin-up of the accretor: the accreted material is originally co-rotating with the donor; then, as it settles on an accretion disk it is still rotating around the accretor; and, therefore, the accreted layers are themselves rotating even if the accretor originally was not. Rotation can have dramatic effects in stellar evolution, including on the mass-radius relation, and as a consequence on the occurrence of mass transfer. In Lab 2, we will look at the effect of rapid rotation on the structure of a 35 solar mass star, and explore how that changes depending on the timing of spin-up and the final core spins as a function of AM transport mechanisms.
+
+(Part 1, before lunch)
+
+## Theory: chemically homogeneous evolution
+
+* CHE
+* Tidal spin-up
+* Caveats of point mass companion model (either here or next scetion)
+* 1D implementation of mixing processes
+
+## Setting up your work directory
+
+* Definition of CHE
+* Point mass companion set-up - what is compensated for, what is missing
+* Resolution etc
+* Generate initial model
+
+Before we start, we need to 
+
+| 📋 TASK 1 |
+| :---------|
+| In `inlist_project`, find `initial_mass` in the `&control` namespace and set it to 35.0, then run. Copy the output `model.mod` to the `binary_template` folder.|
+
+## Step 1: Exploring the CHE window
+
+For this task we will merely explore the initial orbital period space for a fixed mass.
+* Customize pgstar window to see 1D plots?
+
+| 📋 TASK 2 |
+| :---------|
+| Choose an initial orbital period between A and B and set in `initial_period_in_days` in `inlist_project`, then run.  
+Watch the pgstar window closely, in particular the diffusion coefficient panel. Does your star go homogeneous?|
+
+| 📋 TASK 3 |
+| :---------|
+| Try to find two periods, one leading to CHE and the other not. Can you spot what precedes the loss of homogeneity from your pgstar plots?|
+
+{{< details title="Hint: How to get CHE?" closed="true" >}}
+
+The period range for getting CHE with a 35 Msun star is very narrow. 0.95d is a reliable number, and anything above 1.0d will not go CHE.
+
+{{< /details >}}
+
+BONUS: mass variations
+
+## Step 2: Exploring spin-up timing
+
+In this section we learn how to include a restart and switch to different inlist in order to emulate accretion spin-up partway through the MS.  We include a new stopping condition in run_star_extras based on the differential of hydrogen or helium abudance between core and surface. Try spin-up at different instants and see if you can still get CHE. Look at the diffusion coefficient plot.
+
+BONUS: try setting high initial rotation manually in a wide binary and play around with wind rotation (or Task 3?)
+
+(Part 2, after lunch)
+
+## Step 3: post-MS evolution
+
+* Core spin-up, AMT+Wind effects
+
+## Step 4: Computing core spin at He depletion
+
+Solving Einstein's equations for the general case of a black hole with mass $M$, angular momentum $J$ and electric charge $Q$ (this is called a Kerr-Newman geometry), yields the condition
+
+$$\frac{Q^2}{4\pi\epsilon_0} + \frac{c^2J^2}{GM^2}\leq GM^2$$
+
+for the presence of an event horizon around the singularity. Under the assumption of *cosmic censorship* --- that no so-called *naked singularities* can exist in Nature ---, this is a hard limit on the three numbers that fully define a black hole (this is the No Hair Theorem). For the case of an eletrically neutral black hole, this simplifies to
+
+$$\chi=\frac{cJ}{GM^2}\leq1,$$
+
+this is the spin parameter.
+
+
+
+BONUS: compute spin as a function of accreted mass
+BONUS: Create a j x free fall time profile and compare to j_ISCO
+
+## Step 5: Changing the AM transport prescription
+
+BONUS: change the wind prescription
+
+## Big Bonus Binary
+
+For reducing the running time, we made the companion a point mass. You can, however, turn on simultaneous evolution with a few easy steps. What happens?
+
+# Preparation notes
 
 ## TO-DO
 
 - [x] adapt 2017 "Rotation in binaries" setup to MESA 25
 - [x] initial benchmark binary X single star
-- [ ] include j_rot profile in pgstar
+- [x] include j_rot profile in pgstar
 - [ ] simply D plot in pgstar to only relevant mixing modes, turn rest off
-- [ ] include am_log_D plot in pgstar - convection, overshooting, ES, shear, TS
-- [ ] test TS on/off
-- [ ] Fuller & Lu TS prescription?
+- [x] include am_log_D plot in pgstar 
+- [x] test TS on/off
+- [x] Fuller & Lu TS prescription?
+- [x] test different tide implementations - tested but too much for lab, TS dynamo dominates AM profile
+- [ ] prepare spin run_star_extras computation solution
 - [ ] run benchmark on a virtual budget laptop configuration with systemd-run
 
 ## Setups
@@ -41,11 +128,7 @@ Times to reach TAMS unless stated otherwise
 - 2017 setup point secondary
  - m1=30, m2=30, Z=1d-3, p_zams=0.9 d, ~5 min to TAMS, ~10 min to He depl
 
-## Overview/Learning goals
-
-[thinking notes for now, to filter back from]
-
-#### Goals
+## Notes
 The main physical object of Lab 2 is rotation. With Lab 1 providing an introduction to the binary module and the role of accretion physics, and Lab 3 extending the physics introduced in Labs 1 and 2 to the whole landscape of BBH formation, Lab 2 should therefore focus on the role of rotation insofar as it most significantly affects BBH formation. Other interesting aspects of rotation that do not bear directly on BBH formation should be left for bonuses or potential evening session topics.
 
 This means that *sources* of rotation (with the exception of accretion spin-up, assuming it is included in Lab 1), are unlikely to fit in the Lab 2 timeslot this means that. Nevertheless, we can first try to explore a throughline for the discussion of rotation, before reducing it to the essentials.
@@ -75,34 +158,6 @@ The final key ingredient is the presence or absence of **magnetic fields**, whic
 The **MESA implementation** of AM transport/chemical mixing deserves to be explicitly described. For rotation, the treatment of chemical barriers needs to be directly explained if the intention is to elucidate the difference between accretion-induced CHE and CHE from ZAMS, as it strongly limits the possibility of driving a star CHE in the middle of the MS.
 
 [to be continued...]
-
-## Session Plan
-
-### Stellar rotation & CHE
-
-Start with rapidly rotating star mini-grid
-See CHE boundary? 
-
-what are mixing processes in MESA? 
-
-*Potentially bonus material:*
-how do we approximate a 3D mixing process in 1D?
-(diffusion etc.)
-
-
-### Tides
-
-Perhaps combine CHE in here
-
-### The spins of BHs (or compact obj.)
-
-explore different AM transport mechanisms
-Add your own prescription
-
-Try to run at least until He exhaust (preferably C-depletion)
-
-What would the spin of a BH be if this core collapsed directly? I.e. explore J-profile
-
 
 ## Files
 
