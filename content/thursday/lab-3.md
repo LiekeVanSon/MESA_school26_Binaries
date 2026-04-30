@@ -15,13 +15,13 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
 <table id="table-binary" style="margin:auto; text-align:center;">
   <tr>
     <th></th>
-    <th>Primary (Donor)</th>
+    <th>Primary (Stripped star)</th>
     <th>Secondary (Accretor)</th>
   </tr>
   <tr>
     <td>Mass</td>
-    <td>18 M☉</td>
-    <td>38 M☉</td>
+    <td>16.8 M☉</td>
+    <td>39.6 M☉</td>
   </tr>
   <tr>
     <td>Ω / Ωcrit</td>
@@ -30,21 +30,21 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
   </tr>
   <tr>
     <td>Orbital Period</td>
-    <td colspan="2" style="text-align:center;">6.8 days</td>
+    <td colspan="2" style="text-align:center;">4.5 days</td>
   </tr>
   <tr>
     <td>Mass ratio</td>
-    <td colspan="2" style="text-align:center;">0.47</td>
+    <td colspan="2" style="text-align:center;">0.42</td>
   <tr>
   <td>Final model</td>
   <td>
-    <a href="/files/final1_caseA.mod" download>
-      <code>final1_caseA.mod</code>
+    <a href="/files/final1.mod" download>
+      <code>final1.mod</code>
     </a>
   </td>
   <td>
-    <a href="/files/final2_caseA.mod" download>
-      <code>final2_caseA.mod</code>
+    <a href="/files/final2.mod" download>
+      <code>final2.mod</code>
     </a>
   </td>
 </tr>
@@ -67,7 +67,7 @@ $ cd template
 <div style="display:flex;justify-content:center;">
 
 <div style="
-  background:#0b0f14 !important;
+  background:none !important;
   color:#d6deeb;
   padding:1rem;
   overflow-x:auto;
@@ -84,10 +84,88 @@ cd stable_MT
 </div> </div>
 Inspect the inlists:
 
-### The primary becomes a BH companion
-After He depletion in its core, the primary star has a very short remaining lifetime: for a star of total mass ~ 20 $M_{\odot}$ (and He-core mass of ~ X $M_{\odot}$), you can expect it to live only another ~ 300 years! For simplicity, we will just assume that the properties at core He depletion can be representative of those at the end of the star's life. Additionally, we will assume that all the mass contained in the primary directly collapses to form a BH.
+### The stripped star becomes a BH companion
+After He depletion in its core, the stripped star has a very short remaining lifetime: for a star of total mass ~ 20 $M_{\odot}$ (and He-core mass of ~ X $M_{\odot}$), you can expect it to live only another ~ 300 years! For simplicity, we will just assume that the properties at core He depletion can be representative of those at the end of the star's life. Additionally, we will assume that all the mass contained in the primary directly collapses to form a BH.
 
-Find the mass of the primary at core He depletion from your <code>minilab1</code> and make it directly collapse into a BH.
+<div style="
+  margin:1rem 0;
+  padding:0.8rem 1rem;
+  background:rgba(16,185,129,0.10);
+  border-left:5px solid #10b981;
+">
+
+  <div style="font-weight:600; margin-bottom:0.5rem;">
+    🧪 Task: Modify <code>inlist_project</code>
+  </div>
+
+Find the mass of the stripped star at core He depletion from your <code>minilab1</code> and make it directly collapse into a BH. Set the period of your binary to be the one you found at the end of <code>minilab1</code>.
+
+<div style="
+  background:none !important;
+  color:#d6deeb;
+  padding:1rem;
+  overflow-x:auto;
+  width:100%;
+  max-width:1800px;
+">
+
+```fortran
+! MODIFY HERE
+m1 = 50d0 ! primary mass in Msun
+m2 = 20d0 ! BH mass in Msun
+initial_period_in_days = 20d0 ! final period from minilab1
+```
+</div>
+
+</div>
+
+
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(59,130,246,0.12);
+    border-left:4px solid #3b82f6;
+  ">
+    💡 <strong>Where is the mass?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(59,130,246,0.08);
+    border-left:4px solid #3b82f6;
+  ">
+
+  Your <code>inlist_project</code> already has <code>evolve_both_stars = .false.</code>, so one of the two stars will be treated as a point mass --> BH!
+  To find the mass of this BH, you can open the <code>final1.mod</code> and look at the header.
+
+
+  </div>
+</details>
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(59,130,246,0.12);
+    border-left:4px solid #3b82f6;
+  ">
+    💡 <strong><code>m1</code> or <code>m2</code>?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(59,130,246,0.08);
+    border-left:4px solid #3b82f6;
+  ">
+
+  Remember which one was stripped in Minilab1 (the primary, <code>final1.mod</code>), and which one was accreted (the secondary, <code>final2.mod</code>). The stripped star will become the BH (<code>m2</code>), and the accreted star will become your new primary (<code>m1</code>).
+
+  </div>
+</details>
+
+Now you have set up your binary system!
 
 ### How does the orbit shrink?
 Let's compare how much orbital shrinkage you get with Eddington-limited accretion with respect to what you saw in Minilab1
@@ -96,6 +174,43 @@ Let's make them realize that Eddington-limited in practice means fully non-conse
 ### The time delay and final mass ratio
 Let's compute the time delay of your BH + BH system to see if it will merge within the age of the Universe, in the beta>0 and Eddington-limited case. Compare!
 Maybe let's find a GW signal that can be matchy-matchy
+
+$$
+t_{\rm delay} = \frac{5}{256} \, \frac{c^5 \, a^4}{G^3 \, m_1 m_2 (m_1 + m_2)}
+$$
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(59,130,246,0.12);
+    border-left:4px solid #3b82f6;
+  ">
+    💡 <strong>Mind the units...</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(59,130,246,0.08);
+    border-left:4px solid #3b82f6;
+  ">
+
+  In stellar astrophysics and in MESA we like to use the centimeter-gram-second units, therefore we saved our own useful constants to convert between energy units, or from seconds to years, and such.
+
+  Those constants are readily accessible in <code>run_star_extras.f90</code>, if you know what their name is 🙃
+
+  You may want to use:
+  <ul>
+    <li><code>secyer</code>, the conversion between years and seconds</li>
+    <li><code>standard_cgrav</code>, the gravitational constant in c.g.s.</li>
+  </ul>
+
+  Loaded via: <code>use const_def</code><br>
+  See also: <code>$MESA_DIR/const/public/const_def.f90</code>
+
+  </div>
+</details>
+
 
 <div style="
   max-width: 600px;
@@ -242,5 +357,4 @@ Only if they had the time in minilab1 to do caseA.
 #### ➕➕ BONUS2: Delayed mass transfer instability
 Have them look into the timescale of when instability develops, and the shift in properties (mass and orbital separation) from RLOF to CE onset
 
-## 3. Spinning black holes!
 
