@@ -176,7 +176,36 @@ BONUS: try setting high initial rotation manually in a wide binary and play arou
 
 ## Step 3: post-MS evolution
 
-* Core spin-up, AMT+Wind effects
+Besides BH masses, BH spins also are a key quantity that is inprinted in GW signals and can help lift degeneracies between BH formation channels that, in pure terms of mass, populate the same range of the mass spectrum. As rapidly rotating stars, CHE stars are natural candidates for producing high-spin BHs, which would stand out for the current, low-spin-dominated, population of merging BBHs. In order to get a more accurate estimate of the BH spins produced by CHE stars, we will now take one of our models from the previous sessions, and run it up to helium depletion.
+
+Our starter model is not natively set-up to run that far ahead, so we will have to modify the stopping condition, and then restart the run from where it had previously stopped. We can do this by restarting from the last saved photo by calling `./re` without any arguments, but before we do that we must make three modifications.
+
+| 📋 TASK X |
+| :---------|
+| Find the hydrogen depletion stopping condition in the `run_binary_extras` and change it to helium depletion. |
+
+For studying the spin evolution of the star, it will be more convenient to watch the Kippenhahn diagram for radius rather than mass, so we will also change the `pgstar` settings.
+
+| 📋 TASK X |
+| :---------|
+| Change the `&pgstar` settings in `inlist_project` so that the Kippenhahn diagram shows radius instead of mass on the y-axis. |
+
+Finally, we can directly watch the evolution of the specific angular momentum profile of the star in the `&pgstar` window. For that, you will wand to change the middle panel to include the dynamo plot.
+
+| 📋 TASK X |
+| :---------|
+| Add a `j_rot` over `mass` plot to the middle column in `&pgstar`. |
+
+With that done, you can go ahead and run the CHE model with the longest initial period from the previous steps up to He depletion. 
+
+| 📋 TASK X |
+| :---------|
+| Restart your run with `./re`.
+| Closely watch the HR diagram. Do you remember how to read radius from it?
+| Closely watch your modified Kippenhahn diagram. |
+
+As you watch your star evolve post-MS, you will notice a very brief phase of expansion by a factor of a few, seen both in the HR diagram and the Kippenhahn diagram. Do you have an idea for why that is happening? And what evolutionary phases does it correspond to?
+
 
 ## Step 4: Computing core spin at He depletion
 
