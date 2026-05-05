@@ -206,6 +206,33 @@ With that done, you can go ahead and run the CHE model with the longest initial 
 
 As you watch your star evolve post-MS, you will notice a very brief phase of expansion by a factor of a few, seen both in the HR diagram and the Kippenhahn diagram. Do you have an idea for why that is happening? And what evolutionary phases does it correspond to?
 
+The angular momentum plot varies relatively little with the fixed y-axis in the pgstar plot. You can go ahead and run this python script in your work folder to recreate the plot. Make sure you have `numpy`, `matplotlib` and `mesa_reader` installed (`pip install numpy matplotlib mesa_reader`). Alternatively you can run it online in this Google Collab notebook. Look for the line `xxx` if you need to change the y-axis limits.
+
+The script will also produce a *jdot* over time plot, showing the behavior of different sources of angular momentum evolution. Can you identify the dominant one? With default settings, you should be seeing a smooth profile. This shape is charateristic of rigid-body rotation. That, however, does not mean that 
+
+Winds only remove angular momentum from the top layers of the star. In principle, this means that the stellar surface can spin-down while the core retains its original rotation, which would lead to a differentially rotating structure. That your models remain rigidly rotating means that there must be a *strong AM transport* acting between core and surface. Indeed, while multiple AM transport mechanisms are active in our model (identified by a non-zero `am_nu_D` factor), the main culprit is by far the Tayler-Spruit dynamo you met in the morning. It is set by the `D_ST_factor` and `am_nu_D_ST_factor` parameters in `inlist1`, with the first controlling the intencity of chemical mixing, and the second of AM transport. Go ahead and turn off the AM transport by setting `am_nu_D_ST_factor = 0`, then look at the results again.
+
+| 📋 TASK X |
+| :---------|
+| Under `&controls` in `inlist1`, turn off the Tayler-Spruit dynamo by setting `am_nu_D_ST_factor = 0`.
+| Restart you run from the `H_depl.mod` file again and watch the `jrot` plot. 
+| Once your run is complete, call the python script again and compare the figures. |
+
+You should now produce non-smooth angular momentum profile by He depletion, which signifies that different layers of the star are spinning at different rates. The source of that differential rotation is in the exact behavior we were analyzing before. Can you build an explanation for it.
+
+{{<details title="Hint: differential AM structure">}}
+
+The key here is conservation of AM and the mirror effect. Watch *when* the differential structures emerges, compared to your previous results.
+
+{{</details>}}
+
+
+
+{{<details title="Bonus task: the effect of winds">}}
+
+run_star_extras, winds, rotation enhancement
+
+{{</details>}}
 
 ## Step 4: Computing core spin at He depletion
 
