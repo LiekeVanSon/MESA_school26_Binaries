@@ -258,12 +258,56 @@ where we define the black hole spin parameter, $\chi$, which you might be famili
 
 We will do this by adding a new column to our history files named `chi_core`, which will hold the value of $\chi$ computed with the He core mass and total angular momentum. For post-MS CHE stars, which are already exposed He cores themselves, these are merely the total mass and angular momentum. Including an explicit logic for looking for the core boundary, however, will allow us to later use the same code to compute core spins for stars that retain their H envelope.
 
+```fortran
+      integer function how_many_extra_history_columns(id)
+         integer, intent(in) :: id
+         integer :: ierr
+         type (star_info), pointer :: s
+         ierr = 0
+         call star_ptr(id, s, ierr)
+         if (ierr /= 0) return
+         how_many_extra_history_columns = 2
+      end function how_many_extra_history_columns
+```
 
+```fortran
+      subroutine data_for_extra_history_columns(id, n, names, vals, ierr)
+         integer, intent(in) :: id, n
+         character (len=maxlen_history_column_name) :: names(n)
+         real(dp) :: vals(n)
+         integer, intent(out) :: ierr
+         real(dp) :: dt, spin, J_he_core ! NEWS
+         type (star_info), pointer :: s
+         ierr = 0
+         call star_ptr(id, s, ierr)
+         if (ierr /= 0) return
+         
+         ! note: do NOT add the extras names to history_columns.list
+         ! the history_columns.list is only for the built-in history column options.
+         ! it must not include the new column names you are adding here.
+         
+         if (n /= 1) then
+            stop 'bad n for data_for_extra_history_columns'
+         end if
+         dt = dble(time1 - time0) / clock_rate / 60
+         names(1) = 'runtime_minutes'
+         vals(1) = dt
 
+        ! NEW
+         if (s% he_core_k == 0) then
+            ! no He core yet
+            spin = 0d0
+         else
+            J_he_core = dot_product(s% j_rot(s% he_core_k : s% nz), &                                                                                              
+                                    s% dm(s% he_core_k : s% nz))
+            spin_he_core = clight * J_he_core / (standard_cgrav * s% he_core_mass * s% he_core_mass)
+         end if
 
+         names(2) = 'spin_he_core'
+         vals(2) = spin_he_core
 
-BONUS: compute spin as a function of accreted mass
-BONUS: Create a j x free fall time profile and compare to j_ISCO
+      end subroutine data_for_extra_history_columns
+```
 
 ## Step 5: Changing the AM transport prescription
 
