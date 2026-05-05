@@ -244,6 +244,8 @@ run_star_extras, winds, rotation enhancement
 
 ## Step 4: Computing core spin at He depletion
 
+A massive star only spends about $\sim10^4\,\mathrm{yr}$ in C burning and later phases before core-collapse. At this point, CHE stars are WR stars with characteristic mass-loss rates of $\sim10^{-4}\,\mathrm{yr}$ or less, meaning no more than $1\,\mathrm{M}_\odot$ mass will be lost for the rest of its life. Consequently, relatively little further spin-down will occur, and we can therefore use our He depletion models to estimate the spins of later black holes.
+
 Solving Einstein's equations for the general case of a black hole with mass $M$, angular momentum $J$ and electric charge $Q$ (this is called a Kerr-Newman geometry), yields the condition
 
 $$\frac{Q^2}{4\pi\epsilon_0} + \frac{c^2J^2}{GM^2}\leq GM^2$$
