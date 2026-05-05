@@ -309,6 +309,118 @@ We will do this by adding a new column to our history files named `chi_core`, wh
       end subroutine data_for_extra_history_columns
 ```
 
+{{<details title="Bonus: evaluate disk formation">}}
+
+```fortran
+      integer function how_many_extra_profile_columns(id)
+         integer, intent(in) :: id
+         integer :: ierr
+         type (star_info), pointer :: s
+         ierr = 0
+         call star_ptr(id, s, ierr)
+         if (ierr /= 0) return
+         how_many_extra_profile_columns = 1
+      end function how_many_extra_profile_columns
+      
+      
+      subroutine data_for_extra_profile_columns(id, n, nz, names, vals, ierr)
+         integer, intent(in) :: id, n, nz
+         character (len=maxlen_profile_column_name) :: names(n)
+         real(dp) :: vals(nz,n)
+         integer, intent(out) :: ierr
+         type (star_info), pointer :: s
+         integer :: k
+         ierr = 0
+         call star_ptr(id, s, ierr)
+         if (ierr /= 0) return
+         
+         ! note: do NOT add the extra names to profile_columns.list
+         ! the profile_columns.list is only for the built-in profile column options.
+         ! it must not include the new column names you are adding here.
+
+         if (n /= 1) stop 'data_for_extra_profile_columns'
+
+         names(1) = 'log_t_freefall'
+         do k = 1, nz
+            vals(k, 1) = log10(sqrt(&
+               3 * pi * s% r(k) * s% r(k) * s% r(k) &
+               / (32 * standard_cgrav * s% m(k)) &
+            ))
+         end do
+
+      end subroutine data_for_extra_profile_columns
+```
+
+If the infalling gas any non-zero angular momentum, it cannot fall towards the BH or PNS without a degree of horizontal motion. For a fixed specific angular momentum, the gas will fall into the orbit with equivalent angular momentum, and migrate inwards as it loses angular momentum through viscous dissipation or some external process (such as winds). Taking the speed of light as an upper limit, one can define the smallest (highest energy) at which the matter can orbit the central object; such that at any lower orbit the matter will be accreted. This is known as the *innermost stable circular orbit*, or ISCO, with corresponding angular momentum $J_\mathrm{ISCO}$. We can acquire a better picture of BH formation by checking the total angular momentum $J_\mathrm{sh}$ of each mass shell; any shell with $J_\mathrm{sh}<J_\mathrm{ISCO}$ will be accreted effectively immediately, while the rest must lose angular momentum before being accreted, with the natural consequence that all $J_\mathrm{sh}\geq J_\mathrm{ISCO}$ layers settle into an accretion disk where AM can be transported outwards while matter falls inwards.
+
+Without rerunning anything, we can use our existing He depletion profiles to check for how much of our star falls directly in to the proto-compact object, and how much initially settles into a disc. For this, you will the ISCO radius and angular momentum for a Kerr black hole with mass $M$ and spin $0\leq\chi\geq1$, given by
+
+$$R_\mathrm{ISCO}(M,\chi) = \frac{GM}{c^2}\left\{3 + z_2 - [(3 - z_1)(3 + z_1 + 2z_2)]^{1/2}\right\},$$
+
+where 
+
+$$
+\begin{align*}
+z_1 &= 1 + (1-\chi^2)^{1/3} \left[ (1+\chi)^{1/3} + (1-\chi)^{1/3} \right], \\
+z_2 &= (3\chi^2 + z_1^2)^{1/2};
+\end{align*}
+$$
+
+and
+
+$$
+J_\mathrm{ISCO}(M,\chi) = 
+    \frac{M^{1/2}}{R_\mathrm{ISCO}^{3/4}} \frac{
+        R_\mathrm{ISCO}^2 
+        - 2\chi M^{1/2} R_\mathrm{ISCO}^{1/2} 
+        + \chi^2
+    }
+    {
+        (
+            R_\mathrm{ISCO}^{3/2}
+            - 3 M R_\mathrm{ISCO}^{1/2}
+            + 2 \chi M^{1/2}
+        )^{1/2}
+    }.
+$$
+
+The comparison is simple: we want to plot the specific angular momentum of our mass shells and the corresponding ISCO specific angular momentum for each one of them. The latter will be a range, as $J_\mathrm{ISCO}$ is lower for a non-rotating BH ($\chi=0$) than for a maximally rotating BH ($\chi=1$). For the x-axis, we will use the free-fall timescale you added earlier. 
+
+While this can be done by adding an extra column to Fortran, for this bonus exercise we will use Python to compute the ISCO properties without needing to rerun MESA. The physical quantities are already implemented in Python below, but you can also find a full plotting code on Collab here. TODO link
+
+```python
+def r_isco(m, a):
+    """Radius at ISCO (prograde) for a Kerr BH with mass m and spin a."""
+    m = m * ct.M_sun.cgs * ct.G.cgs / ct.c.cgs**2
+    z1 = 1 + (1 - a**2)**(1/3) * ((1 + a)**(1/3) + (1 - a)**(1/3))
+    z2 = (3 * a**2 + z1**2)**(1/2)
+    r = m * (3 + z2 - ((3 - z1) * (3 + z1 + 2 * z2))**(1/2))
+    return r
+
+def j_isco(m, a):
+    """Angular momentum at ISCO (prograde) for a Kerr BH with mass m and spin a."""
+    r = r_isco(m, a)
+    m = m * ct.M_sun.cgs * ct.G.cgs / ct.c.cgs**2
+    a = a * m
+    j = (
+        m**(1/2) / r**(3/4)
+        * (
+            r**2
+            - 2 * a * m**(1/2) * r**(1/2)
+            + a**2
+        )
+        / (
+            r**(3/2)
+            - 3 * m * r**(1/2)
+            + 2 * a * m**(1/2)
+        )**(1/2)
+        
+    )
+    return j
+```
+
+{{</details>}}
+
 ## Step 5: Changing the AM transport prescription
 
 BONUS: change the wind prescription
