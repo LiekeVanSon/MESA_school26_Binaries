@@ -423,6 +423,9 @@ def j_isco(m, a):
 
 ## Step 5: Changing the AM transport prescription
 
+NOTE: This is currently in step 3. Either it stays there and step 5 is removed, or the AMT variation gets moved to step 5. The advantage of keeping it in step 3 is that all MESA runs are completed in step 3 and later tasks are pure data analysis. Anyone who is behind can then catch up by copying the hints if necessary and not have to wait for running models.
+
+
 BONUS: change the wind prescription
 
 ## Big Bonus Binary
