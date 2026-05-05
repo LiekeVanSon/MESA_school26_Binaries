@@ -206,6 +206,14 @@ With that done, you can go ahead and run the CHE model with the longest initial 
 
 As you watch your star evolve post-MS, you will notice a very brief phase of expansion by a factor of a few, seen both in the HR diagram and the Kippenhahn diagram. Do you have an idea for why that is happening? And what evolutionary phases does it correspond to?
 
+{{<details title="Hint: post-MS expansion">}}
+
+The Kippenhahn diagram reveals the connection between the external behavior and the internal dynamics clearly. There is an initial phase of contraction of the whole star, once it loses support from core hydrogen burning, until a layer around the convective core becomes hot and dense enough to ignite hydrogen - this is the hydrogen shell burning phase. We then see in the Kippenhahn diagram how, once shell burning is on, the core, which still has no source of support, continues to contract, but the envelope now responds to core contraction by expanding. This is the so-called "mirror effect" of shell burning, which you might have already met in a stellar structure class.
+
+Eventually, the core does ignite helium and stops shell burning. At this point the envelope contracts again, and the star continues to contract as helium is burned. You should be able to clearly identify hydrogen shell ignition and helium core ignition through the hook feature in the HR diagram.
+
+{{</details>}}
+
 The angular momentum plot varies relatively little with the fixed y-axis in the pgstar plot. You can go ahead and run this python script in your work folder to recreate the plot. Make sure you have `numpy`, `matplotlib` and `mesa_reader` installed (`pip install numpy matplotlib mesa_reader`). Alternatively you can run it online in this Google Collab notebook. Look for the line `xxx` if you need to change the y-axis limits.
 
 The script will also produce a *jdot* over time plot, showing the behavior of different sources of angular momentum evolution. Can you identify the dominant one? With default settings, you should be seeing a smooth profile. This shape is charateristic of rigid-body rotation. That, however, does not mean that 
