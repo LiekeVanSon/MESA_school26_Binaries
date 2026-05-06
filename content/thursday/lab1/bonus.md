@@ -15,7 +15,7 @@ If you have extra time, take a look at the below exercises to enhance your exper
 `MESA/binary` produces a separate history file, appropriately named `binary_history.data`, which contains information on the state of the binary.
 For this exercise, implement the "observational mass ratio" as an extra binary history column (for any of the runs you did in the main lab).
 This is the ratio of the less massive to the more massive star.
-As an observer measuring masses of stars, you have no a priori information of what the "primary" is, and so it is customary to _define_ $q = M_{\rm low} / M_{\rm high} < 1$, rather than $q=M_2/M_1$, which can flip from below one to above as the binary evolves.
+As an observer measuring masses of stars, you have no a priori information of what the "primary" is, and so it is customary to *define* $q = M_{\rm low} / M_{\rm high} < 1$, rather than $q=M_2/M_1$, which can flip from below one to above as the binary evolves.
 
 {{< details title="Hint" closed="true" >}}
 This is very similar to how you would add a custom column to the `star` history in `run_star_extras.f90`. Take a look at the routines in `run_binary_extras.f90`, and see if you can continue from there.
@@ -56,8 +56,9 @@ end subroutine data_for_extra_binary_history_columns
 {{< /details >}}
 ```
 
-### Vary $\beta$ to a target mass
+### Modeling $\phi$ Persei
 
-The mass-transfer efficiency parameters are poorly constrained.
-However, if one finds a particular binary system (that we assume is a post-mass transfer) and measures its components' masses and period, one can do the exercise to try to set initial conditions and a $\beta$ that arrives at those measured parameters.
+$\phi$ Persei is a lower mass binary containing a subdwarf (sdO) and a B2 main sequence star. From its orbital period, we infer it must have undergone case B mass transfer when the now-subdwarf star overflowed it's Roche Lobe.
+In this exercise, you'll try to recreate the history of $\phi$ Per using MESA.
+ 
 
