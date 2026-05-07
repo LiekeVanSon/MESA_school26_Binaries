@@ -12,9 +12,9 @@ Massive stars ($M \gtrsim 8 M_{\odot}$) are overwhelmingly part of binary (or ev
 See this figure from Offner et al. (2023) that compiles data from many multiplicity studies.
 ![Multiplicity_fraction](multfraction.png)
 When such stars evolve, they engage is mass-transfer events, which create a whole host of astrophysical phenomena that could not be understood with single-star evolution.
-One of the best examples are X-ray binaries.
+One of the best examples are X-ray binaries:
 ![xray-system](xray.png)
-**Figure 2:** Artist impression of a mass-transferring X-ray binary. The disk of the accretor becomes very hot and emits X rays.*Credit: ESO/L. Calçada/M.Kornmesser.*
+Artist impression of a mass-transferring X-ray binary. The disk of the accretor becomes very hot and emits X rays. *Credit: ESO/L. Calçada/M.Kornmesser.*
 
 This lab will introduce you to the inner workings of `MESA/binary`, and give you an understanding of how massive stars exchange mass.
 
@@ -33,7 +33,7 @@ $$M_1, M_2, J_{\rm orb}, e.$$
 Each variable has an associated evolution equation, e.g.:
 $$\frac{dM_1}{dt} = \dot{M}_{1, \rm wind} + \dot{M}_{1, \rm trans}$$
 
-`MESA/binary`'s job is to carefully track the orbital quantities, *i.e.* compute the values $\frac{dM_1}{dt}$ (which it passes on to `MESA/star` who actually perfroms the mass change and associate remeshing of the model), $\frac{dJ}{dt}$, *etc.*.
+`MESA/binary`'s job is to carefully track the orbital quantities, *i.e.* compute the values $dM_1/dt$ (which it passes on to `MESA/star` who actually perfroms the mass change and associate remeshing of the model), $dJ/dt$, *etc.*.
 
 It also needs to do checks that the state of the binary star is "acceptable."
 For example:
@@ -91,7 +91,7 @@ For massive stars, the rule of thumb is that case A occurs (roughly) for initial
 > To get started with the binary-evolution runs of this lab, copy the contents of the binary `work` directory from `$MESA_DIR/binary/work` into your directory tree where you are running the school labs (maybe a subfolder `school/thursday_binaries/` or something).
 > `cd` to it.
 > You should see familiar files like `./rn`, `inlist`, and a `src/` directory.
-> Next, download and extract the [inlist tarball](/thursday/lab1/inlist_start.zip) for this lab into your folder. It contains the inlists and starting models.
+> Next, download and extract the [inlist tarball](/thursday/lab1/inlists_start.zip) for this lab into your folder. It contains the inlists and starting models.
 > Remember that `MESA` always looks for a file named `inlist` (exactly) first to start reading in parameters.
 > However, as is customary, we've setup up an inlist chain to read the appropriate parameters from appropriately named inlist files:
 >
