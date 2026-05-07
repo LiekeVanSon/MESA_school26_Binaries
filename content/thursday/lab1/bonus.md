@@ -63,7 +63,7 @@ $\phi$ Persei is a lower mass binary containing a subdwarf (sdO) and a B2 main-s
 While not being a binary black-hole progenitor (it'll likely evolve to a type-Ia supernova when the now-B2 star starts dumping matter on the subdwarf), its evolution is still very interesting to model.
 In this exercise, you'll try to recreate the history of $\phi$ Per using MESA.
 
-![phi-per](/thursday/lab1/phi-per.png)
+![phi-per](phi-per.png)
 Image of $\phi$ Persei. *Credit: David Ritter, license: CC BY-SA 4.0.*
 
 $\phi$ Persei's observed properties are:
@@ -83,7 +83,7 @@ Remember that $M_{2, \rm init} < M_{1, \rm init}$ because otherwise the secondar
 Settings to change from the Run 3 setup:
 
 - Disable the step overshoot we use for (very) massive stars. The remaining exponential overshoot is plenty for this example.
-- Set the appropriate ZAMS models. Download [this grid](thursday/lab1/zams_142m2_y2703.data) as the set of starting models, and move it to `$MESA_DIR/data/star_data/zams_models/`. Don't use the `load_saved_model` functionality, but instead set:
+- Set the appropriate ZAMS models. Download [this grid](/thursday/lab1/zams_z142m2_y2703.data) as the set of starting models, and move it to `$MESA_DIR/data/star_data/zams_models/`. Don't use the `load_saved_model` functionality, but instead set:
 
 ```fortran
 zams_filename = 'z0.0142_y0.2703.data'

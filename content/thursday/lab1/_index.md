@@ -91,7 +91,7 @@ For massive stars, the rule of thumb is that case A occurs (roughly) for initial
 > To get started with the binary-evolution runs of this lab, copy the contents of the binary `work` directory from `$MESA_DIR/binary/work` into your directory tree where you are running the school labs (maybe a subfolder `school/thursday_binaries/` or something).
 > `cd` to it.
 > You should see familiar files like `./rn`, `inlist`, and a `src/` directory.
-> Next, download and extract the [inlist tarball](/thursday/lab1/inlists_start.zip) for this lab into your folder. It contains the inlists and starting models.
+> Next, download and extract the [inlist bundle](inlists_start.zip) for this lab into your folder. It contains the inlists and starting models.
 > Remember that `MESA` always looks for a file named `inlist` (exactly) first to start reading in parameters.
 > However, as is customary, we've setup up an inlist chain to read the appropriate parameters from appropriately named inlist files:
 >
@@ -370,8 +370,7 @@ This system will continue to evolve, and we'll pick up this thread again in Lab 
 
 ### Final models and inlist sets
 
-If you were short on time, below you can find the final models of Run 1 (case A), as well as of Run 3 with $M_2 = 25 M_\odot$, $\beta = 0$, and $p_i = 20 {\rm d}$ (case B).
+If you were short on time, below you can find:
 
-- final case A models: [primary](/thursday/lab1/final1_caseA.mod), [secondary](/thursday/lab1/final2_caseA.mod)
-- final case B models: [primary](/thursday/lab1/final1_caseB.mod), [secondary](/thursday/lab1/final2_caseB.mod)
+- the [final models](final_models.zip) of Run 1 (case A), as well as of Run 3 with $M_2 = 25 M_\odot$, $\beta = 0$, and $p_i = 20 {\rm d}$ (case B).
 - final [inlists](inlists_caseB.zip) after Run 3.
