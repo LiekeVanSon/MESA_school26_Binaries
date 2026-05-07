@@ -60,5 +60,3 @@ end subroutine data_for_extra_binary_history_columns
 
 $\phi$ Persei is a lower mass binary containing a subdwarf (sdO) and a B2 main sequence star. From its orbital period, we infer it must have undergone case B mass transfer when the now-subdwarf star overflowed it's Roche Lobe.
 In this exercise, you'll try to recreate the history of $\phi$ Per using MESA.
- 
-

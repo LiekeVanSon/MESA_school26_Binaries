@@ -49,7 +49,7 @@ We have to redo the step with a higher mass-transfer rate, so that (hopefully) t
 ### How to do binaries in `MESA`
 
 `MESA/binary` has its own set of controls to setup in the initial condition of the binary, manage the physics of mass transfer, tides, and it has its own set of timestep controls (for example to not let the mass-transfer rate change too quickly from step to step).
-All of these controls and their defaults are listed in the [Reference under the binary defaults heading](https://docs.mesastar.org/en/25.12.1/reference.html#binary-defaults).
+All of these controls and their defaults are listed in the [Reference under the binary defaults heading](https://docs.mesastar.org/en/latest/reference.html#binary-defaults).
 
 > [!Important]
 > In this lab, you will only need to modify/enter inlist values, not play with run_binary_extras.f90.
@@ -91,7 +91,7 @@ For massive stars, the rule of thumb is that case A occurs (roughly) for initial
 > To get started with the binary-evolution runs of this lab, copy the contents of the binary `work` directory from `$MESA_DIR/binary/work` into your directory tree where you are running the school labs (maybe a subfolder `school/thursday_binaries/` or something).
 > `cd` to it.
 > You should see familiar files like `./rn`, `inlist`, and a `src/` directory.
-> Next, download and extract the [inlist tarball](/thursday/lab1/inlists.tar) for this lab.
+> Next, download and extract the [inlist tarball](/thursday/lab1/inlist_start.zip) for this lab into your folder. It contains the inlists and starting models.
 > Remember that `MESA` always looks for a file named `inlist` (exactly) first to start reading in parameters.
 > However, as is customary, we've setup up an inlist chain to read the appropriate parameters from appropriately named inlist files:
 >
@@ -106,7 +106,7 @@ When interaction occurs during the main sequence, the initial period of the syst
 We also expect tidal interaction to be very strong between stars that orbit each other so tightly.
 Let's see what this does to the rotation rate of the stars in this system.
 
-Look and search through the [inlist defaults](https://docs.mesastar.org/en/25.12.1/reference.html) to set up the following:
+Look and search through the [inlist defaults](https://docs.mesastar.org/en/latest/reference.html) to set up the following:
 
 - Set the initial period to 3 days.
 - Enable the effects of tidal synchronization. Then, set the `sync_mode` of both stars' tidal prescription to `Orb_period`.
@@ -253,14 +253,14 @@ Do you see anything peculiar about the profile of `omega_div_omega_crit`?
 
 4. Establish what the tidal syncronization timescale is of the stars, and plot it.
 {{< details title="Hint" closed="true" >}}
-Scour the list that `binary` defines as default history columns, in `binary_history_columns.list`. Most entries you find there you can plot in `pgbinary` panels (without uncommenting it in the list).
+Scour the list that `binary` defines as default history columns, in `binary_history_columns.list`. Uncommented entries you find there you can plot in `pgbinary` panels on the fly.
 
 {{< details title="Solution" closed="true" >}}
 Spot the following lines:
 
 ```fortran
-    !lg_t_sync_1 ! log10 synchronization timescale for star 1 in years
-    !lg_t_sync_2 ! log10 synchronization timescale for star 2 in years
+    lg_t_sync_1 ! log10 synchronization timescale for star 1 in years
+    lg_t_sync_2 ! log10 synchronization timescale for star 2 in years
 ```
 
 so we can plot:
@@ -282,9 +282,96 @@ so we can plot:
 
 ### Run 3: Case B evolution: *You spin me 'round?*
 
-As of yet, there is no consensus as to how (non)-conservative mass transfer should or would be given a certain set of physics. Above, we modeled accretion happening in a system with weak tides, and that turned out to spin up the accretor star very rapidly, and cause very inefficient mass transfer. Many observed systems however indicate that conservative mass transfer is preferred. In this subsection, we'll set up the physics to model this kind of accretion, and see the consequences this has on the structure of the stars and the evolution of the orbit.
+As of yet, there is no consensus as to how (non)-conservative mass transfer should or would be given a certain set of physics.
+Above, we modeled accretion happening in a system with weak tides, and that turned out to spin up the accretor star very rapidly, and cause very inefficient mass transfer.
+Many observed systems however indicate that conservative mass transfer is preferred.
+
+Historically, mass-transfer efficiency, $\epsilon$, has been characterized using 4 parameters: $\alpha$, $\beta$, $\gamma$, and $\delta$.
+We have that $\epsilon = 1 - \alpha - \beta - \delta$, and so if $\epsilon = 1$, mass transfer is conservative, and if $\epsilon = 0$ mass transfer is fully non-conservative.
+The parameters control whether we consider inefficiencies occur near the donor ($\alpha$), near the accretor ($\beta$), or through a circumbinary disk ($\delta$, and the disk has a dimensionless radius of $\gamma = \sqrt{R / a}$).
+In this run, we'll set up the physics to model this kind of accretion, and see the consequences this has on the structure of the stars and the evolution of the orbit.
+
+When accreting, only the surface layers tend to spin up, while the deeper layers below still rotate quite slowly.
+This is because angular-momentum transport down to the core is not that efficient (we'll see more of this in the next lab).
+In this run, we're gonna take rotational effects the other way entirely, and we'll use our godly powers as `MESA` users to crank up the efficiency of angular-momentum transport artificially.
 
 > [!Important]
 > Copy the directory from Run 2 into a new folder for Run 3 (again, so that you'll have nicely separated final models and inlist sets for every run).
 
+Setup:
 
+- Set the tidal prescription back to `Orb_period` for both stars.
+- Search for the mass-transfer efficiency parameters in the [reference](https://docs.mesastar.org/en/latest/reference.html#binary-defaults). We want to simulate a fraction of the mass getting ejected from the vicinity of the accretor.
+- We want to artifically induce very efficient internal angular-momentum transport in both stars. You can do this by setting `set_uniform_am_nu_non_rot = .true.` and picking a *very* high number for `uniform_am_nu_non_rot`. With this setting we simulate a non-rotational angular-momentum diffusion process. Note that this is a *stellar* process, not a *binary* one, so check the reference in which inlist you this control belongs.
+- Since we will not hit the rotational limit as much, tighten the implicit wind calculation tolerance, adjusting `surf_omega_div_omega_crit_tol` to `1d-2`.
+- Lastly, pick a secondary mass, initial period, and $\beta$ from the [Google Sheet](https://docs.google.com/spreadsheets/d/1a5gx9o0_MCAnP_3dU2xA3I60lQkIN1NhjYG9Ea-OxSw/edit?usp=sharing), and run the simulation.
+{{< details title="Solution" closed="true" >}}
+An example of `&binary_controls` would be:
+
+```fortran
+   ! initial conditions
+   initial_period_in_days = 50d0
+
+   ! tidal sync setting
+   do_tidal_sync = .true.
+   sync_type_1 = "Orb_period"
+   sync_type_2 = "Orb_period"
+
+   ! constant efficiency
+   mass_transfer_beta = 5d-1
+```
+
+and `inlist2` should load the correct mass:
+
+```fortran
+   load_saved_model = .true.
+   load_model_filename = 'zams27.5.mod'  ! select correct model for star 2!
+```
+
+`&controls` of `inlist_star` should contain:
+
+```fortran
+   surf_omega_div_omega_crit_tol = 1d-2
+
+   set_uniform_am_nu_non_rot = .true.
+   uniform_am_nu_non_rot = 1d20
+```
+
+or any higher number for the diffusion coefficient.
+
+{{< /details >}}
+
+Take note of the following during the run:
+
+- How does the accretor respond to the transferred mass? Does it spin up? Why (not)? Does the mass-transfer efficiency agree with your chosen $\beta$? Are there multiple mass-transfer phases?
+{{< details title="Solution" closed="true" >}}
+Your star's spin should correlate with its size. The star will puff up when accepting a lot of mass, sometimes leading to a short contact phase depending on the chosen parameters. The efficiency should closely agree to $1-\beta$. If there is a slower case B mass transfer, efficiency can be lower because the stellar wind starts to take a signicant fraction of the mass-loss budget.
+{{< /details >}}
+
+- Compare the synchronization timescale to what you had in the previous run. See any difference? Does this explain the rotation rate of the secondary?
+{{< details title="Solution" closed="true" >}}
+The synchronization timescale is of order $10^{-1} {\rm yr}$, which is way shorter than the typical integration step (see the `log_dt` graph). Hence the star is quickly synchronized to the orbital period.
+{{< /details >}}
+
+- Record the final masses and period into the [Google Sheet](https://docs.google.com/spreadsheets/d/1a5gx9o0_MCAnP_3dU2xA3I60lQkIN1NhjYG9Ea-OxSw/edit?usp=sharing). Compare with the value that Soberman et al., 1997 predicts from angular-momentum-balance arguments (automatically calculated in column K). How would you explain any discrepancy between Soberman's and your obtained number?
+{{< details title="Solution" closed="true" >}}
+Soberman's calculation does not take gravitational radiation, spin-orbit coupling (through tides), and wind-mass loss into account. These are all extra terms one would have to take into account when calculation the final period.
+{{< /details >}}
+
+## Conclusions
+
+These `MESA/binary` runs should have given you a feel for how one goes about setting up two stars in a binary orbit, what kinds of physics one can modify to simulate different modes of mass transfer, and how this affects the rotation rate of the accretor.
+In the end, we have created a WR binary:
+
+![wr-diagram](wr_binary.png)
+
+and the once less massive star is now the more massive star.
+This system will continue to evolve, and we'll pick up this thread again in Lab 3 this afternoon.
+
+### Final models and inlist sets
+
+If you were short on time, below you can find the final models of Run 1 (case A), as well as of Run 3 with $M_2 = 25 M_\odot$, $\beta = 0$, and $p_i = 20 {\rm d}$ (case B).
+
+- final case A models: [primary](/thursday/lab1/final1_caseA.mod), [secondary](/thursday/lab1/final2_caseA.mod)
+- final case B models: [primary](/thursday/lab1/final1_caseB.mod), [secondary](/thursday/lab1/final2_caseB.mod)
+- final [inlists](inlists_caseB.zip) after Run 3.
