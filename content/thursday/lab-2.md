@@ -142,7 +142,7 @@ Before we start, we need to
 | :---------|
 | In `inlist_project`, find `initial_mass` in the `&control` namespace and set it to 35.0, then run. Copy the output `model.mod` to the `binary_template` folder.|
 
-## Step 1: Exploring the CHE window
+## Step 1: CHE stars in the Main Sequence
 
 Our first task is simple: for a fixed initial mass, we will try to determine the shape of the CHE window on the initial orbital period axis. For this, each group will choose one of the masses below --- try to coordinate so that those with more powerful computers take the greater masses.
 
@@ -173,7 +173,7 @@ BONUS: try setting high initial rotation manually in a wide binary and play arou
 
 {{</details>}}
 
-## Step 3: post-MS evolution
+## Step 2: CHE stars post-Main Sequence
 
 Besides BH masses, BH spins also are a key quantity that is imprinted in GW signals and can help lift degeneracies between BH formation channels that, in pure terms of mass, populate the same range of the mass spectrum. As rapidly rotating stars, CHE stars are natural candidates for producing high-spin BHs, which would stand out for the current, low-spin-dominated, population of merging BBHs. In order to get a more accurate estimate of the BH spins produced by CHE stars, we will now take one of our models from the previous sessions, and run it up to helium depletion.
 
@@ -200,7 +200,7 @@ With that done, you can go ahead and run the CHE model with the longest initial 
 | 📋 TASK X |
 | :---------|
 | Restart your run with `./re`.
-| Closely watch the HR diagram. Do you remember how to read radius from it?
+| Closely watch the HR diagram, pay attention to the radius.
 | Closely watch your modified Kippenhahn diagram. |
 
 As you watch your star evolve post-MS, you will notice a very brief phase of expansion by a factor of a few, seen both in the HR diagram and the Kippenhahn diagram. Do you have an idea for why that is happening? And what evolutionary phases does it correspond to?
@@ -240,7 +240,7 @@ run_star_extras, winds, rotation enhancement
 
 {{</details>}}
 
-## Step 4: Computing core spin at He depletion
+## Step 3: Computing core spin at He depletion
 
 A massive star only spends about $\sim10^4\,\mathrm{yr}$ in C burning and later phases before core-collapse. At this point, CHE stars are WR stars with characteristic mass-loss rates of $\sim10^{-4}\,\mathrm{M}_\odot\,\mathrm{yr}^{-1}$ or less, meaning no more than $1\,\mathrm{M}_\odot$ mass will be lost for the rest of its life. Consequently, relatively little further spin-down will occur, and we can therefore use our He depletion models to estimate the spins of later black holes.
 
@@ -418,13 +418,6 @@ def j_isco(m, a):
 ```
 
 {{</details>}}
-
-## Step 5: Changing the AM transport prescription
-
-NOTE: This is currently in step 3. Either it stays there and step 5 is removed, or the AMT variation gets moved to step 5. The advantage of keeping it in step 3 is that all MESA runs are completed in step 3 and later tasks are pure data analysis. Anyone who is behind can then catch up by copying the hints if necessary and not have to wait for running models.
-
-
-BONUS: change the wind prescription
 
 ## Big Bonus Binary
 
