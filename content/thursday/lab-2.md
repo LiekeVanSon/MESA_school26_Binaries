@@ -6,7 +6,7 @@ math: true
 toc: true
 ---
 
-# Lab 2: Stellar Swirling
+# Lab 2: Stellar Swinging
 
 10:45 AM–12:00 PM
 Timing: 10 min lecture + 1 hour MESA material
@@ -34,7 +34,7 @@ This pattern --- gas rises at the poles, sinks at the equator --- goes all the w
 Not always! While all WR stars are He stars, Wolf-Rayet is a (mostly) well-defined collection of spectral types defined by the absence or near-absence of hydrogen lines, and by the presence of certain key emission lines from nitrogen, carbon and/or oxygen. Those lines are only excited at temperatures significantly higher than those characteristic of Main Sequence star surfaces - and therefore we should generally expect our star to spend at least some of its time as a He star with an O-type or O/WN spectrum. This last case, a "slash star", is a transitional type between the O-type and the coolest type of WR (the N in WN stands for nitrogen).
 {{< /details >}}
 
-Because the electron scattering opacity of helium is half that of hydrogen, several things change in the life of a CHE star compared to a non-rotating star. With lower opacity, light can pass more freely through the gas, therefore the radiative output is more energetic - the star is more luminous and bluer, i.e., hotter -, and the gas in the envelope is not heated, and therefore does not expand. A CHE star thus avoids the characteristic dramatic expansion into a supergiant phase post-MS, and, except for a brief ($\sim10\,\mathrm{kyr}$) phase of modest (factor of $\sim2-3$)expansion between H shell ignition and He core ignition, remains compact for its entire life. 
+Because the electron scattering opacity of helium is half that of hydrogen, several things change in the life of a CHE star compared to a non-rotating star. With lower opacity, light can pass more freely through the gas, therefore the radiative output is more energetic - the star is more luminous and bluer, i.e., hotter -, and the gas in the envelope is not heated, and therefore does not expand. A CHE star thus avoids the characteristic dramatic expansion into a supergiant phase post-MS, and, except for a brief ($\sim10\,\mathrm{kyr}$) phase of modest (factor of $\sim2-3$) expansion between H shell ignition and He core ignition, remains compact for its entire life. 
 
 In order to remain homogeneous, a star needs to sustain a very high rotation rate through all of the Main Sequence. Because massive stars naturally tend to spin-down due to stellar winds, which also carry away angular momentum, it is generally assumed that an external force must continuously drive rotation during that period. In a binary, tidal forces play that role: in a binary with period of a few days or less, tides are strong enough that we can assume the star is synchronized to the orbital period at birth (like the Moon's spin is synchronized to its rotation around the Earth). That orbital period itself being very short, the star will also be spinning with a short period.
 
@@ -60,7 +60,7 @@ and thus, for rigid rotation, $\mathrm{d}\Omega/\mathrm{d}r=0\to\Theta=0$. If th
 
 $$U_2(r)=\frac{16}{9}\frac{\beta}{32/3-8\beta-\beta^2} \frac{L(r)r^2}{GM_r^2} \frac{1}{\nabla_\mathrm{ad}-\nabla+\frac{\phi}{\delta}\nabla_\mu}\frac{\Omega^2r^3}{GM_r},$$
 
-where $\beta=P_\mathrm{gas}/(P_\mathrm{gas}+P_\mathrm{rad}$). Since in a radiative zone (or a semiconvective zone, if you have encountered the definition) $\nabla_\mathrm{ad}-\nabla+\frac{\phi}{\delta}\nabla_\mu>0$, U_2(r) is strictly positive across our envelope. Plugging it back into the first equation and accounting for the sign of $P_2$ yields the neat picture: matter rises towards the poles, sinks at the equator.
+where $\beta=P_\mathrm{gas}/(P_\mathrm{gas}+P_\mathrm{rad})$. Since in a radiative zone (or a semiconvective zone, if you have encountered the definition) $\nabla_\mathrm{ad}-\nabla+\frac{\phi}{\delta}\nabla_\mu>0$, $U_2(r)$ is strictly positive across our envelope. Plugging it back into the first equation and accounting for the sign of $P_2$ yields the neat picture: matter rises towards the poles, sinks at the equator.
 
 Conversely, any significant departure from these specific conditions: chemically homogeneous, radiative, rigid-body rotation, reintroduces terms that can have a negative sign into the expression for $U_2$. For differential rotation, this comes back through the time derivative of $\Theta$, which itself goes with $\mathrm{d}\Omega^2/\mathrm{d}r$. The circulation then can, and does, stall and even reverse as a function of radius. 
 
@@ -97,7 +97,7 @@ Let's take a small tour of the `binary_model` folder. Starting by looking at `in
 
 This means that we are telling MESA to only solve stellar structure for the primary, and giving it the settings only for that star. When 'evolve_both_stars=.false.', the secondary is treated as a constant-mass point mass. We do this here to keep computational times down, since we want to be able to get to the end of He burning. 
 
-Using a point-mass companion instead of running a single-star primary further gives us the advantage of keeping the effect of tides on the primary, as well as tracking the orbital evolution. While this setup will not compute mass transfer (for the sake of the computational time), it will still track the occurence of L2 overflow, in which case the run will be stopped as a case of a stellar merger.
+Using a point-mass companion instead of running a single-star primary further gives us the advantage of keeping the effect of tides on the primary, as well as tracking the orbital evolution. While this setup will not compute mass transfer (for the sake of the computational time), it will still track the occurrence of L2 overflow, in which case the run will be stopped as a case of a stellar merger.
 
 Further down in `&binary_controls`, the mass of the secondary must be set explicitly with `m2=35.d0`, since it will not load a full model file like the primary. We will be focusing solely on equal-mass binaries in this lab, in order to maximize the efficiency of tides. 
 
@@ -124,13 +124,13 @@ As we saw at the top, the primary is configured by loading `inlist`. Inside that
     num_steps_to_relax_rotation = 30
 ```
 
-are telling MESA: change the initial rotation (lines 1-2), set the initial rotation through the rotation velocity (line 3, velocity in km/s), target $v_\mathrm{i}=0\mathrm{km}\,\mathrm{s}^{-1}$, and take up to 30 steps to relax the stellar structure to that velocity. Further down, `load_saved_model` and `load_model_filename` point it to the model you created and copied from `initial_model`. 
+are telling MESA: change the initial rotation (lines 1-2), set the initial rotation through the rotation velocity (line 3, velocity in km/s), target $v_\mathrm{i}=0\,\mathrm{km}\,\mathrm{s}^{-1}$, and take up to 30 steps to relax the stellar structure to that velocity. Further down, `load_saved_model` and `load_model_filename` point it to the model you created and copied from `initial_model`. 
 
 What follows is a long list of resolution settings calibrated to make the run relatively fast on 2 cores, which we will not touch. Further down we have a long block of rotational mixing coefficients. Eddington-Sweet circulation is controled by `D_ES_factor`, which when set to `1` turns it on at the baseline intensity for chemical mixing. Angular momentum transport multiplied the factor specified in `am_D_mix_factor` - so it is weaker by a factor of 3.
 
 
 
-* Caveats of point mass companion model (either here or next scetion)
+* Caveats of point mass companion model (either here or next section)
 * Definition of CHE
 * Point mass companion set-up - what is compensated for, what is missing
 * Resolution etc
@@ -165,18 +165,17 @@ The period range for getting CHE with a 35 Msun star is very narrow. 0.95d is a 
 
 {{< /details >}}
 
+{{<details title="BONUS: spin-up timing">}}
 
-## Step 2: Exploring spin-up timing
-
-In this section we learn how to include a restart and switch to different inlist in order to emulate accretion spin-up partway through the MS.  We include a new stopping condition in run_star_extras based on the differential of hydrogen or helium abudance between core and surface. Try spin-up at different instants and see if you can still get CHE. Look at the diffusion coefficient plot.
+In this section we learn how to include a restart and switch to different inlist in order to emulate accretion spin-up partway through the MS.  We include a new stopping condition in run_star_extras based on the differential of hydrogen or helium abundance between core and surface. Try spin-up at different instants and see if you can still get CHE. Look at the diffusion coefficient plot.
 
 BONUS: try setting high initial rotation manually in a wide binary and play around with wind rotation (or Task 3?)
 
-(Part 2, after lunch)
+{{</details>}}
 
 ## Step 3: post-MS evolution
 
-Besides BH masses, BH spins also are a key quantity that is inprinted in GW signals and can help lift degeneracies between BH formation channels that, in pure terms of mass, populate the same range of the mass spectrum. As rapidly rotating stars, CHE stars are natural candidates for producing high-spin BHs, which would stand out for the current, low-spin-dominated, population of merging BBHs. In order to get a more accurate estimate of the BH spins produced by CHE stars, we will now take one of our models from the previous sessions, and run it up to helium depletion.
+Besides BH masses, BH spins also are a key quantity that is imprinted in GW signals and can help lift degeneracies between BH formation channels that, in pure terms of mass, populate the same range of the mass spectrum. As rapidly rotating stars, CHE stars are natural candidates for producing high-spin BHs, which would stand out for the current, low-spin-dominated, population of merging BBHs. In order to get a more accurate estimate of the BH spins produced by CHE stars, we will now take one of our models from the previous sessions, and run it up to helium depletion.
 
 Our starter model is not natively set-up to run that far ahead, so we will have to modify the stopping condition, and then restart the run from where it had previously stopped. We can do this by restarting from the last saved photo by calling `./re` without any arguments, but before we do that we must make three modifications.
 
@@ -216,9 +215,9 @@ Eventually, the core does ignite helium and stops shell burning. At this point t
 
 The angular momentum plot varies relatively little with the fixed y-axis in the pgstar plot. You can go ahead and run this python script in your work folder to recreate the plot. Make sure you have `numpy`, `matplotlib` and `mesa_reader` installed (`pip install numpy matplotlib mesa_reader`). Alternatively you can run it online in this Google Collab notebook. Look for the line `xxx` if you need to change the y-axis limits.
 
-The script will also produce a *jdot* over time plot, showing the behavior of different sources of angular momentum evolution. Can you identify the dominant one? With default settings, you should be seeing a smooth profile. This shape is charateristic of rigid-body rotation. That, however, does not mean that 
+The script will also produce a *jdot* over time plot, showing the behavior of different sources of angular momentum evolution. Can you identify the dominant one? With default settings, you should be seeing a smooth profile. This shape is characteristic of rigid-body rotation. That, however, does not mean that 
 
-Winds only remove angular momentum from the top layers of the star. In principle, this means that the stellar surface can spin-down while the core retains its original rotation, which would lead to a differentially rotating structure. That your models remain rigidly rotating means that there must be a *strong AM transport* acting between core and surface. Indeed, while multiple AM transport mechanisms are active in our model (identified by a non-zero `am_nu_D` factor), the main culprit is by far the Tayler-Spruit dynamo you met in the morning. It is set by the `D_ST_factor` and `am_nu_D_ST_factor` parameters in `inlist1`, with the first controlling the intencity of chemical mixing, and the second of AM transport. Go ahead and turn off the AM transport by setting `am_nu_D_ST_factor = 0`, then look at the results again.
+Winds only remove angular momentum from the top layers of the star. In principle, this means that the stellar surface can spin-down while the core retains its original rotation, which would lead to a differentially rotating structure. That your models remain rigidly rotating means that there must be a *strong AM transport* acting between core and surface. Indeed, while multiple AM transport mechanisms are active in our model (identified by a non-zero `am_nu_D` factor), the main culprit is by far the Tayler-Spruit dynamo you met in the morning. It is set by the `D_ST_factor` and `am_nu_D_ST_factor` parameters in `inlist1`, with the first controlling the intensity of chemical mixing, and the second of AM transport. Go ahead and turn off the AM transport by setting `am_nu_D_ST_factor = 0`, then look at the results again.
 
 | 📋 TASK X |
 | :---------|
@@ -235,7 +234,6 @@ The key here is conservation of AM and the mirror effect. Watch *when* the diffe
 {{</details>}}
 
 
-
 {{<details title="Bonus task: the effect of winds">}}
 
 run_star_extras, winds, rotation enhancement
@@ -244,13 +242,13 @@ run_star_extras, winds, rotation enhancement
 
 ## Step 4: Computing core spin at He depletion
 
-A massive star only spends about $\sim10^4\,\mathrm{yr}$ in C burning and later phases before core-collapse. At this point, CHE stars are WR stars with characteristic mass-loss rates of $\sim10^{-4}\,\mathrm{yr}$ or less, meaning no more than $1\,\mathrm{M}_\odot$ mass will be lost for the rest of its life. Consequently, relatively little further spin-down will occur, and we can therefore use our He depletion models to estimate the spins of later black holes.
+A massive star only spends about $\sim10^4\,\mathrm{yr}$ in C burning and later phases before core-collapse. At this point, CHE stars are WR stars with characteristic mass-loss rates of $\sim10^{-4}\,\mathrm{M}_\odot\,\mathrm{yr}^{-1}$ or less, meaning no more than $1\,\mathrm{M}_\odot$ mass will be lost for the rest of its life. Consequently, relatively little further spin-down will occur, and we can therefore use our He depletion models to estimate the spins of later black holes.
 
 Solving Einstein's equations for the general case of a black hole with mass $M$, angular momentum $J$ and electric charge $Q$ (this is called a Kerr-Newman geometry), yields the condition
 
 $$\frac{Q^2}{4\pi\epsilon_0} + \frac{c^2J^2}{GM^2}\leq GM^2$$
 
-for the presence of an event horizon around the singularity. Under the assumption of *cosmic censorship* --- that no so-called *naked singularities* can exist in Nature ---, this is a hard limit on the three numbers that fully define a black hole (this is the No Hair Theorem). For the case of an eletrically neutral black hole, this simplifies to
+for the presence of an event horizon around the singularity. Under the assumption of *cosmic censorship* --- that no so-called *naked singularities* can exist in Nature ---, this is a hard limit on the three numbers that fully define a black hole (this is the No Hair Theorem). For the case of an electrically neutral black hole, this simplifies to
 
 $$\chi:=\frac{cJ}{GM^2}\leq1,$$
 
@@ -353,7 +351,7 @@ We will do this by adding a new column to our history files named `chi_core`, wh
 
 If the infalling gas any non-zero angular momentum, it cannot fall towards the BH or PNS without a degree of horizontal motion. For a fixed specific angular momentum, the gas will fall into the orbit with equivalent angular momentum, and migrate inwards as it loses angular momentum through viscous dissipation or some external process (such as winds). Taking the speed of light as an upper limit, one can define the smallest (highest energy) at which the matter can orbit the central object; such that at any lower orbit the matter will be accreted. This is known as the *innermost stable circular orbit*, or ISCO, with corresponding angular momentum $J_\mathrm{ISCO}$. We can acquire a better picture of BH formation by checking the total angular momentum $J_\mathrm{sh}$ of each mass shell; any shell with $J_\mathrm{sh}<J_\mathrm{ISCO}$ will be accreted effectively immediately, while the rest must lose angular momentum before being accreted, with the natural consequence that all $J_\mathrm{sh}\geq J_\mathrm{ISCO}$ layers settle into an accretion disk where AM can be transported outwards while matter falls inwards.
 
-Without rerunning anything, we can use our existing He depletion profiles to check for how much of our star falls directly in to the proto-compact object, and how much initially settles into a disc. For this, you will the ISCO radius and angular momentum for a Kerr black hole with mass $M$ and spin $0\leq\chi\geq1$, given by
+Without re-running anything, we can use our existing He depletion profiles to check for how much of our star falls directly in to the proto-compact object, and how much initially settles into a disc. For this, you will need the ISCO radius and angular momentum for a Kerr black hole with mass $M$ and spin $0\leq\chi\leq1$, given by
 
 $$R_\mathrm{ISCO}(M,\chi) = \frac{GM}{c^2}\left\{3 + z_2 - [(3 - z_1)(3 + z_1 + 2z_2)]^{1/2}\right\},$$
 
@@ -444,8 +442,8 @@ For reducing the running time, we made the companion a point mass. You can, howe
 - [x] test TS on/off
 - [x] Fuller & Lu TS prescription?
 - [x] test different tide implementations - tested but too much for lab, TS dynamo dominates AM profile
-- [ ] prepare spin run_star_extras computation solution
-- [ ] run benchmark on a virtual budget laptop configuration with systemd-run
+- [x] prepare spin run_star_extras computation solution
+- [R] run benchmark on a virtual budget laptop configuration with systemd-run
 
 ## Setups
 
@@ -470,23 +468,23 @@ Times to reach TAMS unless stated otherwise
 ## Notes
 The main physical object of Lab 2 is rotation. With Lab 1 providing an introduction to the binary module and the role of accretion physics, and Lab 3 extending the physics introduced in Labs 1 and 2 to the whole landscape of BBH formation, Lab 2 should therefore focus on the role of rotation insofar as it most significantly affects BBH formation. Other interesting aspects of rotation that do not bear directly on BBH formation should be left for bonuses or potential evening session topics.
 
-This means that *sources* of rotation (with the exception of accretion spin-up, assuming it is included in Lab 1), are unlikely to fit in the Lab 2 timeslot this means that. Nevertheless, we can first try to explore a throughline for the discussion of rotation, before reducing it to the essentials.
+This means that *sources* of rotation (with the exception of accretion spin-up, assuming it is included in Lab 1), are unlikely to fit in the Lab 2 timeslot. Nevertheless, we can first try to explore a throughline for the discussion of rotation, before reducing it to the essentials.
 
 The most dramatic effects of rotation on massive star evolution come from chemical mixing, AM transport and rotationally-enhanced mass loss. Both AM transport and chemical mixing depend crucially on whether rotation is **rigid body** or **differential**. This can be **Topic 1: rigid body X differential rotation**.
 
-The natural question from Topic 1: what does it matter? Differential rotation allows for fundamnetally different modes of AM transport and chemical mixing than rigid body rotation. We have the emergence of **shear**, the **Tayler-Spruit dynamo**, **Eddington-Sweet circulation** (and Gratton-Opik, though MESA technically does not account for it because it is the advective/non-diffusive component of meridional mixing). **Convection** is also important as it imposes rigid body rotation.
+The natural question from Topic 1: what does it matter? Differential rotation allows for fundamentally different modes of AM transport and chemical mixing than rigid body rotation. We have the emergence of **shear**, the **Tayler-Spruit dynamo**, **Eddington-Sweet circulation** (and Gratton-Opik, though MESA technically does not account for it because it is the advective/non-diffusive component of meridional mixing). **Convection** is also important as it imposes rigid body rotation.
 
 Another natural question is: *what determines whether the star develops rigid body or differential rotation?* The question is a bit circular, because differential rotation allows the emergence of mechanisms like the TS dynamo that, if assumed to operate, suppress differential rotation. Therefore, the answer to the question depends on assumptions. The answer to the question has two components: *what is the spin-up mechanism* and *what AM transport is active*. Strong AM transport always tries to make the star rigidly rotating where it is present, regardless of the source of AM. Accretion spin-up only spins the surface up, and in the lack of efficient AM transport, it likely creates differential rotatoin (though this is dependent on what is assumed for the accreted angular momentum). 
 
 **Tides** likewise interact with the assumptions for AM transport. While Lab 3 means the focus is on massive stars, for which we generally only worry about **dynamical tides**, it bears introducing both those and **equilibrium tides**. Equilibrium tides are also useful because they will be the most familiar: these are the ones driven by tidal deformation of a star by its companion, the trailing bulge when spin and orbit are not synchronized, which creates internal friction, which dissipates AM into the structure of the star. This familiar picture is very useful to set before talking about dynamical tides because it highlights the role of **dissipation**. The tidal bulge is just a geometrical deformation, until all that potential energy has a mechanism through which it can be transmitted into stellar structure. A convective envelope has **turbulent viscosity** - convective plumes move on the scale of 1e10 cm, allowing AM to be moved across mass shells with large AM differentials; this is so efficient MESA effectively assumes convective regions are always rigidly rotating. A radiative envelope only has **radiative viscosity**, which operates on ~1 cm scales related to photon emission and reabsorption, transporting AM across a small region; and **molecular viscosity**, which relies on Coulomb interactions on even smaller ~1e-5 cm scales. Therefore, equilibrium tides are very inefficient on massive stars, not because they are not tidally deformed, but because there is no efficient mechanism for dissipation of that potential energy.
 
-The stable, stratified structure of radiative envelopes, however, does allow for the development of **g-modes**. Radiative zones, by definition, do not allow convection to develop because a cell that is pushed up, rises, the expands in the lower-density environment, cools down more quickly with radius than its surroundings ($\nabla_\mathrm{ad}<\nabla_\mathrm{rad}$) and sinks back down. Its retained kinetic energy then causes it to overshoot its initial position, heat up more quickly than the higer-density environment, and rise gain, oscillating in the local **Brunt-Väisäla frequency**. The cell moves material out of the way --- primarily in the horizontal direction --- and this propagation consists in a **gravity wave**. In a radiative zone, these gravity waves are bound to reach and be reflected by two boundaries: the convective zone boundary, which is opaque to gravity waves; and the stellar surface. This is a cavity, allowing only the establishment of standing waves, called the stars **g-modes**. g-modes typically have wavelengths smaller than the envelope scale ---- $10^7-10^9\,\mathrm{cm}$, compare $\mathrm{R}_\odot\sim10^{10}\,\mathrm{cm}$ --- allowing the development of significant temperature gradients along gravity waves, making them significantly **radiatively damped**. Dampening brings the wave out of phase with the companion, thereby making it into a forced, damped oscillation with a non-zero torque on the mass element being forced. The dampening deposits AM along the way, but because the fluid is nearly incompressible, and because the density gradient presents a barrier to pushing fluid up, the oscillating element displaces surrounding fluid azimuthally. The resulting out-of-phase azimuthal compression waves efficiently allow for a tidal torque in radiative envelopes as long as the forcing frequency ($2\left|\Omega_S-\Omega_L\right|$) is greater than that of the fundamental mode. 
+The stable, stratified structure of radiative envelopes, however, does allow for the development of **g-modes**. Radiative zones, by definition, do not allow convection to develop because a cell that is pushed up, rises, the expands in the lower-density environment, cools down more quickly with radius than its surroundings ($\nabla_\mathrm{ad}<\nabla_\mathrm{rad}$) and sinks back down. Its retained kinetic energy then causes it to overshoot its initial position, heat up more quickly than the higher-density environment, and rise again, oscillating in the local **Brunt-Väisälä frequency**. The cell moves material out of the way --- primarily in the horizontal direction --- and this propagation consists of a **gravity wave**. In a radiative zone, these gravity waves are bound to reach and be reflected by two boundaries: the convective zone boundary, which is opaque to gravity waves; and the stellar surface. This is a cavity, allowing only the establishment of standing waves, called the stars **g-modes**. g-modes typically have wavelengths smaller than the envelope scale ---- $10^7-10^9\,\mathrm{cm}$, compare $\mathrm{R}_\odot\sim10^{10}\,\mathrm{cm}$ --- allowing the development of significant temperature gradients along gravity waves, making them significantly **radiatively damped**. Damping brings the wave out of phase with the companion, thereby making it into a forced, damped oscillation with a non-zero torque on the mass element being forced. The dampening deposits AM along the way, but because the fluid is nearly incompressible, and because the density gradient presents a barrier to pushing fluid up, the oscillating element displaces surrounding fluid azimuthally. The resulting out-of-phase azimuthal compression waves efficiently allow for a tidal torque in radiative envelopes as long as the forcing frequency ($2\left|\Omega_S-\Omega_L\right|$) is greater than that of the fundamental mode. 
 
 AM transport is important because both models are, in principle, active simultaneously in the core and the envelope, and radiative damping's dependence on the temperature gradient further implies it does not drive rotation uniformly, particularly in a radiative envelope where opacity peaks develop, and where the very surface where the waves break. In the absence of efficient AM transpot beyond convection, both tides and accretion tend to produce differential rotation.
 
 Rotation and AM transport also directly connect to chemical mixing across radiative zones and through convective boundaries. Key for us are **(dynamical) shear**, acting within a differentially rotating radiative envelope and across the boundary with a convective core; and **Eddington-Sweet circulation**, acting across the radiative envelope. Strong shear generally disfavors ES circulation, meaning that the two modes of radiative envelope mixing are generally mutually exclusive in their most efficient instances. 
 
-The final key ingredient is the presence or absence of **magnetic fields**, which can efficiently drive AM transport through the development of **Tayler-Spruit instabilities** along differentially rotating interfaces, which thereafter drive the structure towards rigid body rotation, surpressing shear mixing and favoring ES circulation. 
+The final key ingredient is the presence or absence of **magnetic fields**, which can efficiently drive AM transport through the development of **Tayler-Spruit instabilities** along differentially rotating interfaces, which thereafter drive the structure towards rigid body rotation, suppressing shear mixing and favoring ES circulation. 
 
 
 - Birth rotation
