@@ -144,68 +144,221 @@ Before we start, we need to
 
 ## Step 1: CHE stars in the Main Sequence
 
-Our first task is simple: for a fixed initial mass, we will try to determine the shape of the CHE window on the initial orbital period axis. For this, each group will choose one of the masses below --- try to coordinate so that those with more powerful computers take the greater masses.
+We have seen that that the timescale of Eddington-Sweet circulation depends primarily on the mass (through the thermal timescale) and the rotation rate of our stars. Assuming that tidal forces are the source of that rotation, let's put our massive stars in a short-period binary like we did in Lab 1 and see what combinations of mass and orbital period produce CHE. 
 
-* Customize pgstar window to see 1D plots?
+To start, choose one of the following masses for your stars, which you will carry through to the end of the lab. More massive stars take longer to run, so pick based on how your computer performed in previous labs! 
 
-| 📋 TASK 2 |
-| :---------|
-| Choose an initial orbital period between A and B and set in `initial_period_in_days` in `inlist_project`, then run.  
-Watch the pgstar window closely, in particular the diffusion coefficient panel. Does your star go homogeneous?  
-What happens if the period is too short?
-What happens if the period is too long?|
+| $M_1/\mathrm{M}_\odot$ |
+| :--------------------- |
+| 40 |
+| 70 |
+| 100 |
+| 300 |
 
-| 📋 TASK 3 |
-| :---------|
-| Try to find two periods, one leading to CHE and the other not. Can you spot what precedes the loss of homogeneity from your pgstar plots?|
+You will first generate the ZAMS model for your binary. Go into `initial_model` and find the correct mass setting in `inlist_project`, then compile (`./mk`) and run (`./rn`). This run should be very brief. Note down the radius of your star at ZAMS from the terminal output, then copy the produced `zams.mod` to the `binary_template` folder.
 
-{{< details title="Hint: How to get CHE?" closed="true" >}}
-
-The period range for getting CHE with a 35 Msun star is very narrow. 0.95d is a reliable number, and anything above 1.0d will not go CHE, while anything lower will lead to a merger. As the masses go up, the window widens, with approximate ranges.
-
-{{< /details >}}
-
-{{<details title="BONUS: spin-up timing">}}
-
-In this section we learn how to include a restart and switch to different inlist in order to emulate accretion spin-up partway through the MS.  We include a new stopping condition in run_star_extras based on the differential of hydrogen or helium abundance between core and surface. Try spin-up at different instants and see if you can still get CHE. Look at the diffusion coefficient plot.
-
-BONUS: try setting high initial rotation manually in a wide binary and play around with wind rotation (or Task 3?)
-
+{{<details title="Solution" closed="true">}}
+```fortran
+&controls
+    initial_mass = ! your mass
+```
 {{</details>}}
+
+As we went over above, CHE stars in binaries are amenable to being treated as twins, and we will leverage that fact to cut our runtime in half by solving the primary's structure only, and telling MESA to treat the secondary as if it were identitical to the primary. Relative to simply solving the primary as a single star, running it in a binary with a twin keeps the effect of tides and accounts for both stars' mass-loss in computing the orbital evolution.
+
+> [!Note]
+> Treating the two stars as twins implies they have identical mass throuhgout, therefore there can be no net mass transfer between them, which is indeed how MESA models it. Is that reasonable for CHE stars?
+
+We will manually adapt the setup in `binary_model` to evolve our stars as twins. MESA already has a setting for this, which you will be able to find in the inlist defaults.
+
+The `inlist_star` file is already set up for a CHE star and to load `zams.mod` as a starting model. In `inlist_project`,
+1. Point the primary to `inlist_star`, and set the secondary to be evolved as a point mass of the same mass as the primary.
+{{<details title="Solution" closed="true">}}
+Add 
+```fortran
+&binary_job
+   inlist_names(1) = 'inlist_star' 
+   ! make the secondary a point mass
+   evolve_both_stars = .false.
+```
+and
+```fortran
+&binary_controls
+    m2 = ! same as your initial m1
+```
+{{</details>}}
+2. Tell MESA to set the stars as twins in the initial model.
+{{<details title="Solution" closed="true">}}
+Add
+```fortran
+&binary_job
+   change_initial_model_twins_flag = .true.
+   new_model_twins_flag = .true. 
+```
+{{</details>}}
+3. MESA has flags to ignore mass transfer inside a binary. Do you need to manually turn them on?
+{{<details title="Solution" closed="true">}}
+You can find those controls in `binary_job.defaults` as
+```fortran
+change_ignore_rlof_flag = .false.
+change_initial_ignore_rlof_flag = .false.
+new_ignore_rlof_flag = .false.
+```
+But if you trace through the calls to `new_model_twins_flag` with `grep -rin new_model_twins_flag` within `binary/private`, you will find that this flag gets passed within `binary/private/run_binary_support.f90` to a subroutine named `set_model_twins_flag`. This subroutine is defined in `binary/private/binary_utils.f90` as
+```fortran
+      subroutine set_model_twins_flag(binary_id, model_twins_flag, ierr)
+         integer, intent(in) :: binary_id
+         logical, intent(in) :: model_twins_flag
+         integer, intent(out) :: ierr
+
+         type (binary_info), pointer :: b
+
+         ierr = 0
+         call binary_ptr(binary_id, b, ierr)
+         if (ierr /= 0) return
+
+         b% model_twins_flag = model_twins_flag
+
+         ! also need to set ignore_rlog_flag to true
+         if (model_twins_flag) then
+            call set_ignore_rlof_flag(binary_id, .true., ierr)
+            if (ierr /= 0) return
+            call set_point_mass_i(binary_id, 2, ierr)
+         end if
+      end subroutine set_model_twins_flag
+```
+So we do not need to set the `ignore_rlof` flags manually.
+{{</details>}}
+
+Our last piece of setup is to choose an initial orbital period for our binaries. This is where the ZAMS radius of your star comes in --- it roughly sets the lower initial period separation as 
+
+$$\frac{P_{\min}}{\mathrm{d}}=\frac{0.07449}{\sqrt{M_1+M_2}}\left(\frac{R_1}{\mathrm{R}_\odot}\right)^{3/2}.$$
+
+Since you have already gotten a feeling for the scaling of tides with separation in Lab 1, you get a maximum limit for free: regardless of your chosen mass, CHE is always achievable somewhere below $3\,\mathrm{d}$. Within this period range, you will now find an initial $P$ that leads to CHE from the table below, which you will carry to the further parts of the lab. You can also try to find an inital $P$ that fails to go CHE due to being too low, and one that fails due to being too high.
+
+| $P_\mathrm{orb}/\mathrm{d}$ |
+| :-------------------------- |
+| 0.90 |
+| 0.95 |
+| 1.00 |
+| 1.10 |
+| 1.20 |
+| 1.30 |
+| 1.40 |
+| 1.60 |
+| 1.80 |
+| 2.00 |
+| 2.50 |
+| 3.00 |
+
+Now follow the instructions below,
+
+1. Recall the definition of $\tau_\mathrm{ES}$. How close to your choosen masses $P_{\min}$ do you think your $P_\mathrm{max}$ is? Do you expect $P_{\max}$ to vary much across the mass range?
+
+2. Choose an initial period in days and set it in `inlist_project`.
+
+{{<details title="Solution" closed="true">}}
+Nothing changes from Lab 1 here. Simply include
+```fortran
+&binary_controls
+    initial_period_in_days = ! your choosen period
+```
+{{</details>}}
+
+3. Watch the `pgplot` window, in particular the HR diagram and the diffusion coefficient plot. Is your star behaving differently from a non-rotating MS star in the HR diagram? What does each diffusion coefficient represent, and how do different mixing modes contribute to mixing from center to surface? Can you tell just from watching them whether your star is going homogeneous or not?  
+{{<details title="Solution" closed="true">}}
+If your star is going CHE, as we saw in the introduction, it should move blue-wards in the HR diagram (to the high temperatures, to the left) for almost the entire Main Sequence, indicating very little to no expansion. If it starts moving to the right, MESA will stop the run very soon due to it not going CHE. This is the effect of the lower electron scattering opacity of helium we mentioned before.
+
+In the diffusion panel, you should be able to find the convective core (dominated by $D_\mathrm{conv}$) and the overshooting layer above it ($D_\mathrm{ovr}$). Everything above it is the radiative envelope, which, if your star is going CHE, is dominated by the Eddington-Sweet circulation ($D_\mathrm{ES}$). The large scale picture is: the core is mixed by convection, the envelope by Eddington-Sweet circulation, and the two are connected by convective overshooting.
+
+If your star does not go CHE, you should be able to spot a narrow strip above the overshooting region where $D_\mathrm{ES}$ drops to zero before MESA even stops the run, chemically disconnecting core and envelope.
+{{</details>}}
+
+4. If your run is stopped before reaching the end of the Main Sequence, note the termination message. What was the reason? This should tell you whether you need to move the period up or down.
+
+{{<details title="Solution" closed="true">}}
+There are only a few termination messages you should be able to get in a stable run. If you see `terminated due to star not evolving homogeneously`, that means your star is not spinning rapidly enough and needs to be in a closer orbit. If you see `terminated due to L2 overflow`, it means your stars are so close they would have undergone an episode of likely unstable mass transfer and merged. If you see `terminated due to stellar merger`, it means they were even closer and physically touching. In both the two latter cases, this means you need a wider orbit.
+{{</details>}}
+
+> [!Warning]
+> Regardless of mass, a succesful CHE run is not supposed to take more than 8 minutes, potentially no more than 3 min for the low masses. If you picked one of the higher masses and find yourself waiting for longer than this, try a lower mass. 
+
+{{<details title="Solution" closed="true">}}
+If you are having trouble, some reliable settings to get CHE are:
+| $M_1/\mathrm{M}_\odot$ | $P_\mathrm{orb}/\mathrm{d}$ |
+| :--------------------- | :-------------------------- |
+| 40 | 0.95 |
+| 70 | 1.20 |
+| 100 | 1.50 |
+| 300 | 1.80 |
+{{</details>}}
+
+Note that MESA still tracks the Roche lobe geometry even as the mass transfer rate is set to zero. This is what allows us to compute stellar structure only once while still self-consistently tracking the occurence of Roche lobe or L2 overflow. 
+
+> [!Bonus]
+> If you are following the mass-loss rate plot, specially if you picked a greater mass, you might notice it suddenly starts to increase, and the uptick in mass-loss causes your star to dip down in luminosity sharply. Unfortunately, we will not have time in our lab to go in-depth into stellar winds, but this behavior is a direct consequence of the inclusion of Main Sequence optically-thick winds in our setup, which are normally characteristic of very massive stars ($\gtrsim100\,\mathrm{M}_\odot$), but can get triggered at lower masses for CHE. As a bonus exercise, you may try later to figure out why that is so by looking at the `wyoming_wind` subroutine implemented in the `run_star_extras`.
+
+By the end of this step, you should have an initial mass, orbital period pair that leads to CHE across the Main Sequence, which you will keep for the next exercises.
+
+> [!Bonus]
+> If you already found the M,P pair you will from the tabulated values, and still have time, you can also try to map out exactly the $P_{\min}-P_{\max}$ range for your mass! For some masses you might have to go above the tabulated periods. Remember that for the next steps you should use a pair from the tabulated values only.
+
+---
 
 ## Step 2: CHE stars post-Main Sequence
 
 Besides BH masses, BH spins also are a key quantity that is imprinted in GW signals and can help lift degeneracies between BH formation channels that, in pure terms of mass, populate the same range of the mass spectrum. As rapidly rotating stars, CHE stars are natural candidates for producing high-spin BHs, which would stand out for the current, low-spin-dominated, population of merging BBHs. In order to get a more accurate estimate of the BH spins produced by CHE stars, we will now take one of our models from the previous sessions, and run it up to helium depletion.
 
-Our starter model is not natively set-up to run that far ahead, so we will have to modify the stopping condition, and then restart the run from where it had previously stopped. We can do this by restarting from the last saved photo by calling `./re` without any arguments, but before we do that we must make three modifications.
+Fortunately, MESA makes it very easy for us to keep going from where stopped in the previous step, instead of having to start over. It is always possible to simply restart the run from the last photo by calling `./re`, which will them continue the run from a precise snapshot of where it had previously stopped, loading up any changes we make to the inlists and extra files. We will restart the run from the end of the MS and let it continue until helium is depleted in the core, alongside some other adjustments.
 
-| 📋 TASK X |
-| :---------|
-| Find the hydrogen depletion stopping condition in the `run_binary_extras` and change it to helium depletion. |
+1. If we change nothing, this will of course let the run stop exactly where it had already stopped before.
 
-For studying the spin evolution of the star, it will be more convenient to watch the Kippenhahn diagram for radius rather than mass, so we will also change the `pgstar` settings.
+{{<details title="Solution" closed="true">}}
+In `inlist_star`, change
+```fortran
+xa_central_lower_limit_species(1) = 'h1'
+xa_central_lower_limit(1) = 1d-5
+```
+to
+```fortran
+xa_central_lower_limit_species(1) = 'h1'
+xa_central_lower_limit(1) = 1d-5
+```
+{{</details>}}
 
-| 📋 TASK X |
-| :---------|
-| Change the `&pgstar` settings in `inlist_project` so that the Kippenhahn diagram shows radius instead of mass on the y-axis. |
+2. For studying the spin evolution of the star, it will be more convenient to watch the Kippenhahn diagram for radius rather than mass, so change also the `pgstar` settins so that the y axis shows radius.
 
-Finally, we can directly watch the evolution of the specific angular momentum profile of the star in the `&pgstar` window. For that, you will wand to change the middle panel to include the dynamo plot.
+{{<details title="Solution" closed="true">}}
+In `inlist_star`, find the block within `&pgstar` under `Grid2_plot_name(5) = 'Kipp'`, and add
+```fortran
+Kipp_xaxis_name = "radius"
+```
+{{</details>}}
 
-| 📋 TASK X |
-| :---------|
-| Add a `j_rot` over `mass` plot to the middle column in `&pgstar`. |
+3. Add the "dynamo" plot to the middle column so that we can see the evolution of the internal angular momentum profile.
 
-With that done, you can go ahead and run the CHE model with the longest initial period from the previous steps up to He depletion. 
 
-| 📋 TASK X |
-| :---------|
-| Restart your run with `./re`.
-| Closely watch the HR diagram, pay attention to the radius.
-| Closely watch your modified Kippenhahn diagram. |
+{{<details title="Solution" closed="true">}}
+Where we had the "abundance-power-mixing" plot we should now have
+```fortran
+Grid2_plot_name(3) = 'Profile_Panels4'
+Profile_Panels4_title = 'Abundance-Power-Mixing-Dynamo'
+Profile_Panels4_num_panels = 4
+Profile_Panels4_yaxis_name(1) = 'Abundance'
+Profile_Panels4_yaxis_name(2) = 'Power'
+Profile_Panels4_yaxis_name(3) = 'Mixing'
+Profile_Panels4_yaxis_name(4) = 'Dynamo'
+```
+{{</details>}}
 
-As you watch your star evolve post-MS, you will notice a very brief phase of expansion by a factor of a few, seen both in the HR diagram and the Kippenhahn diagram. Do you have an idea for why that is happening? And what evolutionary phases does it correspond to?
 
-{{<details title="Hint: post-MS expansion">}}
+4. Restart your run with `./re`. Closely watch the HR diagram, the Kippenhahn diagram, the angular momentum plot and the tidal synchronization timescale. How does your star behave? Would it be accurate to say that it never expands at all? Take the time to compare your results to neighbors running different masses, both during and after the MS. Do their tracks look very different from yours?
+
+
+
+{{<details title="Solution">}}
+
+As you watch your star evolve post-MS, for the lower masses you will notice a very brief phase of expansion by a factor of a few, seen both in the HR diagram and the Kippenhahn diagram. Do you have an idea for why that is happening? And what evolutionary phases does it correspond to?
 
 The Kippenhahn diagram reveals the connection between the external behavior and the internal dynamics clearly. There is an initial phase of contraction of the whole star, once it loses support from core hydrogen burning, until a layer around the convective core becomes hot and dense enough to ignite hydrogen - this is the hydrogen shell burning phase. We then see in the Kippenhahn diagram how, once shell burning is on, the core, which still has no source of support, continues to contract, but the envelope now responds to core contraction by expanding. This is the so-called "mirror effect" of shell burning, which you might have already met in a stellar structure class.
 
@@ -213,49 +366,98 @@ Eventually, the core does ignite helium and stops shell burning. At this point t
 
 {{</details>}}
 
-The angular momentum plot varies relatively little with the fixed y-axis in the pgstar plot. You can go ahead and run this python script in your work folder to recreate the plot. Make sure you have `numpy`, `matplotlib` and `mesa_reader` installed (`pip install numpy matplotlib mesa_reader`). Alternatively you can run it online in this Google Collab notebook. Look for the line `xxx` if you need to change the y-axis limits.
+Has the angular momentum profile of your star changed at all by the end of the run? Comparing with your neighbors, you might find that the answer depends quite a bit on your mass. The initial shape of the profile is characteristic of rigidly-rotating bodies. Does your star retain that shape, meaning all layers are rotating with the same angular velocity, or did it develop *differential rotation*? 
+{{<details title="Solution" closed="true">}}
+If you compare, you should see that only more massive stars develop differential rotation. This is because the driver of differential rotation is wind mass-loss, which only spins down the surface. More massive stars have higher mass-loss rates, and therefore are able to develop differential rotation.
 
-The script will also produce a *jdot* over time plot, showing the behavior of different sources of angular momentum evolution. Can you identify the dominant one? With default settings, you should be seeing a smooth profile. This shape is characteristic of rigid-body rotation. That, however, does not mean that 
-
-Winds only remove angular momentum from the top layers of the star. In principle, this means that the stellar surface can spin-down while the core retains its original rotation, which would lead to a differentially rotating structure. That your models remain rigidly rotating means that there must be a *strong AM transport* acting between core and surface. Indeed, while multiple AM transport mechanisms are active in our model (identified by a non-zero `am_nu_D` factor), the main culprit is by far the Tayler-Spruit dynamo you met in the morning. It is set by the `D_ST_factor` and `am_nu_D_ST_factor` parameters in `inlist1`, with the first controlling the intensity of chemical mixing, and the second of AM transport. Go ahead and turn off the AM transport by setting `am_nu_D_ST_factor = 0`, then look at the results again.
-
-| 📋 TASK X |
-| :---------|
-| Under `&controls` in `inlist1`, turn off the Tayler-Spruit dynamo by setting `am_nu_D_ST_factor = 0`.
-| Restart you run from the `H_depl.mod` file again and watch the `jrot` plot. 
-| Once your run is complete, call the python script again and compare the figures. |
-
-You should now produce non-smooth angular momentum profile by He depletion, which signifies that different layers of the star are spinning at different rates. The source of that differential rotation is in the exact behavior we were analyzing before. Can you build an explanation for it.
-
-{{<details title="Hint: differential AM structure">}}
-
-The key here is conservation of AM and the mirror effect. Watch *when* the differential structures emerges, compared to your previous results.
-
+You should see that the tidal synchronization is growing by orders of magnitude while the mass loss rate is continuing to rise. The xxx column in the star details will tell you whether your star's spin period is shorter or longer than the orbital period, but at any rate the synchronization timescale becomes so long that the wind mass-loss becomes the dominant source of torque, and they always spin the star down.
 {{</details>}}
 
+The development of differential rotation is limited by any form of angular momentum transport inside the star, which will try to redistribute angular momentum away from areas spinning more rapidly to those spinning more slowly. By default, we have worked since the beginning with the *Tayler-Spruit dynamo*, which for a wide range of masses is enough to keep the star differentially rotating to the end of helium burning.
 
-{{<details title="Bonus task: the effect of winds">}}
-
-run_star_extras, winds, rotation enhancement
-
-{{</details>}}
+More crucially for black holes, wind mass-loss only spins down the surface of the star, but not the core, which will eventually be the seed for black hole formation. Post-Main Sequence, the core is already spinning more rapidly than it was at the end of the Main Sequence due to conservation of AM and its post-MS contraction, and therefore it needs to rely on wind mass loss to spin-down. This will only be effective if AM is being efficiently transported from core to surface, which will be the topic of the last part of this lab.
 
 ## Step 3: Computing core spin at He depletion
 
-A massive star only spends about $\sim10^4\,\mathrm{yr}$ in C burning and later phases before core-collapse. At this point, CHE stars are WR stars with characteristic mass-loss rates of $\sim10^{-4}\,\mathrm{M}_\odot\,\mathrm{yr}^{-1}$ or less, meaning no more than $1\,\mathrm{M}_\odot$ mass will be lost for the rest of its life. Consequently, relatively little further spin-down will occur, and we can therefore use our He depletion models to estimate the spins of later black holes.
+In this last part, we will use the mass and spin of our CHE stars at the end of helium burning --- by which point they are all naked He cores --- to estimate the produced BH masses and spins under different prescriptions for angular momentum transport. The black hole dimensionless spin parameter, $\chi$ (sometimes $a$), is defined as 
 
-Solving Einstein's equations for the general case of a black hole with mass $M$, angular momentum $J$ and electric charge $Q$ (this is called a Kerr-Newman geometry), yields the condition
+$$\chi:=\frac{cJ}{GM^2},$$
 
-$$\frac{Q^2}{4\pi\epsilon_0} + \frac{c^2J^2}{GM^2}\leq GM^2$$
+and takes on values between $0$ and $1$. Our first task will be to implement a new history column through `run_star_extras` named `chi_core` that will track this parameter for the helium core. While our CHE stars are already all He core (such that the core mass and spin are simply the total mass and spin), explicitly looking for the He core boundary will allow the same column to be used for stars with a hydrogen envelope later.
 
-for the presence of an event horizon around the singularity. Under the assumption of *cosmic censorship* --- that no so-called *naked singularities* can exist in Nature ---, this is a hard limit on the three numbers that fully define a black hole (this is the No Hair Theorem). For the case of an electrically neutral black hole, this simplifies to
+{{<details title="Why $0<\chi<1$?" closed="true">}}
+
+The motivation for comes from solving Einstein's equations for the general case of a black hole with mass $M$, angular momentum $J$ and electric charge $Q$ (this is called a Kerr-Newman solution). Demanding that the solution include an event horizon around the singularity yields the condition
+
+$$\frac{Q^2}{4\pi\epsilon_0} + \frac{c^2J^2}{GM^2}\leq GM^2.$$
+
+The hypothesis that Nature does not produce so-called *naked singularities* is called the Cosmic Censorship hypothesis and is tacitly assumed everywhere when $\chi<1$ is imposed. This is a hard constraint on the three numbers that fully define a black hole (that the three numbers $M$, $J$, $Q$ suffice is called the No Hair Theorem). Further defining,
 
 $$\chi:=\frac{cJ}{GM^2}\leq1,$$
 
-where we define the black hole spin parameter, $\chi$, which you might be familiar with. Our objective in this step will be computing the spin parameter for our stellar cores, under the assumption that this will be conserved during black hole formation. We will later reconsider the feasibility of this assumption.
+also encodes the assumption that the BH is electrically neutral, which follows reasonably from stellar evolution.
+{{</details>}}
 
-We will do this by adding a new column to our history files named `chi_core`, which will hold the value of $\chi$ computed with the He core mass and total angular momentum. For post-MS CHE stars, which are already exposed He cores themselves, these are merely the total mass and angular momentum. Including an explicit logic for looking for the core boundary, however, will allow us to later use the same code to compute core spins for stars that retain their H envelope.
+For implementing a new column in `run_star_extras`, we will rely on a few quantities that are already internally computed in mesa and available through a `star_info` object, instantiated as `s`. Scalar quantities stored in `s` can be recovered as `s% property_name`, while arrays can be recovered as `s% array_name(index or indices)`. The available properties are listed in `star_data\public`. 
 
+> [!Note]
+> MESA arrays run from the surface to the center. The index of the innermost "shell" corresponds to the total number of zones into which the star is divided, which is stored as `s% nz`. Fortran arrays can be sliced as `array(index1:index2)`. 
+
+For calculating physical quantities, MESA already includes a large collection of physical constants in CGS in the `const_def` library. This library is already imported by default in `run_star_extras` and its constants, which you can find in `const/public/` can be used directly. 
+
+Make a copy of your folder and work there for this step, so we don't lose the previous results.
+
+1. Let's first make sure we understand how to get properties at the He core boundary. MESA already finds and stores information about the boundary for us, so to start we just want to note down how to get the numbers we need to compute $\chi$. Browse through `star_data/public` to find them. 
+{{<details title="Hint" closed="true">}}
+Try running `grep -rin he_core` inside `star_data/public`.
+{{</details>}}
+{{<details title="Solution" closed="true">}}
+We find in `star_data/public/star_data_step_work.inc` the list of available quantities computed by MESA at the He core boundary,
+```fortran
+! abundance boundaries
+
+real(dp) :: he_core_mass ! baryonic (Msun)
+real(dp) :: he_core_radius ! Rsun
+real(dp) :: he_core_lgT
+real(dp) :: he_core_lgRho
+real(dp) :: he_core_L ! Lsun
+real(dp) :: he_core_v
+real(dp) :: he_core_omega ! (s^-1)
+real(dp) :: he_core_omega_div_omega_crit
+integer :: he_core_k ! boundary is in this cell
+```
+While the mass is there, we are missing angular momentum. We have, however, the index at the core boundary, meaning we could compute it if we had the angular momentum profile.
+{{</details>}}
+2. While the He core mass is already available, we will need to compute the He core total angular momentum ourselves by integrating the *specific* angular momentum from the center to the He core boundary,
+$$J_\mathrm{He} = \int_0^{M_\mathrm{He}}j_\mathrm{rot}\,\mathrm{d}m.$$
+Look for the necessary arrays again in `star_data/public`.
+{{<details title="Hint" closed="true">}}
+Try running `grep -rin "angular momentum"` inside `star_data/public`.
+{{</details>}}
+{{<details title="Solution" closed="true">}}
+The specific angular momentum array is defined in `star_data/public/star_data_step_input.inc`,
+```fortran
+! rotation
+real(dp), pointer, dimension(:) :: j_rot ! (nz)
+! j_rot(k) is specific angular momentum at outer edge of cell k; = i_rot*omega
+```
+While the $\mathrm{d}m$ array --- here, the mass per shell --- is in `star_data/public/star_data_work_input.inc`
+```fortran
+real(dp), pointer :: dm(:)
+! dm(k) is baryonic mass of cell k
+! dm(k) = s% dq(k)*s% xmstar
+```
+{{</details>}}
+
+3. Knowing which variables to call on, add the `chi_core` column through `run_star_extras.f90`. Remember to look for constants in `const/public` if you need them.
+{{<details title="Hint 1: constants" closed="true">}}
+You will use `clight` and `standard_cgrav` for constants. Remember that the constants, specific angular momentum and masses are already in CGS! 
+{{</details>}}
+{{<details title="Hint 2: integration" close="true">}}
+Since MESA discretizes stellar structure, your integral will be a sum over the product of the `j_rot` and `dm` arrays. Element-wise array products are implemented in `math_lib` with `dot_product`, and array slices can be taken as `array(i1:i2)`. 
+{{</details>}}
+{{<details title="Solution" closed="true">}}
+You must first tell MESA to expect one more extra column that it already has.
 ```fortran
       integer function how_many_extra_history_columns(id)
          integer, intent(in) :: id
@@ -267,14 +469,14 @@ We will do this by adding a new column to our history files named `chi_core`, wh
          how_many_extra_history_columns = 2
       end function how_many_extra_history_columns
 ```
-
+Then you can name that column and add the computed spin value. Your final implementation should look approximately like this.
 ```fortran
       subroutine data_for_extra_history_columns(id, n, names, vals, ierr)
          integer, intent(in) :: id, n
          character (len=maxlen_history_column_name) :: names(n)
          real(dp) :: vals(n)
          integer, intent(out) :: ierr
-         real(dp) :: dt, spin, J_he_core ! NEWS
+         real(dp) :: dt, spin, J_he_core ! NEW
          type (star_info), pointer :: s
          ierr = 0
          call star_ptr(id, s, ierr)
@@ -298,14 +500,49 @@ We will do this by adding a new column to our history files named `chi_core`, wh
          else
             J_he_core = dot_product(s% j_rot(s% he_core_k : s% nz), &                                                                                              
                                     s% dm(s% he_core_k : s% nz))
-            spin_he_core = clight * J_he_core / (standard_cgrav * s% he_core_mass * s% he_core_mass)
+            chi_he_core = clight * J_he_core / (standard_cgrav * s% he_core_mass * s% he_core_mass)
          end if
 
-         names(2) = 'spin_he_core'
-         vals(2) = spin_he_core
+         names(2) = 'chi_he_core'
+         vals(2) = chi_he_core
 
       end subroutine data_for_extra_history_columns
 ```
+{{</details>}}
+
+Once you have included your new column, go ahead and recompile MESA by running `./mk` in your work folder. Remember you have to do this everytime you change any files inside `src/`. If you run into errors while compiling and are not sure what you did wrong, don't hesitate to ask for help!
+
+For the last MESA run of this lab, we would like to test the effect on the final spins of different AM transport mechanisms. We will do this by changing the prescription, adding our new `chi_he_core` column to the star details box in `pgplot`, and running a small crowd-sourced exercise at the end of the lab. For the TS dynamo, we can turn it off or apply a flat intensity modifier through the `am_nu_TS_factor` control in `inlist_star`. After opening your `run_star_extras`, you might have noticed the following line 
+
+```fortran
+s% other_am_mixing => TSF_Fuller_Lu22
+```
+
+The `TSF_Fuller_Lu22` AM transport prescription, by Fuller & Lu (2022), is an alternative to the traditional Tayler-Spruit dynamo, which still relies on the Tayler magnetohydrodynamic instability but puts forward a different dynamo scenario from that of Spruit (2002). Here, you do not need to worry about the underlying physics, but you should know that the Fuller & Lu prescription induces significicantly stronger AM transport than the TS dynamo. To turn it on, we must modfy `inlist_star` so that
+
+```fortran
+&controls
+am_nu_ST_factor = 0
+use_other_am_mixing = .true.
+```
+
+Note that pointing the `other_am_mixing` hook is necessary in `run_star_extras` for `use_other_am_mixing` to have an effect. 
+
+Regardless of your stellar mass, you can now choose one of four AM transport alternatives to implement (or keep). Again, try to coordinate so that you and your neighbors pick different ones. All variations except No TS should take roughly the same amount of time, for a given mass, but even No TS should take at most an extra minute to run.
+
+| AM transport | Settings |
+| :----------- | :------- |
+| No TS | `am_nu_ST_factor=0`, `other_am_mixing=.false.` |
+| 0.1x TS | `am_nu_ST_factor=0.1d0`, `other_am_mixing=.false.` |
+| 1x TS | `am_nu_ST_factor=1.0d0`, `other_am_mixing=.false.` |
+| FullerLu | `am_nu_ST_factor=0`, `other_am_mixing=.true.` |
+
+Because we are changing fundamental physics, this time we will have to restart the entire run from ZAMS, which you can do by simply calling `./rn`. Expect that the run will take at least 10 minutes, which you can use to read ahead on the final crowd-sourcing exercise, or discuss your results with your colleagues.
+
+> [!Warning]
+> The entire run should still take 10 to 15 minutes, most of it spend in the Main Sequence. If you notice your run is past 10 minutes and your star still has not reached hydrogen depletion (check the center_h1), ask for someone to have a look. For the next step you can always use the final profile from step 2, which corresponds to the 1x TS model.
+
+Once your run is concluded, please upload the last profile to **THIS** Google Drive folder, and have a look at the final `chi_he_core` in your pgplot window. What is going on?!
 
 {{<details title="Bonus: evaluate disk formation">}}
 
