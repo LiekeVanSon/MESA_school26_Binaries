@@ -7,7 +7,7 @@ toc: true
 
 # Lab 3: Stable relationships
 
-## Overview
+## Introduction
 
 In this last minilab3 we will pick up on the system you evolved in minilab1 and follow its further evolution into a double black hole binary. Remember that at the end of your minilab1 you had a system with the properties listed in the below [Table 1](#table-binary).
 
@@ -26,7 +26,7 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
   <tr>
     <td>Ω / Ωcrit</td>
     <td>0.02</td>
-    <td>0.1</td>
+    <td>0.15</td>
   </tr>
   <tr>
     <td>Orbital Period</td>
@@ -57,35 +57,240 @@ This system has a rapidly rotating (spun-up) secondary that has accreted a lot o
 
 ## 1. Stable mass transfer
 
-Let's start from the standard work directory from ```$MESA_DIR```:
-
-<!-- <pre style="background:#0b0f14;color:#d6deeb;padding:1rem;border-radius:6px;overflow-x:auto;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;">
-$ cp -r $MESA_DIR/binary/work template
-$ cd template
-</pre> -->
-
-<div style="display:flex;justify-content:center;">
-
-<div style="
-  background:none !important;
-  color:#d6deeb;
-  padding:1rem;
-  overflow-x:auto;
-  width:100%;
-  max-width:1200px;
-  border-radius:0 !important;
-  box-shadow:none !important;
-">
+Let's start by copying the standard work directory from ```$MESA_DIR``` to your preferred local folder:
 
 ```bash
 cp -r $MESA_DIR/binary/work stable_MT
 cd stable_MT
 ```
-</div> </div>
-Inspect the inlists:
+
+Inspect your ```inlist_project``` and pay attention to the following two controls:
+
+- **`evolve_both_stars`** When false, MESA will model just one star, and keep the other as a point mass, while solving for the full orbital evolution of the binary. This is convenient for binaries with compact objects, like black holes (BH). You can find more info in here: `$MESA_DIR/binary/defaults/binary_job.defaults`
+
+- **`limit_retention_by_mdot_edd`** When true, the accretion rate of material onto the point-mass companion will be capped to a physical limit, called "Eddington limit". This is because the infall of hot stellar material onto a compact object creates radiation pressure that may halt the accretion process. In this case, the excess transferred mass is ejected from the binary with the specific angular momentum of the point mass. You can find more info in here: `$MESA_DIR/binary/defaults/binary_controls.defaults`
+
+As you can see, our simulation is already set up to model one of the components as a point mass with Eddington limited accretion. Ideal starting point for us to model a binary with a BH.
+
+### Building the setup
+
+Now we will perform some adjustments to the template. A significant number of these are meant to make the simulation faster in order to be efficiently computed in the duration of this lab.
+
+#### Modify `history_columns.list` 
+Grab the `history_columns.list` file from `$MESA_DIR/star/defaults` and copy it into your work folder:
+
+```bash
+cp -r $MESA_DIR/star/defaults/history_columns.list .
+```
+
+We will add an option to this file to visualize the quantities in the Kippenhahn diagram in the `pgstar` window. Search through this file for the string `mixing_regions`. Add below:
+
+```fortran
+mixing_regions 10
+
+```
+
+#### Modify `binary_controls` in `inlist_project`
+
+By default MESA also includes the effect of magnetic braking for angular momentum loss. This implementation is meant for late type stars and should be removed when working with massive binaries. Additionally, by default MESA reduces the growth of the BH mass to account for the rest-mass energy radiated away during accretion, determined by a radiative efficiency parameter. For simplicity, in this lab we will switch this control off. For these purposes, you can include:
+
+```fortran
+! be 100% sure magnetic braking is always off
+do_jdot_mb = .false.
+! don't reduce the BH accretion efficiency
+use_radiation_corrected_transfer_rate = .false.
+```
+
+To run the simulation faster we will relax multiple timestepping controls of the binary module by including:
+
+```fortran
+! relax timestep controls
+fm = 0.1d0
+fa = 0.02d0
+fa_hard = 0.04d0
+fr = 0.5d0
+fj = 0.01d0
+fj_hard = 0.02d0
+```
+The exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/binary/defaults/binary_controls.defaults`. Contrary to the `star` module, there is not a single `time_delta_coeff` control to easily scale all timesteps, so each of these controls relax the solver conditions based on the binary properties (orbital separation, Roche Lobe radius, ecc.).
+
+Finally, let's add some options for the output of our simulation:
+```fortran
+! output preferences
+photo_interval = 50
+history_interval = 1
+```
+
+#### Modify `pgstar` in `inlist1`
+
+Playing with `pgstar` can be very entertaining, but for this lab we will use a pre-made window. You can copy all this content and replace the default entirely:
+
+{{< details title="Nice `pgstar` window" closed="true" >}}
+
+```fortran
+&pgstar
+
+   pgstar_interval = 1
+
+   pgstar_age_disp = 2.5
+   pgstar_model_disp = 2.5
+
+   !### scale for axis labels
+   pgstar_xaxis_label_scale = 1.3
+   pgstar_left_yaxis_label_scale = 1.3
+   pgstar_right_yaxis_label_scale = 1.3
+
+   Grid2_win_flag = .true.
+
+   Grid2_win_width = 15
+   Grid2_win_aspect_ratio = 0.65 ! aspect_ratio = height/width
+
+   Grid2_plot_name(4) = 'Mixing'
+
+   Grid2_num_cols = 7 ! divide plotting region into this many equal width cols
+   Grid2_num_rows = 8 ! divide plotting region into this many equal height rows
+   Grid2_num_plots = 6 ! <= 10
+
+   Grid2_plot_name(1) = 'TRho_Profile'
+   Grid2_plot_row(1) = 1 ! number from 1 at top
+   Grid2_plot_rowspan(1) = 3 ! plot spans this number of rows
+   Grid2_plot_col(1) =  1 ! number from 1 at left
+   Grid2_plot_colspan(1) = 2 ! plot spans this number of columns 
+   Grid2_plot_pad_left(1) = -0.05 ! fraction of full window width for padding on left
+   Grid2_plot_pad_right(1) = 0.01 ! fraction of full window width for padding on right
+   Grid2_plot_pad_top(1) = 0.00 ! fraction of full window height for padding at top
+   Grid2_plot_pad_bot(1) = 0.05 ! fraction of full window height for padding at bottom
+   Grid2_txt_scale_factor(1) = 0.65 ! multiply txt_scale for subplot by this
+
+
+   Grid2_plot_name(5) = 'Kipp'
+   Grid2_plot_row(5) = 4 ! number from 1 at top
+   Grid2_plot_rowspan(5) = 3 ! plot spans this number of rows
+   Grid2_plot_col(5) =  1 ! number from 1 at left
+   Grid2_plot_colspan(5) = 2 ! plot spans this number of columns 
+   Grid2_plot_pad_left(5) = -0.05 ! fraction of full window width for padding on left
+   Grid2_plot_pad_right(5) = 0.01 ! fraction of full window width for padding on right
+   Grid2_plot_pad_top(5) = 0.03 ! fraction of full window height for padding at top
+   Grid2_plot_pad_bot(5) = 0.0 ! fraction of full window height for padding at bottom
+   Grid2_txt_scale_factor(5) = 0.65 ! multiply txt_scale for subplot by this
+   Kipp_title = ''
+   Kipp_show_mass_boundaries = .true.
+
+   Grid2_plot_name(6) = 'HR'
+   HR_title = ''
+   Grid2_plot_row(6) = 7 ! number from 1 at top
+   Grid2_plot_rowspan(6) = 2 ! plot spans this number of rows
+   Grid2_plot_col(6) =  6 ! number from 1 at left
+   Grid2_plot_colspan(6) = 2 ! plot spans this number of columns 
+
+   Grid2_plot_pad_left(6) = 0.05 ! fraction of full window width for padding on left
+   Grid2_plot_pad_right(6) = -0.01 ! fraction of full window width for padding on right
+   Grid2_plot_pad_top(6) = 0.0 ! fraction of full window height for padding at top
+   Grid2_plot_pad_bot(6) = 0.0 ! fraction of full window height for padding at bottom
+   Grid2_txt_scale_factor(6) = 0.65 ! multiply txt_scale for subplot by this
+
+   History_Panels1_title = ''      
+   History_Panels1_num_panels = 3
+
+   History_Panels1_xaxis_name='model_number'
+   History_Panels1_max_width = -1 ! only used if > 0.  causes xmin to move with xmax.
+
+   History_Panels1_yaxis_name(1) = 'period_days' 
+   History_Panels1_other_yaxis_name(1) = ''
+   History_Panels1_yaxis_log(1) = .true.
+   History_Panels1_yaxis_reversed(1) = .false.
+   History_Panels1_ymin(1) = -101d0 ! only used if /= -101d0
+   History_Panels1_ymax(1) = -101d0 ! only used if /= -101d0        
+   !History_Panels1_dymin(1) = 0.1 
+
+   History_Panels1_yaxis_name(2) = 'lg_mtransfer_rate' !
+   History_Panels1_yaxis_reversed(2) = .false.
+   History_Panels1_ymin(2) = -8d0 ! only used if /= -101d0
+   History_Panels1_ymax(2) = -1d0 ! only used if /= -101d0        
+   History_Panels1_dymin(2) = 1 
+
+   History_Panels1_other_yaxis_name(2) = 'log_abs_mdot' 
+   History_Panels1_other_yaxis_reversed(2) = .false.
+   History_Panels1_other_ymin(2) = -8d0 ! only used if /= -101d0
+   History_Panels1_other_ymax(2) = -1d0 ! only used if /= -101d0        
+   History_Panels1_other_dymin(2) = 1 
+
+   History_Panels1_yaxis_name(3) = 'rl_relative_overflow_1'
+   History_Panels1_other_yaxis_name(3) = ''
+   History_Panels1_yaxis_reversed(3) = .false.
+
+   Grid2_plot_name(2) = 'Text_Summary1'
+   Grid2_plot_row(2) = 7 ! number from 1 at top
+   Grid2_plot_rowspan(2) = 2 ! plot spans this number of rows
+   Grid2_plot_col(2) = 1 ! number from 1 at left
+   Grid2_plot_colspan(2) = 4 ! plot spans this number of columns 
+   Grid2_plot_pad_left(2) = -0.08 ! fraction of full window width for padding on left
+   Grid2_plot_pad_right(2) = -0.10 ! fraction of full window width for padding on right
+   Grid2_plot_pad_top(2) = 0.08 ! fraction of full window height for padding at top
+   Grid2_plot_pad_bot(2) = -0.04 ! fraction of full window height for padding at bottom
+   Grid2_txt_scale_factor(2) = 0.19 ! multiply txt_scale for subplot by this
+   Text_Summary1_name(7,1) = 'period_days'
+   Text_Summary1_name(8,1) = 'star_2_mass'
+
+   ! ADD THE TDELAY TO THE TEXT SUMMARY
+   Text_Summary1_name(7,4) = ''
+   Text_Summary1_name(8,4) = ''
+
+   Grid2_plot_name(3) = 'Profile_Panels3'
+   Profile_Panels3_title = 'Abundance-Power-Mixing'
+   Profile_Panels3_num_panels = 3
+   Profile_Panels3_yaxis_name(1) = 'Abundance'
+   Profile_Panels3_yaxis_name(2) = 'Power'
+   Profile_Panels3_yaxis_name(3) = 'Mixing'
+
+   Profile_Panels3_xaxis_name = 'mass'
+   Profile_Panels3_xaxis_reversed = .false.
+
+   Grid2_plot_row(3) = 1 ! number from 1 at top
+   Grid2_plot_rowspan(3) = 6 ! plot spans this number of rows
+   Grid2_plot_col(3) = 3 ! plot spans this number of columns 
+   Grid2_plot_colspan(3) = 3 ! plot spans this number of columns 
+
+   Grid2_plot_pad_left(3) = 0.09 ! fraction of full window width for padding on left
+   Grid2_plot_pad_right(3) = 0.07 ! fraction of full window width for padding on right
+   Grid2_plot_pad_top(3) = 0.0 ! fraction of full window height for padding at top
+   Grid2_plot_pad_bot(3) = 0.0 ! fraction of full window height for padding at bottom
+   Grid2_txt_scale_factor(3) = 0.65 ! multiply txt_scale for subplot by this
+
+   Grid2_plot_name(4) = 'History_Panels1'
+   Grid2_plot_row(4) = 1 ! number from 1 at top
+   Grid2_plot_rowspan(4) = 6 ! plot spans this number of rows
+   Grid2_plot_col(4) =  6 ! number from 1 at left
+   Grid2_plot_colspan(4) = 2 ! plot spans this number of columns 
+   Grid2_plot_pad_left(4) = 0.05 ! fraction of full window width for padding on left
+   Grid2_plot_pad_right(4) = 0.03 ! fraction of full window width for padding on right
+   Grid2_plot_pad_top(4) = 0.0 ! fraction of full window height for padding at top
+   Grid2_plot_pad_bot(4) = 0.07 ! fraction of full window height for padding at bottom
+   Grid2_txt_scale_factor(4) = 0.65 ! multiply txt_scale for subplot by this
+
+   Grid2_file_flag = .true.
+   Grid2_file_dir = 'png1'
+   Grid2_file_prefix = 'grid_'
+   Grid2_file_interval = 1 ! 1 ! output when mod(model_number,Grid2_file_interval)==0
+   Grid2_file_width = -1 ! negative means use same value as for window
+   Grid2_file_aspect_ratio = -1 ! negative means use same value as for window
+      
+/ ! end of pgstar namelist
+```
+
+{{< /details>}}
+
+#### Get `final1.mod` and `final2.mod`
+Grab the final models `final1.mod` and `final2.mod` from your minilab1 (or download them from [Table 1](#table-binary)) and copy them into your work folder.
+
+<!-- #### Get `history_columns.list` and `binary_history_columns.list`
+Grab the <a href="/files/binary_history_columns.list" download>`history_columns.list`</a> and <a href="/files/binary_history_columns.list" download>`history_columns.list`</a> and copy them into your work folder. -->
+
+
+
 
 ### The stripped star becomes a BH companion
-After He depletion in its core, the stripped star has a very short remaining lifetime: for a star of total mass ~ 20 $M_{\odot}$ (and He-core mass of ~ X $M_{\odot}$), you can expect it to live only another ~ 300 years! For simplicity, we will just assume that the properties at core He depletion can be representative of those at the end of the star's life. Additionally, we will assume that all the mass contained in the primary directly collapses to form a BH.
+After He depletion in its core, the stripped star has a very short remaining lifetime: for a star of total mass ~ 20 $M_{\odot}$ (and He-core mass of ~ 10 $M_{\odot}$), you can expect it to live only another ~ 300 years! For simplicity, we will just assume that the properties at core He depletion can be representative of those at the end of the star's life. Additionally, we will assume that all the mass contained in the primary directly collapses to form a BH.
 
 <div style="
   margin:1rem 0;
@@ -99,24 +304,6 @@ After He depletion in its core, the stripped star has a very short remaining lif
   </div>
 
 Find the mass of the stripped star at core He depletion from your <code>minilab1</code> and make it directly collapse into a BH. Set the period of your binary to be the one you found at the end of <code>minilab1</code>.
-
-<div style="
-  background:none !important;
-  color:#d6deeb;
-  padding:1rem;
-  overflow-x:auto;
-  width:100%;
-  max-width:1800px;
-">
-
-```fortran
-! MODIFY HERE
-m1 = 50d0 ! primary mass in Msun
-m2 = 20d0 ! BH mass in Msun
-initial_period_in_days = 20d0 ! final period from minilab1
-```
-</div>
-
 </div>
 
 
@@ -164,6 +351,50 @@ initial_period_in_days = 20d0 ! final period from minilab1
 
   </div>
 </details>
+
+{{< details title="Solution" closed="true" >}}
+```fortran
+&binary_job
+
+   inlist_names(1) = 'inlist1' 
+   inlist_names(2) = 'inlist2'
+
+   evolve_both_stars = .false.
+
+/ ! end of binary_job namelist
+
+&binary_controls
+
+   ! MODIFY HERE
+   ! m1 = 50d0 ! primary mass in Msun
+   m2 = 16.8d0 ! BH mass in Msun
+   initial_period_in_days = 4.5d0 ! final period from minilab1
+
+   ! transfer efficiency controls
+   limit_retention_by_mdot_edd = .true.
+
+   max_tries_to_achieve = 20
+
+   ! be 100% sure MB is always off
+   do_jdot_mb = .false.
+   ! don't reduce the BH accretion efficiency
+   use_radiation_corrected_transfer_rate = .false.
+
+   ! relax timestep controls
+   fm = 0.1d0
+   fa = 0.02d0
+   fa_hard = 0.04d0
+   fr = 0.5d0
+   fj = 0.01d0
+   fj_hard = 0.02d0
+
+   ! output preferences
+   photo_interval = 50
+   history_interval = 1
+
+/ ! end of binary_controls namelist
+```
+{{< /details >}}
 
 Now you have set up your binary system!
 
