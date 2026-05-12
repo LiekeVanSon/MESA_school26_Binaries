@@ -68,9 +68,6 @@ Since MESA adopts a diffusive picture for every mixing process, this means it ca
 
 {{< /details >}}
 
-
-
-
 * 1D implementation of mixing processes - where?
 
 ## Setting up your work directory
@@ -296,7 +293,7 @@ If you are having trouble, some reliable settings to get CHE are:
 Note that MESA still tracks the Roche lobe geometry even as the mass transfer rate is set to zero. This is what allows us to compute stellar structure only once while still self-consistently tracking the occurence of Roche lobe or L2 overflow. 
 
 > [!Bonus]
-> If you are following the mass-loss rate plot, specially if you picked a greater mass, you might notice it suddenly starts to increase, and the uptick in mass-loss causes your star to dip down in luminosity sharply. Unfortunately, we will not have time in our lab to go in-depth into stellar winds, but this behavior is a direct consequence of the inclusion of Main Sequence optically-thick winds in our setup, which are normally characteristic of very massive stars ($\gtrsim100\,\mathrm{M}_\odot$), but can get triggered at lower masses for CHE. As a bonus exercise, you may try later to figure out why that is so by looking at the `wyoming_wind` subroutine implemented in the `run_star_extras`.
+> If you are following the mass-loss rate plot, specially if you picked a greater mass, you might notice it suddenly starts to increase, and the uptick in mass-loss causes your star to dip down in luminositny sharply. Unfortunately, we will not have time in our lab to go in-depth into stellar winds, but this behavior is a direct consequence of the inclusion of Main Sequence optically-thick winds in our setup, which are normally characteristic of very massive stars ($\gtrsim100\,\mathrm{M}_\odot$), but can get triggered at lower masses for CHE. As a bonus exercise, you may try later to figure out why that is so by looking at the `wyoming_wind` subroutine implemented in the `run_star_extras`.
 
 By the end of this step, you should have an initial mass, orbital period pair that leads to CHE across the Main Sequence, which you will keep for the next exercises.
 
@@ -528,203 +525,39 @@ use_other_am_mixing = .true.
 
 Note that pointing the `other_am_mixing` hook is necessary in `run_star_extras` for `use_other_am_mixing` to have an effect. 
 
-Regardless of your stellar mass, you can now choose one of four AM transport alternatives to implement (or keep). Again, try to coordinate so that you and your neighbors pick different ones. All variations except No TS should take roughly the same amount of time, for a given mass, but even No TS should take at most an extra minute to run.
+Regardless of your stellar mass, you can now choose one of four AM transport alternatives to implement (or keep). Again, try to coordinate so that you and your neighbors pick different ones. All variations except No TS should take roughly the same amount of time, for a given mass, but even No TS should take at most an extra minute to run. The model tag will be used later.
 
-| AM transport | Settings |
-| :----------- | :------- |
-| No TS | `am_nu_ST_factor=0`, `other_am_mixing=.false.` |
-| 0.1x TS | `am_nu_ST_factor=0.1d0`, `other_am_mixing=.false.` |
-| 1x TS | `am_nu_ST_factor=1.0d0`, `other_am_mixing=.false.` |
-| FullerLu | `am_nu_ST_factor=0`, `other_am_mixing=.true.` |
+| AM transport model | Model tag | Settings |
+| :----------------- | :-------- | :------- |
+| No TS | nu0 | `am_nu_ST_factor=0`, `other_am_mixing=.false.` |
+| 0.1x TS | nu01 | `am_nu_ST_factor=0.1d0`, `other_am_mixing=.false.` |
+| 1x TS | nu1 | `am_nu_ST_factor=1.0d0`, `other_am_mixing=.false.` |
+| FullerLu | fullerlu | `am_nu_ST_factor=0`, `other_am_mixing=.true.` |
 
 Because we are changing fundamental physics, this time we will have to restart the entire run from ZAMS, which you can do by simply calling `./rn`. Expect that the run will take at least 10 minutes, which you can use to read ahead on the final crowd-sourcing exercise, or discuss your results with your colleagues.
 
 > [!Warning]
 > The entire run should still take 10 to 15 minutes, most of it spend in the Main Sequence. If you notice your run is past 10 minutes and your star still has not reached hydrogen depletion (check the center_h1), ask for someone to have a look. For the next step you can always use the final profile from step 2, which corresponds to the 1x TS model.
 
-Once your run is concluded, please upload the last profile to **THIS** Google Drive folder, and have a look at the final `chi_he_core` in your pgplot window. What is going on?!
+Once your run is concluded, you might find that $\chi>1$, but that should not be possible! How do you interpret that?
 
-{{<details title="Bonus: evaluate disk formation">}}
-
-```fortran
-      integer function how_many_extra_profile_columns(id)
-         integer, intent(in) :: id
-         integer :: ierr
-         type (star_info), pointer :: s
-         ierr = 0
-         call star_ptr(id, s, ierr)
-         if (ierr /= 0) return
-         how_many_extra_profile_columns = 1
-      end function how_many_extra_profile_columns
-      
-      
-      subroutine data_for_extra_profile_columns(id, n, nz, names, vals, ierr)
-         integer, intent(in) :: id, n, nz
-         character (len=maxlen_profile_column_name) :: names(n)
-         real(dp) :: vals(nz,n)
-         integer, intent(out) :: ierr
-         type (star_info), pointer :: s
-         integer :: k
-         ierr = 0
-         call star_ptr(id, s, ierr)
-         if (ierr /= 0) return
-         
-         ! note: do NOT add the extra names to profile_columns.list
-         ! the profile_columns.list is only for the built-in profile column options.
-         ! it must not include the new column names you are adding here.
-
-         if (n /= 1) stop 'data_for_extra_profile_columns'
-
-         names(1) = 'log_t_freefall'
-         do k = 1, nz
-            vals(k, 1) = log10(sqrt(&
-               3 * pi * s% r(k) * s% r(k) * s% r(k) &
-               / (32 * standard_cgrav * s% m(k)) &
-            ))
-         end do
-
-      end subroutine data_for_extra_profile_columns
-```
-
-If the infalling gas any non-zero angular momentum, it cannot fall towards the BH or PNS without a degree of horizontal motion. For a fixed specific angular momentum, the gas will fall into the orbit with equivalent angular momentum, and migrate inwards as it loses angular momentum through viscous dissipation or some external process (such as winds). Taking the speed of light as an upper limit, one can define the smallest (highest energy) at which the matter can orbit the central object; such that at any lower orbit the matter will be accreted. This is known as the *innermost stable circular orbit*, or ISCO, with corresponding angular momentum $J_\mathrm{ISCO}$. We can acquire a better picture of BH formation by checking the total angular momentum $J_\mathrm{sh}$ of each mass shell; any shell with $J_\mathrm{sh}<J_\mathrm{ISCO}$ will be accreted effectively immediately, while the rest must lose angular momentum before being accreted, with the natural consequence that all $J_\mathrm{sh}\geq J_\mathrm{ISCO}$ layers settle into an accretion disk where AM can be transported outwards while matter falls inwards.
-
-Without re-running anything, we can use our existing He depletion profiles to check for how much of our star falls directly in to the proto-compact object, and how much initially settles into a disc. For this, you will need the ISCO radius and angular momentum for a Kerr black hole with mass $M$ and spin $0\leq\chi\leq1$, given by
-
-$$R_\mathrm{ISCO}(M,\chi) = \frac{GM}{c^2}\left\{3 + z_2 - [(3 - z_1)(3 + z_1 + 2z_2)]^{1/2}\right\},$$
-
-where 
-
-$$
-\begin{align*}
-z_1 &= 1 + (1-\chi^2)^{1/3} \left[ (1+\chi)^{1/3} + (1-\chi)^{1/3} \right], \\
-z_2 &= (3\chi^2 + z_1^2)^{1/2};
-\end{align*}
-$$
-
-and
-
-$$
-J_\mathrm{ISCO}(M,\chi) = 
-    \frac{M^{1/2}}{R_\mathrm{ISCO}^{3/4}} \frac{
-        R_\mathrm{ISCO}^2 
-        - 2\chi M^{1/2} R_\mathrm{ISCO}^{1/2} 
-        + \chi^2
-    }
-    {
-        (
-            R_\mathrm{ISCO}^{3/2}
-            - 3 M R_\mathrm{ISCO}^{1/2}
-            + 2 \chi M^{1/2}
-        )^{1/2}
-    }.
-$$
-
-The comparison is simple: we want to plot the specific angular momentum of our mass shells and the corresponding ISCO specific angular momentum for each one of them. The latter will be a range, as $J_\mathrm{ISCO}$ is lower for a non-rotating BH ($\chi=0$) than for a maximally rotating BH ($\chi=1$). For the x-axis, we will use the free-fall timescale you added earlier. 
-
-While this can be done by adding an extra column to Fortran, for this bonus exercise we will use Python to compute the ISCO properties without needing to rerun MESA. The physical quantities are already implemented in Python below, but you can also find a full plotting code on Collab here. TODO link
-
-```python
-def r_isco(m, a):
-    """Radius at ISCO (prograde) for a Kerr BH with mass m and spin a."""
-    m = m * ct.M_sun.cgs * ct.G.cgs / ct.c.cgs**2
-    z1 = 1 + (1 - a**2)**(1/3) * ((1 + a)**(1/3) + (1 - a)**(1/3))
-    z2 = (3 * a**2 + z1**2)**(1/2)
-    r = m * (3 + z2 - ((3 - z1) * (3 + z1 + 2 * z2))**(1/2))
-    return r
-
-def j_isco(m, a):
-    """Angular momentum at ISCO (prograde) for a Kerr BH with mass m and spin a."""
-    r = r_isco(m, a)
-    m = m * ct.M_sun.cgs * ct.G.cgs / ct.c.cgs**2
-    a = a * m
-    j = (
-        m**(1/2) / r**(3/4)
-        * (
-            r**2
-            - 2 * a * m**(1/2) * r**(1/2)
-            + a**2
-        )
-        / (
-            r**(3/2)
-            - 3 * m * r**(1/2)
-            + 2 * a * m**(1/2)
-        )**(1/2)
-        
-    )
-    return j
-```
-
+{{<details title="Solution" closed="true">}}
+The direct reason why we are able to find $\chi>1$ is, of course, that we do not actually have a $\chi>1$ BH. We have a $\chi>1$ He core, which is very far from a relativistic regime. What we are finding is more precisely put as: if all the mass and angular momentum in this He core were to turn into a BH, it would have $\chi>1$. If that is assumed not to happen in Nature, then the conclusion is that *not all* the mass and angular momentum can actually make it into the eventual BH.
 {{</details>}}
 
-## Big Bonus Binary
+Regardless of what $\chi$ you find, this is only a very rough approximation for what kind of BH will eventually be produced. We can do one better by accounting for the AM structure of the star. The *innermost stable circular orbit* around a BH is the highest AM orbit matter can enter around a BH without going over the speed of light. If we assume that 
+the innermost $2.5\,\mathrm{M}_\odot$ of our star (roughly the maximum neutron star mass) form a seed BH, we can walk inside-out through the mass shells outside that seed, and ask each one: is specific AM $j$ of this shell greater than the corresponding $j_\mathrm{ISCO}$, assuming an orbit around all the mass below?
 
-For reducing the running time, we made the companion a point mass. You can, however, turn on simultaneous evolution with a few easy steps. What happens?
+Anywhere where $j/j_\mathrm{ISCO}>1$ *cannot* be accreted onto the BH without losing AM first and is likely to form a disk first, where things get much more complicated and we will stop. What we can do, however, is to estimate the mass and spin of the BH accounting only for the layers that can be accreted immediately. In order to do this, we start at the $2.5\,\mathrm{M}_\odot$ coordinate, and find the first layer above it where $j/j_\mathrm{ISCO}=1$. Everything below is our BH mass and AM. This breaks the trivial mapping between the stellar spin and the BH spin, and as we will see in this final plot, across multiple masses and AM transport models, it is not trivial to form a highly-spinning BH from a highly spinning star!
 
-# Preparation notes
+A collab notebook has been prepared in order to compute that mass and show you the $j/j_\mathrm{ISCO}$ of all your final models in this Drive folder. Please rename your last profile.data file according to the instructions.
 
-## TO-DO
+> [!Naming]
+> In order to create labels, the notebook reads your physical settings from the file name. The file you upload should be named `NAME_mX_AMy.data`, where you should replace `NAME` with your name, `X` with your mass (integer) and `y` with your AM transport model tag from the table above. For example, f I ran the $70\,\mathrm{M}_\odot$ star with the 1x TS AM transport model, I would upload my last profile with the name `lucas_m70_AMnu1.data`.
 
-- [x] adapt 2017 "Rotation in binaries" setup to MESA 25
-- [x] initial benchmark binary X single star
-- [x] include j_rot profile in pgstar
-- [ ] simply D plot in pgstar to only relevant mixing modes, turn rest off
-- [x] include am_log_D plot in pgstar 
-- [x] test TS on/off
-- [x] Fuller & Lu TS prescription?
-- [x] test different tide implementations - tested but too much for lab, TS dynamo dominates AM profile
-- [x] prepare spin run_star_extras computation solution
-- [R] run benchmark on a virtual budget laptop configuration with systemd-run
+## Conclusions
 
-## Setups
-
-- **2017 setup**: adapted version from the 2017 MESA Summer School "Stellar rotation in binary systems" maxilab, by Pablo Marchant 
-    - Note: TS dynamo OFF
-- **2017 setup point secondary**: 2017 setup but secondary is set to a point mass and mass transfer is turned off; binary module runs orbital evolution and tides; currently cannot stop the run in case of RLOF
-
-## Runtime benchmark
-MESA 25.12.1
-OMP_NUM_THREADS=2
-Ubuntu 24.04.1 LTS
-Lenovo ThinkPad X1 Carbon Gen 12
-Intel Core Ultra 7 155H @ 22x 4.5GHz
-32.0 GiB RAM
-
-Times to reach TAMS unless stated otherwise
-- 2017 setup
- - m1=30, m2=30, Z=1d-3, p_zams=0.9 d, ~10 min
-- 2017 setup point secondary
- - m1=30, m2=30, Z=1d-3, p_zams=0.9 d, ~5 min to TAMS, ~10 min to He depl
-
-## Notes
-The main physical object of Lab 2 is rotation. With Lab 1 providing an introduction to the binary module and the role of accretion physics, and Lab 3 extending the physics introduced in Labs 1 and 2 to the whole landscape of BBH formation, Lab 2 should therefore focus on the role of rotation insofar as it most significantly affects BBH formation. Other interesting aspects of rotation that do not bear directly on BBH formation should be left for bonuses or potential evening session topics.
-
-This means that *sources* of rotation (with the exception of accretion spin-up, assuming it is included in Lab 1), are unlikely to fit in the Lab 2 timeslot. Nevertheless, we can first try to explore a throughline for the discussion of rotation, before reducing it to the essentials.
-
-The most dramatic effects of rotation on massive star evolution come from chemical mixing, AM transport and rotationally-enhanced mass loss. Both AM transport and chemical mixing depend crucially on whether rotation is **rigid body** or **differential**. This can be **Topic 1: rigid body X differential rotation**.
-
-The natural question from Topic 1: what does it matter? Differential rotation allows for fundamentally different modes of AM transport and chemical mixing than rigid body rotation. We have the emergence of **shear**, the **Tayler-Spruit dynamo**, **Eddington-Sweet circulation** (and Gratton-Opik, though MESA technically does not account for it because it is the advective/non-diffusive component of meridional mixing). **Convection** is also important as it imposes rigid body rotation.
-
-Another natural question is: *what determines whether the star develops rigid body or differential rotation?* The question is a bit circular, because differential rotation allows the emergence of mechanisms like the TS dynamo that, if assumed to operate, suppress differential rotation. Therefore, the answer to the question depends on assumptions. The answer to the question has two components: *what is the spin-up mechanism* and *what AM transport is active*. Strong AM transport always tries to make the star rigidly rotating where it is present, regardless of the source of AM. Accretion spin-up only spins the surface up, and in the lack of efficient AM transport, it likely creates differential rotatoin (though this is dependent on what is assumed for the accreted angular momentum). 
-
-**Tides** likewise interact with the assumptions for AM transport. While Lab 3 means the focus is on massive stars, for which we generally only worry about **dynamical tides**, it bears introducing both those and **equilibrium tides**. Equilibrium tides are also useful because they will be the most familiar: these are the ones driven by tidal deformation of a star by its companion, the trailing bulge when spin and orbit are not synchronized, which creates internal friction, which dissipates AM into the structure of the star. This familiar picture is very useful to set before talking about dynamical tides because it highlights the role of **dissipation**. The tidal bulge is just a geometrical deformation, until all that potential energy has a mechanism through which it can be transmitted into stellar structure. A convective envelope has **turbulent viscosity** - convective plumes move on the scale of 1e10 cm, allowing AM to be moved across mass shells with large AM differentials; this is so efficient MESA effectively assumes convective regions are always rigidly rotating. A radiative envelope only has **radiative viscosity**, which operates on ~1 cm scales related to photon emission and reabsorption, transporting AM across a small region; and **molecular viscosity**, which relies on Coulomb interactions on even smaller ~1e-5 cm scales. Therefore, equilibrium tides are very inefficient on massive stars, not because they are not tidally deformed, but because there is no efficient mechanism for dissipation of that potential energy.
-
-The stable, stratified structure of radiative envelopes, however, does allow for the development of **g-modes**. Radiative zones, by definition, do not allow convection to develop because a cell that is pushed up, rises, the expands in the lower-density environment, cools down more quickly with radius than its surroundings ($\nabla_\mathrm{ad}<\nabla_\mathrm{rad}$) and sinks back down. Its retained kinetic energy then causes it to overshoot its initial position, heat up more quickly than the higher-density environment, and rise again, oscillating in the local **Brunt-Väisälä frequency**. The cell moves material out of the way --- primarily in the horizontal direction --- and this propagation consists of a **gravity wave**. In a radiative zone, these gravity waves are bound to reach and be reflected by two boundaries: the convective zone boundary, which is opaque to gravity waves; and the stellar surface. This is a cavity, allowing only the establishment of standing waves, called the stars **g-modes**. g-modes typically have wavelengths smaller than the envelope scale ---- $10^7-10^9\,\mathrm{cm}$, compare $\mathrm{R}_\odot\sim10^{10}\,\mathrm{cm}$ --- allowing the development of significant temperature gradients along gravity waves, making them significantly **radiatively damped**. Damping brings the wave out of phase with the companion, thereby making it into a forced, damped oscillation with a non-zero torque on the mass element being forced. The dampening deposits AM along the way, but because the fluid is nearly incompressible, and because the density gradient presents a barrier to pushing fluid up, the oscillating element displaces surrounding fluid azimuthally. The resulting out-of-phase azimuthal compression waves efficiently allow for a tidal torque in radiative envelopes as long as the forcing frequency ($2\left|\Omega_S-\Omega_L\right|$) is greater than that of the fundamental mode. 
-
-AM transport is important because both models are, in principle, active simultaneously in the core and the envelope, and radiative damping's dependence on the temperature gradient further implies it does not drive rotation uniformly, particularly in a radiative envelope where opacity peaks develop, and where the very surface where the waves break. In the absence of efficient AM transpot beyond convection, both tides and accretion tend to produce differential rotation.
-
-Rotation and AM transport also directly connect to chemical mixing across radiative zones and through convective boundaries. Key for us are **(dynamical) shear**, acting within a differentially rotating radiative envelope and across the boundary with a convective core; and **Eddington-Sweet circulation**, acting across the radiative envelope. Strong shear generally disfavors ES circulation, meaning that the two modes of radiative envelope mixing are generally mutually exclusive in their most efficient instances. 
-
-The final key ingredient is the presence or absence of **magnetic fields**, which can efficiently drive AM transport through the development of **Tayler-Spruit instabilities** along differentially rotating interfaces, which thereafter drive the structure towards rigid body rotation, suppressing shear mixing and favoring ES circulation. 
-
-
-- Birth rotation
-- massive stars going CHE
-- tides
-- effect of AM transport
-
-The **MESA implementation** of AM transport/chemical mixing deserves to be explicitly described. For rotation, the treatment of chemical barriers needs to be directly explained if the intention is to elucidate the difference between accretion-induced CHE and CHE from ZAMS, as it strongly limits the possibility of driving a star CHE in the middle of the MS.
-
-[to be continued...]
+By the end of this lab, we have encountered first-hand the most dramatic difference between CHE and non-CHE stars --- their compactness, driven by rotation-driven Eddington-Sweet circulation ---, and how post-MS evolution can decouple the surface and core rotation rates.  We have also learned how to compute the black hole spin corresponding to a He core, and how that assumption does not trivially hold. As we will return to in Lab 3, accretion can also spin stars up, but under very different circumstances from CHE, and the stellar-BH spin connection remains a fresh  topic.
 
 ## Files
 
