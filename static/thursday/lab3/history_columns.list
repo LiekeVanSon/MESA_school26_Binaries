@@ -138,8 +138,9 @@
       !mx2_bot_r
 
       ! you might want to get a more complete list of mixing regions by using the following
-      mixing_regions 10
+
       !mixing_regions <integer> ! note: this includes regions where the mixing type is no_mixing.
+      mixing_regions 10
 
          ! the <integer> is the number of regions to report
          ! there will be 2*<integer> columns for this in the log file, 2 for each region.
@@ -376,7 +377,7 @@
       !he_core_L
       !he_core_v
       !he_core_omega
-      he_core_omega_div_omega_crit
+      !he_core_omega_div_omega_crit
       !he_core_k
 
    !## CO core
@@ -388,7 +389,7 @@
       !co_core_L
       !co_core_v
       !co_core_omega
-      co_core_omega_div_omega_crit
+      !co_core_omega_div_omega_crit
       !co_core_k
 
    !## ONe core
@@ -537,9 +538,9 @@
       !v_surf_div_v_kh ! v_surf/(photosphere_r/kh_timescale)
 
       !surf_avg_j_rot
-      surf_avg_omega
-      surf_avg_omega_crit
-      surf_avg_omega_div_omega_crit
+      !surf_avg_omega
+      !surf_avg_omega_crit
+      !surf_avg_omega_div_omega_crit
       !surf_avg_v_rot ! km/sec rotational velocity at equator
       !surf_avg_v_crit ! critical rotational velocity at equator
       !surf_avg_v_div_v_crit

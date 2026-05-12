@@ -6,6 +6,8 @@ math: true
 toc: true
 ---
 
+<div style="text-align: justify;">
+
 # Lab 3: Stable relationships
 
 ## Introduction
@@ -41,12 +43,12 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
   <tr>
   <td>Final model</td>
   <td>
-    <a href="static/thursday/lab3/final1_caseA.mod" download>
+    <a href="/thursday/lab3/final1_caseA.mod" download>
       <code>final1_caseA.mod</code>
     </a>
   </td>
   <td>
-    <a href="static/thursday/lab3/final2_caseA.mod" download>
+    <a href="/thursday/lab3/final2_caseA.mod" download>
       <code>final2_caseA.mod</code>
     </a>
   </td>
@@ -100,7 +102,11 @@ Both these systems have a rapidly rotating (spun-up) secondary that has accreted
 
 > [!Important]
 > Notice that the Case A system has a much lower orbital period than the Case B. These different post-mass transfer properties determine a different further evolutionary history!
-> In this minilab3, we will understand how **both** types of binaries need to evolve in order to form gravitational wave sources such as merging binary black holes.
+> In this minilab3, we will understand **how both types of binaries need to evolve in order to form gravitational wave sources** such as merging binary black holes.
+> 
+> **SPOILER**: both systems will evolve with a further stage of mass transfer, which may be 
+> - <u>STABLE</u>: relatively long-lived (on the thermal or even nuclear timescale of the donor) and self regulated, with a quiet detachment afterwards. We will study this in [Section 1](#1-stable-mass-transfer).
+> - <u>UNSTABLE</u>: or "Common envelope", a fast (~dynamical timescale) stage in which the envelope of the donor engulfs the binary. We will study this in [Section 2](#2-common-envelope-evolution).
 
 
 ## 1. Stable mass transfer
@@ -346,9 +352,9 @@ Playing with `pgstar` can be very entertaining, but for this lab we will use a p
    Grid2_txt_scale_factor(2) = 0.19 ! multiply txt_scale for subplot by this
    Text_Summary1_name(7,1) = 'period_days'
    Text_Summary1_name(8,1) = 'star_2_mass'
+   Text_Summary1_name(7,4) = ''
 
    ! ADD THE TDELAY TO THE TEXT SUMMARY
-   Text_Summary1_name(7,4) = ''
    Text_Summary1_name(8,4) = ''
 
    Grid2_plot_name(3) = 'Profile_Panels3'
@@ -514,6 +520,7 @@ Load the right model from your <code>minilab1</code> in your `inlist1`.
 </details>
 
 {{< details title="Solution" closed="true" >}}
+Inside your `inlist1`:
 ```fortran
 &star_job
    ...
@@ -529,12 +536,40 @@ Load the right model from your <code>minilab1</code> in your `inlist1`.
 
 
 ### Computing the time delay
-Let's compute the time delay of your BH + BH system to see if it will merge within the age of the Universe, in the beta>0 and Eddington-limited case. Compare!
-Maybe let's find a GW signal that can be matchy-matchy
+Compact binaries composed of neutron stars and BHs gradually lose orbital energy through the emission of gravitational waves. As a consequence, the orbit shrinks over time until the two compact objects eventually merge.  
+
+The **gravitational-wave time delay** (or simply *delay time*) is the time required for this inspiral and merger to occur **if gravitational-wave emission were the only process acting on the binary orbit**. Delay times are particularly important in astrophysics because they determine *when* mergers happen relative to the formation of the stars, and therefore affect the populations of gravitational-wave sources observed by detectors such as LIGO, Virgo and KAGRA[^GWTC4].
+
+For a circular orbit, the merger timescale derived by Peters (1964)[^peters1964] is
 
 $$
-t_{\rm delay} = \frac{5}{256} \, \frac{c^5 \, a^4}{G^3 \, m_1 m_2 (m_1 + m_2)}
+t_{\rm delay} =
+\frac{5}{256}
+\frac{c^5 a^4}
+{G^3 m_1 m_2 (m_1 + m_2)} ,
 $$
+
+where:
+
+- $a$ is the orbital separation at the BH + BH stage;
+- $m_1$ and $m_2$ are the masses of the two BHs,
+- $G$ is the gravitational constant,
+- $c$ is the speed of light.
+
+Notice the strong dependence $t_{\rm delay} \propto a^4$: even modestly wider binaries can take dramatically longer to merge. The dependence on the masses is a bit weaker, but the rule of thumb is that more massive systems will merge faster.
+
+In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\rm Gyr} = 10^9$ years, because this makes it easy to compare them to the age of the Universe ($\approx 13.8$ Gyr). This comparison tells us whether a compact binary has enough time to merge within cosmic history: binaries with $t_{\rm delay} \lesssim 13.8$ Gyr may merge and be observable today as gravitational-wave sources, while systems with longer delay times are effectively undetectable (technically, they have "not yet happened" anywhere in the Universe 🤓).
+
+> [!Note]
+> Remember that **so far, you have initialized a system with a star + BH**, since you have collapsed all the mass of the stripped star of minilab1 into a point mass <code>m2</code>, and initialized your <code>m1</code> to be the accretor of minilab1. **After evolving your system further**, your <code>m1</code> will reach Helium depletion in its core, and at the point it will very close to become the second BH of your system: that's how **you will achieve a BH + BH binary**! From that point onwards, the $t_{\mathrm{delay}}$ calculation will make sense, as the interaction between the two BHs is expected to be only via gravity.
+
+
+> [!Important]
+> In principle, BHs can accrete mass (and in fact, that is when they become [X-Ray active](https://en.wikipedia.org/wiki/X-ray_binary) 🌝), and this option in your `inlist_project`
+> ```fortran
+> limit_retention_by_mdot_edd = .true.
+> ```
+> will make such that the accretion rate onto the BH is Eddington-limited (we talked about it in [here](#1-stable-mass-transfer)). This is a standard assumption when treating BH accretors, which is observationally motivated by beautiful systems like the galactic microquasar [SS433](https://en.wikipedia.org/wiki/SS_433), where powerful relativistic jets are thought to drive material away from the central binary. However, keep in mind that this is not exact science and **there are other possible ways to treat (and limit) accretion onto BHs**: we will explore one further down in the lab.
 
 <div style="
   margin:1rem 0;
@@ -547,7 +582,7 @@ $$
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's compute the $t_{\mathrm{delay}}$ as an extra binary history column in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part.
+Let's compute the $t_{\mathrm{delay}}$ in Gigayears as an extra binary history column `tdelay(Gyr)` in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part.
 </div>
 
 <details>
@@ -572,12 +607,35 @@ Let's compute the $t_{\mathrm{delay}}$ as an extra binary history column in `run
 
   You may want to use:
   <ul>
+    <li><code>clight</code>, the speed of light in $\mathrm{cm}\:\mathrm{s}^{-1}$
     <li><code>secyer</code>, the conversion between years and seconds</li>
     <li><code>standard_cgrav</code>, the gravitational constant in c.g.s.</li>
   </ul>
 
   Loaded via: <code>use const_def</code><br>
   See also: <code>$MESA_DIR/const/public/const_def.f90</code>
+
+  </div>
+</details>
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Fighting with the binary pointer <code>b%</code> ?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Don't be scared, the `binary_info` structure and its type `b` work very similarly to the `star_info` and its type `s`! Try to find the quantities of interest inside `$MESA_DIR/binary/public/binary_data.inc`, and refer to them with the pointers `b% m(1)`, `b% m(2)`, ecc. Pay attention to the units!
+
 
   </div>
 </details>
@@ -617,20 +675,45 @@ end function how_many_extra_binary_history_columns
 ```
 {{< /details >}}
 
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Too many <code>pgstar</code> things to look at?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Search for the string "`TDELAY`" 😏
+
+
+  </div>
+</details>
+
 {{< details title="Solution for `pgstar`" closed="true" >}}
 ```fortran
+! ADD THE TDELAY TO THE TEXT SUMMARY
 Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 ```
 {{< /details >}}
 
+ You have come a long way, congrats! We are finally ready to start our first run. 
+
 
 > [!WARNING]
-> Don't forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
+> Never forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
 
 <div style="
   max-width: 600px;
   margin: 20px auto;
-  border: 1px solid #d9534f;
+  border: 1px solid none;
   border-radius: 8px;
   background-color: #f5c2c2;
   overflow: hidden;
@@ -646,7 +729,7 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
     text-align: center;
     padding: 8px;
   ">
-    RUN 1 (5 minutes on 4 cores, 748 models)
+    RUN 1 (5 minutes on 4 cores, 749 models)
   </div>
 
   <!-- Body -->
@@ -655,7 +738,7 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
     text-align: center;
   ">
     <p style="margin: 0;">
-      Run your star + BH model.<br>
+      Run your star + BH model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
       <a href="/thursday/lab3/stable_MT_SOL.zip" download>
         <code>stable_MT_SOL.zip</code>
@@ -665,12 +748,90 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 
 </div>
 
-### Analysis of the output: time delay, mass ratio, orbit
-Let's compare how much orbital shrinkage you get with Eddington-limited accretion with respect to what you saw in Minilab1
-Let's make them realize that Eddington-limited in practice means fully non-conservative, and let's have them check with a higher beta instead what changes.
+You `pgstar` window should look like something like this (this is the very last model of your run, model 749):
+
+<!-- ![pgstar_stable_caseA](/thursday/lab3/pgstar_stable_caseA.png) -->
+<a id="fig-caseA"></a>
+
+<a href="/thursday/lab3/pgstar_stable_caseA.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_stable_caseA.png" alt="Case A figure">
+</a>
+
+**Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
+
+- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="/thursday/lab3/history_columns.list" download> <code>here</code></a>.
+- Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at the [Figure 1](#fig-caseA) (click to zoom in!) to answer to the Analysis of the run questions here below.
+
+### Analysis of the run: Case A mass transfer!
+Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 1](#fig-caseA) (click to zoom in!). Try to think about it and answer together with your table.
+
+1. How much mass did the donor star lose?
+   {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+1. How much mass did the BH accrete?
+      {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+2. How much did the orbit shrink?
+      {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+3. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
+      {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+
 
 ### Orbital tightening from L2 mass loss
-L2 shrinkage! Implementation in run_binary_extras.f90
+So far, we have considered a mass-transfer scenario in which matter that cannot be accreted by the black hole is expelled from the vicinity of the accretor itself. This is the so-called **isotropic re-emission mode**, typically associated with **Eddington-limited accretion**. In this picture, the expelled material removes the **specific angular momentum of the accretor** from the binary system.
+
+However, this is not the only possible way for matter to leave the binary.
+
+Recent 3D hydrodynamical simulations by [Lu et al. (2022)](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L) have shown that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **outer Lagrangian point** of the accretor, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary.
+
+Because the $L_2$ point is located farther away from the center of mass than the accretor itself, material escaping through $L_2$ carries away **much more angular momentum** than in the isotropic re-emission case.
+
+<a href="/thursday/lab3/L2_outflow.jpeg" target="_blank">
+  <img src="/thursday/lab3/L2_outflow.jpeg" alt="L2 outflow" style="max-width:700px; width:100%;">
+</a>
+
+In practice, this introduces an additional contribution to the orbital angular momentum evolution of the binary system:
+
+$$\dot{J}_{\mathrm{tot}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}} .$$
+
+The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
+
+$$\dot{J}_{\mathrm{L2}}=\upsilon\,\dot{M}_{\mathrm{L2}}\left[\left(\frac{M_{\mathrm{accretor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
+
+while the standard isotropic re-emission contribution is
+
+$$\dot{J}_{\mathrm{isotropic}}=\beta\,\dot{M}_{\mathrm{isotropic}}\left(\frac{M_{\mathrm{donor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
+
+Here:
+
+- $a$ is the orbital separation,
+- $P$ is the orbital period,
+- $x_{\mathrm{L2}}$ is the position of the $L_2$ point in units of the orbital separation,
+- $\beta$ is the fraction of transferred mass expelled through isotropic re-emission,
+- $\upsilon$ is the fraction expelled through the $L_2$ outflow channel.
+
+These efficiency factors determine how conservative the mass transfer is:
+
+- $\upsilon + \beta = 1$  
+  → all transferred material is expelled from the system and the BH accretes nothing;
+
+- $\upsilon + \beta = 0$  
+  → fully conservative mass transfer.
+
+> [!NOTE]
+> Default routine: `$MESA_DIR/binary/private/binary_jdot.f90`
+> ! But the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`
+>      `b% other_jdot_ml => my_jdot_ml`
+>      Default routine: `$MESA_DIR/binary/private/binary_mdot.f90`
+>      But the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_adjust_mdots.f90`
+>      `b% other_adjust_mdots => my_adjust_mdots`
+      
 
 <div style="
   margin:1rem 0;
@@ -683,8 +844,114 @@ L2 shrinkage! Implementation in run_binary_extras.f90
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's make such that our binary will lose 35% of transferred material through the outer Lagrangian point L2. You will need to introduce two personalized routines: `my_jdot_ml` and `my_adjust_mdots`, and an `x_ctrl(1)` in `inlist1`. This is a difficult task, so **don't be scared and read all the hints**!
+Let's make such that our binary will lose 35% of transferred material through the outer Lagrangian point L2, and the rest 65% will be lost from the vicinity of the accretor. You will need to introduce two personalized routines: `my_jdot_ml` and `my_adjust_mdots`, and an `x_ctrl(1)` in `inlist1`. This is a difficult task, so **don't be scared and read all the hints**!
 </div>
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>35% of mass lost with <code>x_ctrl(1)</code>!</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+
+  </div>
+</details>
+
+{{< details title="Solution for `inlist1`" closed="true" >}}
+```fortran
+&controls
+  ...
+  x_ctrl(1) = 0.35d0
+  ...
+/ ! end of controls namelist
+```
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>How to lose the remaining 65%?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+
+  </div>
+</details>
+
+{{< details title="Solution for `inlist_project`" closed="true" >}}
+```fortran
+&controls
+  ...
+  ! transfer efficiency controls
+   limit_retention_by_mdot_edd = .false.
+   mass_transfer_beta = 0.65d0
+  ...
+/ ! end of controls namelist
+```
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>What does <code>my_jdot_ml</code> do?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+
+  </div>
+</details>
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>What does <code>my_adjust_mdot</code> do?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+
+  </div>
+</details>
 
 > [!WARNING]
 > Don't forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
@@ -727,21 +994,41 @@ Let's make such that our binary will lose 35% of transferred material through th
 
 </div>
 
+### Analysis of the output
+qratio, tdelay, shrinkage
+
 <!-- #### ➕ BONUS: CASE B comparison!
 Only if they had the time in minilab1 to do caseB. -->
 
 
 ## 2. Common envelope evolution
-Brief explanation of the energy formalism
+Brief explanation of the mechanism
 
 ### The unstable mass transfer rate
 Here we will define and implement what is an unstable mass transfer rate. run_binary_extras.f90 with a factor 10xthermal timescale, or x_ctrl(1) with a fixed number? We also implement a stopping condition at CE onset.
 
-### The binding energy of the envelope
+### The final fate with the energy formalism
 Implementation in run_star_extras.f90
+
+<div style="
+  margin:1rem 0;
+  padding:0.8rem 1rem;
+  background:rgba(16,185,129,0.10);
+  border-left:5px solid #10b981;
+">
+
+  <div style="font-weight:600; margin-bottom:0.5rem;">
+    🧪 Task: Modify <code>run_star_extras.f90</code>
+  </div>
+
+Let's calculate an extra history column `Ebind` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$.
+</div>
 
 ### A lower mass ratio favors instability!
 Here we will tell them to change the q. We want to give them a number that we know the outcome of. Then they run the model.
+
+> [!WARNING]
+> Never forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
 
 <div style="
   max-width: 600px;
@@ -781,11 +1068,14 @@ Here we will tell them to change the q. We want to give them a number that we kn
 
 </div>
 
-### The orbital shrinkage
-Comparison with stable mass transfer. The idea is that they will use the energy formalism to get the post-CE orbital separation.
+### Analysis of the output
+Comparison with stable mass transfer. The idea is that they will use the energy formalism to get the post-CE orbital separation, and then look into qratio and tdelay
 
-### The time delay and final mass ratio
-In the CE case, compare with stable mass transfer.
+### References
+
+[^peters1964]: [Peters (1964), *Gravitational Radiation and the Motion of Two Point Masses*](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P?utm_source=chatgpt.com)
+[^SS433]: [Wikipedia — SS433](https://en.wikipedia.org/wiki/SS_433)
+[^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), *GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run*](https://arxiv.org/abs/2508.18082)
 
 <!-- #### ➕ BONUS1: CASE B comparison!
 Only if they had the time in minilab1 to do caseA.
@@ -794,3 +1084,4 @@ Only if they had the time in minilab1 to do caseA.
 Have them look into the timescale of when instability develops, and the shift in properties (mass and orbital separation) from RLOF to CE onset -->
 
 
+</div>
