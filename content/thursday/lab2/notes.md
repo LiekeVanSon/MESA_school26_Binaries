@@ -2,7 +2,7 @@
 
 ## TO-DO
 
-### Setup / prep (pre-existing)
+### Setup / prep
 - [x] adapt 2017 "Rotation in binaries" setup to MESA 25
 - [x] initial benchmark binary X single star
 - [x] include j_rot profile in pgstar
@@ -11,17 +11,18 @@
 - [x] Fuller & Lu TS prescription?
 - [x] test different tide implementations - tested but too much for lab, TS dynamo dominates AM profile
 - [x] prepare spin run_star_extras computation solution
-- [x] run benchmark 
+- [x] test setup for MESA 26
+- [x] run benchmark with 2 cores on MESA 26 over mass and AMT
 
 ---
 
 ## Runtime benchmark
-MESA 25.12.1
-OMP_NUM_THREADS=2
-Ubuntu 24.04.1 LTS
-Lenovo ThinkPad X1 Carbon Gen 12
-Intel Core Ultra 7 155H @ 22x 4.5GHz
-32.0 GiB RAM
+MESA 26.04.1  
+OMP_NUM_THREADS=2  
+Ubuntu 24.04.1 LTS  
+Lenovo ThinkPad X1 Carbon Gen 12  
+Intel Core Ultra 7 155H @ 22x 4.5GHz  
+32.0 GiB RAM  
 
 | id | name | runtime_MS | runtime_HeB | runtime_total |
 |----|------|------------|-------------|---------------|
@@ -50,9 +51,9 @@ TS:
     nu1: am_nu_ST_factor = 1.0
     fullerlu: Fuller & Lu (2022) (other_am_mixing hook)
 
-    D_ST_factor = 0 always
+D_ST_factor = 0 always
 
-runtime_MS: wall-clock time to run from ZAMS to H depletion (xa_central_lower_limit h1 = 1d-5)
+runtime_MS: wall-clock time to run from ZAMS to H depletion (xa_central_lower_limit h1 = 1d-5)  
 runtime_HeB: wall-clock time to continue from H depletion to He depletion (xa_central_lower_limit he4 = 1d-5)
 
 
