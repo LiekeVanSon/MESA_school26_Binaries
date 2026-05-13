@@ -10,7 +10,7 @@ toc: true
 
 # Lab 3: Stable relationships
 
-## Introduction
+## 0. Introduction
 
 In this last minilab3 we will pick up on the system you evolved in minilab1 and follow its further evolution into a double black hole binary. Remember that at the end of your minilab1 you had two systems: 
 - One system underwent mass transfer during the Main Sequence (Case A mass transfer), with final properties listed in the below [Table 1](#table-binary).
@@ -751,11 +751,11 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 
 Your `pgstar` window should look like something like this (this is the very last model of your run, model 749):
 
-<!-- ![pgstar_stable_caseA](/thursday/lab3/pgstar_stable_caseA.png) -->
+<!-- ![pgstar_stable_caseA_new](/thursday/lab3/pgstar_stable_caseA_new.png) -->
 <a id="fig-caseA"></a>
 
-<a href="/thursday/lab3/pgstar_stable_caseA.png" target="_blank">
-  <img src="/thursday/lab3/pgstar_stable_caseA.png" alt="Case A figure">
+<a href="/thursday/lab3/pgstar_stable_caseA_new.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_stable_caseA_new.png" alt="Case A figure">
 </a>
 
 **Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
@@ -1542,7 +1542,7 @@ Your `pgstar` window should look like something like this (this is the very last
 
 **Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
 
-- Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot.
+- Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot. If it looks like the [Figure 3](#fig-caseB), you must have done everything right 🍻🍻
 
 
 ### Analysis of the run: Case B mass transfer!
@@ -1552,15 +1552,15 @@ Here are some discussion points for you to understand what happened physically t
    {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
-1. How much mass did the BH accrete?
+1. How much mass did the BH accrete? Any difference with the previous run that was assuming Eddington-limited accretion?
       {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
-2. How much did the orbit shrink?
+2. How much did the orbit shrink? Compare with the previous run.
       {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
-3. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
+1. Will the system merge within the age of the Universe?
       {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
@@ -1572,11 +1572,18 @@ Only if they had the time in minilab1 to do caseB. -->
 ## 2. Common envelope evolution
 Brief explanation of the mechanism
 
-### The unstable mass transfer rate
-Here we will define and implement what is an unstable mass transfer rate. run_binary_extras.f90 with a factor 10xthermal timescale, or x_ctrl(1) with a fixed number? We also implement a stopping condition at CE onset.
+Unstable MT rate: KH timescale
 
-### The final fate with the energy formalism
-Implementation in run_star_extras.f90
+Usually: low mass ratios and high periods favor instability
+
+Observational fun fact (luminous red novae)
+
+> [!IMPORTANT]
+> Our aim is to explore whether CE evolution can tighten the orbit of our star + BH system such that we produce gravitational waves.
+> So we are interested in the final fate, with the energy formalism
+
+> [!NOTE]
+> MESA actually has a suite of routines for modeling the CE stage! But we will not make use of those. If you are curious, you can give a look at [last year's Summer School binary day](https://mesa-leuven.4d-star.org/tutorials/wednesday/lab-3). What we will do instead is to force a very extreme mass ratio, and stop at onset!!
 
 <div style="
   margin:1rem 0;
@@ -1589,11 +1596,10 @@ Implementation in run_star_extras.f90
     🧪 Task: Modify <code>run_star_extras.f90</code>
   </div>
 
-Let's calculate an extra history column `Ebind` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$.
+Let's implement 
+1. An extra history column `Ebind` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$, and show its value in the Text Summary window of `pgstar`.
+2. A stopping condition at the onset of the common envelope episode, i.e. when the mass transfer rate exceeds $10\times\dot{M}_{\mathrm{KH}}$.
 </div>
-
-### A lower mass ratio favors instability!
-Here we will tell them to change the q. We want to give them a number that we know the outcome of. Then they run the model.
 
 > [!WARNING]
 > Never forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
@@ -1627,7 +1633,7 @@ Here we will tell them to change the q. We want to give them a number that we kn
   ">
     <p style="margin: 0;">
       Run your common envelope model.<br>
-      In case you're lost, complete inlists for this run:
+      In case you need them, here are the complete inlists for this run:
       <a href="/thursday/lab3/common_envelope_SOL.zip" download>
         <code>common_envelope_SOL.zip</code>
       </a>
@@ -1645,17 +1651,41 @@ Your `pgstar` window should look like something like this (this is NOT the very 
   <img src="/thursday/lab3/pgstar_CE_caseA.png" alt="CE case A figure">
 </a>
 
-**Figure 4.** CE, Case A evolution for a star + BH binary (click to zoom in!).
+**Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
 - Make sure `Ebind(erg)`
 - `mdot_kh` is appearing?
 
-### Analysis of the run
-Comparison with stable mass transfer. The idea is that they will use the energy formalism to get the post-CE orbital separation, and then look into qratio and tdelay
+### Analysis of the run: runaway mass transfer!
+Here are some discussion points; you will only need to look at [Figure 4](#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
+
+1. How is the mass transfer rate evolving, and how can you see that you are at CE onset?
+   {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+
+Now open this Google colab notebook (${\color{red} \mathrm{TO\: DO}}$) in which we provide pre-made formulas to use the energy formalism and asses the final fate of your binary, after the common envelope episode.
+
+2. Did you produce a gravitational wave source?
+      {{< details title="Solution" closed="true" >}}
+
+      {{< /details >}}
+
+3. Is the final orbital separation tighter in this case, with respect to the case of stable mass transfer?
+   {{< details title="Solution" closed="true" >}}
+
+      {{< /details >}}
+
+4. Is the final mass ratio of your BH + BH binary different with respect to the stable mass transfer case?
+   {{< details title="Solution" closed="true" >}}
+
+      {{< /details >}}
 
 
 
-### References
+## 3. Conclusions
+
+## References
 [^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P?utm_source=chatgpt.com)
 [^SS433]: [Wikipedia — SS433](https://en.wikipedia.org/wiki/SS_433)
 [^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run](https://arxiv.org/abs/2508.18082)
