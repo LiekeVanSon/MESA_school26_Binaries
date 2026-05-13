@@ -787,7 +787,7 @@ Here are some discussion points for you to understand what happened physically t
 ### Orbital tightening from L2 mass loss
 So far, we have considered an **Eddington-limited** mass-transfer scenario, in which matter that cannot be accreted by the black hole is expelled from the vicinity of the accretor itself. This is the so-called **isotropic re-emission mode**. In this picture, the expelled material removes the **specific angular momentum of the accretor** from the binary system.
 
-However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **outer Lagrangian point** of the accretor, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see [Figure 2](#fig-L2)).
+However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **second Lagrangian point**, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see [Figure 2](#fig-L2)).
 
 Because the $L_2$ point is located farther away from the center of mass than the accretor itself, material escaping through $L_2$ carries away **much more angular momentum** than in the isotropic re-emission case.
 
@@ -795,22 +795,23 @@ Because the $L_2$ point is located farther away from the center of mass than the
 <a href="/thursday/lab3/L2_outflow.jpeg" target="_blank">
   <img src="/thursday/lab3/L2_outflow.jpeg" alt="L2 outflow" style="max-width:700px; width:100%;">
 </a>
-**Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$ indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
+**Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$s indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
 
 In practice, this introduces an additional contribution to the orbital angular momentum evolution of the binary system, which for simplicity we will write as
 
-$$\dot{J}_{\mathrm{tot}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}},$$
+$$\dot{J}_{\mathrm{ml}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}},$$
 
-where these $\dot{J}$ is the time derivative of the angular momentum component $J$. The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
+where these $\dot{J}$ is the time derivative of the angular momentum component $J$ (and "ml" = mass loss). The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
 
-$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{L2}}\left[\left(\frac{m_{\mathrm{accretor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
+$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
 
 while the standard isotropic re-emission contribution is
 
-$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{isotropic}}\left(\frac{M_{\mathrm{donor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
+$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{M_{\mathrm{donor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
 
 Here:
 
+- $\dot{M}_{\mathrm{MT}}$ is the mass transfer rate
 - $a$ is the orbital separation,
 - $P$ is the orbital period,
 - $x_{\mathrm{L2}}$ is the position of the $L_2$ point in units of the orbital separation,
@@ -819,20 +820,52 @@ Here:
 
 These efficiency factors determine how conservative the mass transfer is:
 
-- $\upsilon + \beta = 1$  → all transferred material is expelled from the system and the BH accretes nothing;
+- $\upsilon + \beta = 1$  → all transferred material is expelled from the system;
+- $\upsilon + \beta = 0$  → fully conservative mass transfer (everything is retained in the system).
+- $\epsilon\equiv\upsilon+\beta$  → this is the same $\epsilon$ that you saw in minilab1 (where $\epsilon=1$ is for conservative mass transfer, and $\epsilon=0$ is fully non-conservative), but this time it is modified to our purpose of having only two types of mass leakage: the isotropic re-emission mode, and $L_2$ overflow.
 
-- $\upsilon + \beta = 0$  → fully conservative mass transfer.
+$L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in [Figure 2](#fig-L2)) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources[^lu2022]. An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[^bowler2010]. While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
 
 > [!IMPORTANT]
-> We use the Case B system from minilab1
+>In the context of gravitational wave sources, $L_2$ mass outflow is expected to efficiently tighten star + BH binaries that are residing in quite wide orbits, so that after the detachment, the binary will be already close enough to start chirping at the formation of the second BH! **In this part of the minilab3, we will demonstrate that, in presence of $L_2$ mass outflow, a wide binary, like the Case B system you produced in minilab1, can form a gravitational wave source after stable mass transfer.**
+>
+> You can start from the same setup as you developed so far (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> ```bash
+> cp -r stable_MT stable_MT_L2
+>```
+> Remind yourself of the properties of your Case B system in [Table 2](#table-caseB), and download the `final1_caseB.mod` and `final2_caseB.mod`. You see that the masses are mostly the same, but you will have to change the period, and load the right model 😎
+> {{< details title="Solution for `inlist_project`" closed="true" >}}
+>```fortran
+>&binary_controls
+>  ...
+>  m1 = 40.8d0 ! donor mass in Msun
+>  m2 = 17.14d0 ! companion mass in Msun
+>  initial_period_in_days = 32.2d0
+>  ...
+>/ ! end of binary_controls namelist
+>```
+>{{< /details >}}
+> {{< details title="Solution for `inlist1`" closed="true" >}}
+>```fortran
+>&star_job
+>  ...
+>  load_saved_model = .true.
+>  load_model_filename = 'final2_caseB.mod'
+>  ...
+>/ ! end of star_job namelist
+>```
+>{{< /details >}}
+
 
 > [!NOTE]
-> Default routine: `$MESA_DIR/binary/private/binary_jdot.f90`
-> ! But the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`
->      `b% other_jdot_ml => my_jdot_ml`
->      Default routine: `$MESA_DIR/binary/private/binary_mdot.f90`
->      But the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_adjust_mdots.f90`
->      `b% other_adjust_mdots => my_adjust_mdots`
+> 1. Your setup still has the Eddington-limited mass accretion rate switched on, like we wanted to in our first part of the lab. But now we want to introduce our own prescription for how the mass outflows from the system, introducing $L_2$ outflow! Therefore, we will set this to `.false.` now in `inlist_project`
+  > ```fortran
+  > limit_retention_by_mdot_edd = .false.
+  >```
+> 2. To compute the orbital evolution due to mass losses from the system (`jdot_ml` equation) and the changes in mass due to accretion / leakages (`mdots` equation), MESA uses two default routines: 
+>   - **`default_jdot_ml`**, to be found in `$MESA_DIR/binary/private/binary_jdot.f90`. If you want to create your own personalized version of it, the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`
+>  - **`adjust_mdots`**, to be found in `$MESA_DIR/binary/private/binary_mdot.f90`. If you want to create your own personalized version of it, the empty hook from where you usually start is: `$MESA_DIR/binary/other_mod_other_adjust_mdots.f90`
+
       
 
 <div style="
@@ -846,7 +879,7 @@ These efficiency factors determine how conservative the mass transfer is:
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's make such that our binary will lose 35% of transferred material through the outer Lagrangian point L2 ($\upsilon=0.35$), and the rest 65% will be lost from the vicinity of the accretor ($\beta=0.65$). You will need to introduce two personalized routines: `my_jdot_ml` and `my_adjust_mdots`, and an `x_ctrl(1)` in `inlist1`. This is a difficult task, so **don't be scared and read all the hints**!
+Let's make such that our binary will lose 35% of transferred material through the second Lagrangian point $L_2$ ($\upsilon=0.35$), and the rest 65% will be lost from the vicinity of the accretor ($\beta=0.65$). You will need to introduce two personalized routines: `my_jdot_ml` and `my_adjust_mdots`, and an `x_ctrl(1)` in `inlist1`. This is a difficult task, so **don't be scared and read all the hints**!
 </div>
 
 <details>
@@ -865,11 +898,9 @@ Let's make such that our binary will lose 35% of transferred material through th
     border-left:4px solid rgba(236, 72, 153, 0.14);
   ">
 
-  This is a gift for you (or simply, something you can find in literature [^marchant2021] and you don't need to know how to code on the spot 🤙🏻).
-  </div>
-</details>
+  This is a gift for you (or simply, something you can find in literature [^marchant2021] and you don't need to know how to code on the spot 🤙🏻). Copy this entirely at the end of your `run_binary_extras.f90`.
 
-{{< details title="Routine to copy into `run_binary_extras.f90`" closed="true" >}}
+  {{< details title="Routine to copy into `run_binary_extras.f90`" closed="true" >}}
   ```fortran
 ! ROCHE POTENTIAL FIRST DERIVATIVE
 ! To find the Lagrangian points numerically, by bisection
@@ -935,6 +966,11 @@ end function find_L2
   ```
 {{< /details >}}
 
+  </div>
+</details>
+
+
+
 <details>
   <summary style="
     cursor:pointer;
@@ -942,7 +978,7 @@ end function find_L2
     background:rgba(246, 171, 59, 0.22);
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
-    💡 <strong>35% of mass lost with <code>x_ctrl(1)</code>!</strong>
+    💡 <strong>35% of mass lost via L2?</strong>
   </summary>
 
   <div style="
@@ -951,7 +987,7 @@ end function find_L2
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+  We can make use of an `x_ctrl(1)` to set the fraction of mass that is lost from the system removing the specific angular momentum of the $L_2$ point!
 
   </div>
 </details>
@@ -982,10 +1018,11 @@ end function find_L2
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+  To set the fraction $\beta$ of mass that is leaving the system with the specific angular momentum of the accretor (isotropic re-emission mode), there is actually a default control that you can look up in `$MESA_DIR/binary/defaults/binary_controls.defaults`. You can look for the string `beta` 🙃
 
   </div>
 </details>
+
 
 {{< details title="Solution for `inlist_project`" closed="true" >}}
 ```fortran
@@ -1006,7 +1043,7 @@ end function find_L2
     background:rgba(246, 171, 59, 0.22);
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
-    💡 <strong>What does <code>my_jdot_ml</code> do?</strong>
+    💡 <strong>Is all mass lost in the way that I want?</strong>
   </summary>
 
   <div style="
@@ -1015,18 +1052,99 @@ end function find_L2
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+  Since you're in `$MESA_DIR/binary/defaults/binary_controls.defaults`, give a look at the meaning and the default values of all these controls: <code>mass_transfer_alpha</code>, <code>mass_transfer_delta</code>, <code>mass_transfer_gamma</code>.
+
+  Additionally, remember that you have set this in `inlist_project`
+  ```fortran
+  limit_retention_by_mdot_edd = .false.
+  ```
+  
 
   </div>
 </details>
 
-{{< details title="Solution for `my_jdot_ml`" closed="true" >}}
+{{< details title="Solution: yes 😛" closed="true" >}}
+
+As you saw in minilab1, these fractions $\alpha$, $\gamma$ and $\delta$ describe other possible leakages of mass, which we are not interested in. Luckily, they are all set to zero by default! So the only only that we have set is $\beta=0.65$, as wanted. The remaining 0.35 mass outflow will be calculated by us with our own personalized fraction $\upsilon$ (or `x_ctrl(1)`).
+
+Additionally, the Eddington limit is switched off, so that we are in full control of where 35%+65%=100% of the mass goes!
+
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Activating new <code>run_binary_extras.f90</code> hooks </strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  We are going to create our own personalized `run_binary_extras.f90` routines to compute the orbital evolution due to mass losses from the system (`jdot_ml` equation) and the changes in mass due to accretion / leakages (`mdots` equation). We need to instruct `inlist_project` to use the new routines! Try to find the right controls in `$MESA_DIR/binary/defaults/binary_controls.defaults`. You can look for the string `use_other_`.
+
+  </div>
+</details>
+
+{{< details title="Solution for `inlist_project`" closed="true" >}}
 ```fortran
-&controls
+&binary_controls
   ...
-  x_ctrl(1) = 0.35d0
+  ! ADD personalized run_binary_extras.f90 routine
+  use_other_jdot_ml = .true.
+  use_other_adjust_mdots = .true.
   ...
-/ ! end of controls namelist
+/ ! end of binary_controls namelist
+```
+
+
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Set the function pointers in <code>run_binary_extras.f90</code> </strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  As usual when we activate personalized hooks in `run_binary_extras.f90`, we also need to instruct `extras_binary_controls` to point to those new routines, that we will call `my_adjust_mdots` and `my_jdot_ml`.
+
+  </div>
+</details>
+
+{{< details title="Solution for <code>extras_binary_controls</code>" closed="true" >}}
+```fortran
+subroutine extras_binary_controls(binary_id, ierr)
+  ...
+  ...
+  ! EXTRA SHRINKAGE FOR L2 MASS OUTFLOW!
+  ! Default routine: $MESA_DIR/binary/private/binary_jdot.f90
+  ! But the empty hook from where you usually start is: 
+  ! $MESA_DIR/binary/other/mod_other_binary_jdot.f90
+  b% other_jdot_ml => my_jdot_ml
+
+  ! Default routine: $MESA_DIR/binary/private/binary_mdot.f90
+  ! But the empty hook from where you usually start is: 
+  ! $MESA_DIR/binary/other/mod_other_adjust_mdots.f90
+  b% other_adjust_mdots => my_adjust_mdots
+  ...
+  ...
+end subroutine extras_binary_controls
 ```
 {{< /details >}}
 
@@ -1037,7 +1155,7 @@ end function find_L2
     background:rgba(246, 171, 59, 0.22);
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
-    💡 <strong>What does <code>my_adjust_mdot</code> do?</strong>
+    💡 <strong>Creating <code>my_adjust_mdot</code> </strong>
   </summary>
 
   <div style="
@@ -1046,20 +1164,331 @@ end function find_L2
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+  Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_adjust_mdots` from `$MESA_DIR/binary/other_mod_other_adjust_mdots.f90`! So in the future, you will know where to start. 
+
+  {{< details title="Guided skeleton of `my_adjust_mdots`" closed="true" >}}
+```fortran
+subroutine my_adjust_mdots(binary_id, ierr)
+    use binary_def, only : binary_info, binary_ptr
+    use const_def, only: dp
+    integer, intent(in) :: binary_id
+    integer, intent(out) :: ierr
+    type (binary_info), pointer :: b
+    real(dp) :: fixed_xfer_fraction
+    ierr = 0
+    call binary_ptr(binary_id, b, ierr)
+    if (ierr /= 0) then
+    write(*,*) 'failed in binary_ptr'
+    return
+    end if
+    
+    ! THIS IS WHERE YOU CAN IMPOSE THE MASS TRANSFER FRACTION
+    ! In your minilab1, this looked like: 
+    ! epsilon = 1 - alpha - beta - delta - gamma.
+    ! In this minilab3, we want to only model beta (isotropic re-emission)
+    ! and upsilon (L2 outflow), while all the rest is already set to zero
+    ! in the defaults.
+    b% fixed_xfer_fraction = 0d0    !!!modify this
+    
+    
+    ! EDDINGTON ACCRETION RATE
+    ! Usually, one should also eval mdot_edd here by calling the default
+    ! functions using the ones provided through binary_lib. 
+    ! But in our minilab3, we want to ignore Eddington limits anyway...
+    b% mdot_edd = 0d0
+    b% mdot_edd_eta = 0d0
+
+
+    ! WIND MASS TRASNFER EFFICIENCY
+    ! Usually, one should also eval the wind mass transfer efficiency 
+    ! here by calling the default functions provided through binary_lib.
+    ! But we want to ignore wind mass transfer for simplicity...
+    b% mdot_wind_transfer(:) = 0d0
+    b% wind_xfer_fraction(:) = 0d0
+
+
+    ! MASS CHANGES IN THE TWO STARTS DUE TO MASS TRANSFER
+    ! Set mdot for the donor
+    b% s_donor% mstar_dot = 0d0     !!!modify this
+    ! Set mdot for the accretor
+    ! point_mass_i is 0 if both stars are evolved, is 1 if there is a BH!
+    if (b% point_mass_i == 0) then
+        b% component_mdot(b% a_i) = 0d0
+    else
+        b% component_mdot(b% a_i) = 0d0   !!!modify this
+    end if
+    ! Accretion luminosity is useful only if you have a compact 
+    ! accretor and want to use it to compute the Eddington limit, 
+    ! but you can set it to zero if you want to ignore that...
+    b% accretion_luminosity = 0d0
+
+
+    ! mdot_system_transfer is mass lost from the vicinity of each star;
+    ! such mass will be removing the angular momentum of the respective star.
+    ! We want to model this for the accretor (you can access it via 
+    ! b% mdot_system_transfer(b% a_i)), this is the 
+    ! isotropic re-emission mode! But we want to ignore it for the donor.
+    b% mdot_system_transfer(:) = 0d0    !!!modify this
+
+    ! mdot_system_cct is mass lost from a circumbinary coplanar toroid.
+    ! we are not interestered in modeling this one :) 
+    b% mdot_system_cct = 0d0 
+
+    end subroutine my_adjust_mdots
+```
+{{< /details >}}
+
+Read all the comments and try to fill in where you see `!!! modify this`. Keep in mind the following:
+
+- You have set your $\beta$ with the control `mass_transfer_beta`, and your $\upsilon$ with `x_ctrl(1)`. You can access quantities related to your donor from the `binary_info` structure as `b% s_donor`!
+- The donor should have an `mdot` that corresponds to the mass transfer rate (which is defined negative, since it loses mass!)
+- The accretor should have an `mdot` that corresponds to a fraction $\upsilon+\beta$ of the mass transfer rate (and which sign?) 
 
   </div>
 </details>
 
 {{< details title="Solution for `my_adjust_mdots`" closed="true" >}}
 ```fortran
-&controls
-  ...
-  x_ctrl(1) = 0.35d0
-  ...
-/ ! end of controls namelist
+subroutine my_adjust_mdots(binary_id, ierr)
+    use binary_def, only : binary_info, binary_ptr
+    use const_def, only: dp
+    integer, intent(in) :: binary_id
+    integer, intent(out) :: ierr
+    type (binary_info), pointer :: b
+    real(dp) :: fixed_xfer_fraction
+    ierr = 0
+    call binary_ptr(binary_id, b, ierr)
+    if (ierr /= 0) then
+    write(*,*) 'failed in binary_ptr'
+    return
+    end if
+    
+    ! THIS IS WHERE YOU CAN IMPOSE THE MASS TRANSFER FRACTION
+    ! In your minilab1, this looked like: 
+    ! epsilon = 1 - alpha - beta - delta - gamma.
+    ! In this minilab3, we want to only model beta (isotropic re-emission)
+    ! and upsilon (L2 outflow), while all the rest is already set to zero
+    ! in the defaults.
+    b% fixed_xfer_fraction = 1 - b% mass_transfer_beta - b% s_donor% x_ctrl(1)    !!!modify this
+    
+    
+    ! EDDINGTON ACCRETION RATE
+    ! Usually, one should also eval mdot_edd here by calling the default
+    ! functions using the ones provided through binary_lib. 
+    ! But in our minilab3, we want to ignore Eddington limits anyway...
+    b% mdot_edd = 0d0
+    b% mdot_edd_eta = 0d0
+
+
+    ! WIND MASS TRASNFER EFFICIENCY
+    ! Usually, one should also eval the wind mass transfer efficiency 
+    ! here by calling the default functions provided through binary_lib.
+    ! But we want to ignore wind mass transfer for simplicity...
+    b% mdot_wind_transfer(:) = 0d0
+    b% wind_xfer_fraction(:) = 0d0
+
+
+    ! MASS CHANGES IN THE TWO STARTS DUE TO MASS TRANSFER
+    ! Set mdot for the donor
+    b% s_donor% mstar_dot = b% mtransfer_rate     !!!modify this
+    ! Set mdot for the accretor
+    ! point_mass_i is 0 if both stars are evolved, is 1 if there is a BH!
+    if (b% point_mass_i == 0) then
+        b% component_mdot(b% a_i) = 0d0
+    else
+        b% component_mdot(b% a_i) = -b% mtransfer_rate* b% fixed_xfer_fraction   !!!modify this
+    end if
+    ! Accretion luminosity is useful only if you have a compact 
+    ! accretor and want to use it to compute the Eddington limit, 
+    ! but you can set it to zero if you want to ignore that...
+    b% accretion_luminosity = 0d0
+
+
+    ! mdot_system_transfer is mass lost from the vicinity of each star;
+    ! such mass will be removing the angular momentum of the respective star.
+    ! We want to model this for the accretor (you can access it via 
+    ! b% mdot_system_transfer(b% a_i)), this is the 
+    ! isotropic re-emission mode! But we want to ignore it for the donor.
+    b% mdot_system_transfer(b% d_i) = 0d0
+    b% mdot_system_transfer(b% a_i) = b% mtransfer_rate * b% mass_transfer_beta    !!!modify this
+
+    ! mdot_system_cct is mass lost from a circumbinary coplanar toroid.
+    ! we are not interestered in modeling this one :) 
+    b% mdot_system_cct = 0d0 
+
+end subroutine my_adjust_mdots
 ```
 {{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Creating <code>my_jdot_ml</code> </strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_jdot_ml` from `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`! So in the future, you will know where to start. 
+
+  {{< details title="Guided skeleton of `my_jdot_ml`" closed="true" >}}
+```fortran
+subroutine my_jdot_ml(binary_id, ierr)
+    use binary_def, only : binary_info, binary_ptr
+    integer, intent(in) :: binary_id
+    integer, intent(out) :: ierr
+    type (binary_info), pointer :: b
+    ierr = 0
+    call binary_ptr(binary_id, b, ierr)
+    if (ierr /= 0) then
+    write(*,*) 'failed in binary_ptr'
+    return
+    end if
+
+    ! THIS IS WHERE YOU CAN IMPOSE THE ANGULAR MOMENTUM LOSS RATE 
+    ! ASSOCIATED WITH MASS LOSS
+    ! Remember that you have two types of mass loss: 
+    ! the isotropic re-emission mode (beta) and the L2 outflow (upsilon).
+    ! The first one is already implemented in MESA, 
+    ! we just need to find how to write it.
+    ! Look at the default routine that MESA uses in 
+    ! $MESA_DIR/binary/private/binary_jdot.f90, and copy the relevant piece.
+    ! You can also check the formula that we wrote on the website for Jdot_isotropic, it should correspond :) 
+    b% jdot_ml = 0      !!!leave this like that and modify below
+    b% jdot_ml = b% jdot_ml +  ...  !!!modify this
+
+    ! Now add the L2 outflow contribution, which is not included in the default MESA jdot routine, so you will have to write it from scratch using the formula on the website!
+    ! Watch out: in the formula, you will need to find the coordinate of L2 in units of separation, which is not a built-in MESA quantity, but you can calculate it using the function find_L2 that we provided as a gift!
+    b% jdot_ml = b% jdot_ml +  ...     !!!modify this
+
+end subroutine my_jdot_ml
+```
+{{< /details >}}
+
+Read all the comments and try to fill in where you see `!!! modify this`.
+
+  </div>
+</details>
+
+{{< details title="Solution for `my_jdot_ml`" closed="true" >}}
+```fortran
+subroutine my_jdot_ml(binary_id, ierr)
+    use binary_def, only : binary_info, binary_ptr
+    integer, intent(in) :: binary_id
+    integer, intent(out) :: ierr
+    type (binary_info), pointer :: b
+    real(dp) :: x_L2
+    ierr = 0
+    call binary_ptr(binary_id, b, ierr)
+    if (ierr /= 0) then
+    write(*,*) 'failed in binary_ptr'
+    return
+    end if
+
+    ! THIS IS WHERE YOU CAN IMPOSE THE ANGULAR MOMENTUM LOSS RATE 
+    ! ASSOCIATED WITH MASS LOSS
+    ! Remember that you have two types of mass loss: 
+    ! the isotropic re-emission mode (beta) and the L2 outflow (upsilon).
+    ! The first one is already implemented in MESA, 
+    ! we just need to find how to write it.
+    ! Look at the default routine that MESA uses in 
+    ! $MESA_DIR/binary/private/binary_jdot.f90, and copy the relevant piece.
+    ! You can also check the formula that we wrote on the website for Jdot_isotropic, it should correspond :) 
+    b% jdot_ml = 0d0
+    b% jdot_ml = b% jdot_ml + (b% mdot_system_transfer(b% a_i) + b% mdot_system_wind(b% a_i))*&
+    pow2(b% m(b% d_i)/(b% m(b% a_i)+b% m(b% d_i))*b% separation)*2*pi/b% period *&
+    sqrt(1 - pow2(b% eccentricity))
+
+    ! Now add the L2 outflow contribution, which is not included in the default MESA jdot routine, so you will have to write it from scratch using the formula on the website!
+    ! Calculate the coordinate of L2 in units of separation
+    x_L2 = abs(find_L2(b))
+    ! Add the contribution to jdot from mass lost from L2
+    b% jdot_ml = b% jdot_ml + (b% mtransfer_rate * b% s_donor% x_ctrl(1))*&
+    ((b% m(b% a_i)/(b% m(b% a_i)+b% m(b% d_i))-x_L2)*b% separation)**2*2*pi/b% period 
+
+end subroutine my_jdot_ml
+```
+{{< /details >}}
+
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Showing the L2 rate on <code>pgstar</code> </strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Final touch: visualization of the (log of) the mass loss from $L_2$ in our `pgstar` window. We will need to modify the `data_for_extra_binary_history_columns` and `how_many_extra_binary_history_columns` in `run_binary_extras.f90` as usual.
+
+  Don't forget that `b% mtransfer_rate` is negative, and is in cgs units. Invoke the constants `Msun` and `secyer`!
+
+  </div>
+</details>
+
+{{< details title="Solution for `run_binary_extras.f90`" closed="true" >}}
+```fortran
+   subroutine data_for_extra_binary_history_columns(binary_id, n, names, vals, ierr)
+      type(binary_info), pointer :: b
+      integer, intent(in) :: binary_id
+      integer, intent(in) :: n
+      character(len=maxlen_binary_history_column_name) :: names(n)
+      real(dp) :: vals(n)
+      integer, intent(out) :: ierr
+      ierr = 0
+      call binary_ptr(binary_id, b, ierr)
+      if (ierr /= 0) then
+         write (*, *) 'failed in binary_ptr'
+         return
+      end if
+
+      names(1) = 'tdelay(Gyr)'
+      vals(1) = (5d0/256d0) * (clight**5 * b%separation**4) / &
+      (standard_cgrav**3 * b%m(1) * b%m(2) * (b%m(1) + b%m(2)))
+
+      ! convert from seconds -> years -> Gyr
+      vals(1) = vals(1) / secyer / 1d9
+
+      ! L2 mass outflow rate in Msun/yr
+      names(2) = "lg_mdot_L2"
+      ! Let's take the log of the absolute value 
+      vals(2) = log10(abs((b% mtransfer_rate * b% s_donor% x_ctrl(1) )/Msun*secyer))
+
+   end subroutine data_for_extra_binary_history_columns
+```
+
+```fortran
+integer function how_many_extra_binary_history_columns(binary_id)
+      use binary_def, only: binary_info
+      integer, intent(in) :: binary_id
+      how_many_extra_binary_history_columns = 2
+   end function how_many_extra_binary_history_columns
+```
+{{< /details >}}
+
+{{< details title="Solution for `inlist1`" closed="true" >}}
+```fortran
+! ADD THE L2 MASS OUTFLOW RATE TO THE HISTORY PANEL
+History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
+```
+{{< /details >}}
+
+
 
 > [!WARNING]
 > Don't forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
@@ -1083,7 +1512,7 @@ end function find_L2
     text-align: center;
     padding: 8px;
   ">
-    RUN 2 (7 minutes on 4 cores, 710 models)
+    RUN 2 (7 minutes on 4 cores, 712 models)
   </div>
 
   <!-- Body -->
@@ -1102,19 +1531,19 @@ end function find_L2
 
 </div>
 
-Your `pgstar` window should look like something like this (this is the very last model of your run, model 710):
+Your `pgstar` window should look like something like this (this is the very last model of your run, model 712):
 
-<!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB.png) -->
+<!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB_new.png) -->
 <a id="fig-caseB"></a>
 
-<a href="/thursday/lab3/pgstar_stable_caseB.png" target="_blank">
-  <img src="/thursday/lab3/pgstar_stable_caseB.png" alt="Case B figure">
+<a href="/thursday/lab3/pgstar_stable_caseB_new.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_stable_caseB_new.png" alt="Case B figure">
 </a>
 
 **Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
 
-- Make sure `Ebind(erg)`
-- `mdot_kh` is appearing?
+- Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot.
+
 
 ### Analysis of the run: Case B mass transfer!
 Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 3](#fig-caseB) (click to zoom in!). Try to think about it and answer together with your table.
@@ -1224,13 +1653,16 @@ Your `pgstar` window should look like something like this (this is NOT the very 
 ### Analysis of the run
 Comparison with stable mass transfer. The idea is that they will use the energy formalism to get the post-CE orbital separation, and then look into qratio and tdelay
 
-### References
 
+
+### References
 [^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P?utm_source=chatgpt.com)
 [^SS433]: [Wikipedia — SS433](https://en.wikipedia.org/wiki/SS_433)
 [^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run](https://arxiv.org/abs/2508.18082)
 [^lu2022]: [Lu et al. (2022), Stable mass transfer via L2 outflows in massive binaries](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L)
 [^marchant2021]: [Marchant et al. (2021), The role of mass transfer and common envelope evolution in the formation of merging binary black holes](https://ui.adsabs.harvard.edu/abs/2021A&A...650A.107M)
+
+[^bowler2010]: [Bowler (2010), Interpretation of observations of the circumbinary disk of SS 433](https://ui.adsabs.harvard.edu/abs/2010A%26A...521A..81B)
 
 <!-- #### ➕ BONUS1: CASE B comparison!
 Only if they had the time in minilab1 to do caseA.
