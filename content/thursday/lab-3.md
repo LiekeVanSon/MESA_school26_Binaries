@@ -330,7 +330,8 @@ Playing with `pgstar` can be very entertaining, but for this lab we will use a p
    History_Panels1_ymax(2) = -1d0 ! only used if /= -101d0        
    History_Panels1_dymin(2) = 1 
 
-   History_Panels1_other_yaxis_name(2) = 'log_abs_mdot' 
+   ! ADD THE L2 MASS OUTFLOW RATE TO THE HISTORY PANEL
+   History_Panels1_other_yaxis_name(2) = '' 
    History_Panels1_other_yaxis_reversed(2) = .false.
    History_Panels1_other_ymin(2) = -8d0 ! only used if /= -101d0
    History_Panels1_other_ymax(2) = -1d0 ! only used if /= -101d0        
@@ -748,7 +749,7 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 
 </div>
 
-You `pgstar` window should look like something like this (this is the very last model of your run, model 749):
+Your `pgstar` window should look like something like this (this is the very last model of your run, model 749):
 
 <!-- ![pgstar_stable_caseA](/thursday/lab3/pgstar_stable_caseA.png) -->
 <a id="fig-caseA"></a>
@@ -784,29 +785,29 @@ Here are some discussion points for you to understand what happened physically t
 
 
 ### Orbital tightening from L2 mass loss
-So far, we have considered a mass-transfer scenario in which matter that cannot be accreted by the black hole is expelled from the vicinity of the accretor itself. This is the so-called **isotropic re-emission mode**, typically associated with **Eddington-limited accretion**. In this picture, the expelled material removes the **specific angular momentum of the accretor** from the binary system.
+So far, we have considered an **Eddington-limited** mass-transfer scenario, in which matter that cannot be accreted by the black hole is expelled from the vicinity of the accretor itself. This is the so-called **isotropic re-emission mode**. In this picture, the expelled material removes the **specific angular momentum of the accretor** from the binary system.
 
-However, this is not the only possible way for matter to leave the binary.
-
-Recent 3D hydrodynamical simulations by [Lu et al. (2022)](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L) have shown that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **outer Lagrangian point** of the accretor, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary.
+However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **outer Lagrangian point** of the accretor, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see [Figure 2](#fig-L2)).
 
 Because the $L_2$ point is located farther away from the center of mass than the accretor itself, material escaping through $L_2$ carries away **much more angular momentum** than in the isotropic re-emission case.
 
+<a id="fig-L2"></a>
 <a href="/thursday/lab3/L2_outflow.jpeg" target="_blank">
   <img src="/thursday/lab3/L2_outflow.jpeg" alt="L2 outflow" style="max-width:700px; width:100%;">
 </a>
+**Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$ indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
 
-In practice, this introduces an additional contribution to the orbital angular momentum evolution of the binary system:
+In practice, this introduces an additional contribution to the orbital angular momentum evolution of the binary system, which for simplicity we will write as
 
-$$\dot{J}_{\mathrm{tot}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}} .$$
+$$\dot{J}_{\mathrm{tot}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}},$$
 
-The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
+where these $\dot{J}$ is the time derivative of the angular momentum component $J$. The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
 
-$$\dot{J}_{\mathrm{L2}}=\upsilon\,\dot{M}_{\mathrm{L2}}\left[\left(\frac{M_{\mathrm{accretor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
+$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{L2}}\left[\left(\frac{m_{\mathrm{accretor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
 
 while the standard isotropic re-emission contribution is
 
-$$\dot{J}_{\mathrm{isotropic}}=\beta\,\dot{M}_{\mathrm{isotropic}}\left(\frac{M_{\mathrm{donor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
+$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{isotropic}}\left(\frac{M_{\mathrm{donor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
 
 Here:
 
@@ -818,11 +819,12 @@ Here:
 
 These efficiency factors determine how conservative the mass transfer is:
 
-- $\upsilon + \beta = 1$  
-  → all transferred material is expelled from the system and the BH accretes nothing;
+- $\upsilon + \beta = 1$  → all transferred material is expelled from the system and the BH accretes nothing;
 
-- $\upsilon + \beta = 0$  
-  → fully conservative mass transfer.
+- $\upsilon + \beta = 0$  → fully conservative mass transfer.
+
+> [!IMPORTANT]
+> We use the Case B system from minilab1
 
 > [!NOTE]
 > Default routine: `$MESA_DIR/binary/private/binary_jdot.f90`
@@ -844,8 +846,94 @@ These efficiency factors determine how conservative the mass transfer is:
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's make such that our binary will lose 35% of transferred material through the outer Lagrangian point L2, and the rest 65% will be lost from the vicinity of the accretor. You will need to introduce two personalized routines: `my_jdot_ml` and `my_adjust_mdots`, and an `x_ctrl(1)` in `inlist1`. This is a difficult task, so **don't be scared and read all the hints**!
+Let's make such that our binary will lose 35% of transferred material through the outer Lagrangian point L2 ($\upsilon=0.35$), and the rest 65% will be lost from the vicinity of the accretor ($\beta=0.65$). You will need to introduce two personalized routines: `my_jdot_ml` and `my_adjust_mdots`, and an `x_ctrl(1)` in `inlist1`. This is a difficult task, so **don't be scared and read all the hints**!
 </div>
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(236, 72, 153, 0.14);
+    border-left:4px solid rgba(236, 72, 153, 0.14);
+  ">
+    🎁 <strong>Let's find L2 in <code>run_binary_extras.f90</code></strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(236, 72, 153, 0.14);
+    border-left:4px solid rgba(236, 72, 153, 0.14);
+  ">
+
+  This is a gift for you (or simply, something you can find in literature [^marchant2021] and you don't need to know how to code on the spot 🤙🏻).
+  </div>
+</details>
+
+{{< details title="Routine to copy into `run_binary_extras.f90`" closed="true" >}}
+  ```fortran
+! ROCHE POTENTIAL FIRST DERIVATIVE
+! To find the Lagrangian points numerically, by bisection
+real(dp) function dPhidx(b,x) result(derivative)
+  real(dp), intent(in) :: x
+  real(dp) :: q, x_cm
+  type(binary_info), pointer :: b
+  ! include 'formats.inc'
+
+  q = b% m(b% d_i)/b% m(b% a_i)
+  x_cm = 1/(1+q)
+  derivative = 1/(x*abs(x)) +1/(q*(x-1)*abs(x-1)) -(x-x_cm)*(q+1)/q
+
+end function dPhidx
+
+
+! FUNCTION TO FIND THE COORDINATE OF L2 IN UNITS OF SEPARATION
+real(dp) function find_L2(b) result(L2)
+  real(dp) :: limit, tolerance, x, upper_bound, lower_bound, dPhi_new,q
+  type(binary_info), pointer :: b
+  ! include 'formats.inc'
+
+  q = b% m(b% d_i)/b% m(b% a_i)
+
+  if (q < 1) then
+    upper_bound = 0d0
+    lower_bound = -1d0
+    limit = abs(upper_bound-lower_bound)/abs(lower_bound)
+  end if
+
+  if (q .GE. 1) then
+    upper_bound = 2d0
+    lower_bound = 1d0
+    limit = abs(upper_bound-lower_bound)/abs(upper_bound)
+  end if
+
+  x = 0d0
+
+  tolerance = 0.000001d0
+
+  do while (limit > tolerance)
+    x = (lower_bound+upper_bound)/2
+    dPhi_new = dPhidx(b,x)
+    if (dPhi_new > 0) then
+        lower_bound = x
+    else if (dPhi_new < 0) then
+        upper_bound = x
+    else
+        exit
+    end if
+
+    if (q < 1) then
+        limit = abs(upper_bound-lower_bound)/abs(lower_bound)
+    end if
+
+    if (q .GE. 1) then
+        limit = abs(upper_bound-lower_bound)/abs(upper_bound)
+    end if
+
+  end do
+  L2 = (upper_bound + lower_bound)/2
+end function find_L2
+  ```
+{{< /details >}}
 
 <details>
   <summary style="
@@ -932,6 +1020,16 @@ Let's make such that our binary will lose 35% of transferred material through th
   </div>
 </details>
 
+{{< details title="Solution for `my_jdot_ml`" closed="true" >}}
+```fortran
+&controls
+  ...
+  x_ctrl(1) = 0.35d0
+  ...
+/ ! end of controls namelist
+```
+{{< /details >}}
+
 <details>
   <summary style="
     cursor:pointer;
@@ -953,13 +1051,23 @@ Let's make such that our binary will lose 35% of transferred material through th
   </div>
 </details>
 
+{{< details title="Solution for `my_adjust_mdots`" closed="true" >}}
+```fortran
+&controls
+  ...
+  x_ctrl(1) = 0.35d0
+  ...
+/ ! end of controls namelist
+```
+{{< /details >}}
+
 > [!WARNING]
 > Don't forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
 
 <div style="
   max-width: 600px;
   margin: 20px auto;
-  border: 1px solid #4fa2d9;
+  border: 1px solid none;
   border-radius: 8px;
   background-color: #e8f6ff;
   overflow: hidden;
@@ -975,7 +1083,7 @@ Let's make such that our binary will lose 35% of transferred material through th
     text-align: center;
     padding: 8px;
   ">
-    RUN 2 (7 minutes on 4 cores, 683 models)
+    RUN 2 (7 minutes on 4 cores, 710 models)
   </div>
 
   <!-- Body -->
@@ -994,8 +1102,39 @@ Let's make such that our binary will lose 35% of transferred material through th
 
 </div>
 
-### Analysis of the output
-qratio, tdelay, shrinkage
+Your `pgstar` window should look like something like this (this is the very last model of your run, model 710):
+
+<!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB.png) -->
+<a id="fig-caseB"></a>
+
+<a href="/thursday/lab3/pgstar_stable_caseB.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_stable_caseB.png" alt="Case B figure">
+</a>
+
+**Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
+
+- Make sure `Ebind(erg)`
+- `mdot_kh` is appearing?
+
+### Analysis of the run: Case B mass transfer!
+Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 3](#fig-caseB) (click to zoom in!). Try to think about it and answer together with your table.
+
+1. How much mass did the donor star lose?
+   {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+1. How much mass did the BH accrete?
+      {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+2. How much did the orbit shrink?
+      {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
+3. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
+      {{< details title="Solution" closed="true" >}}
+
+{{< /details >}}
 
 <!-- #### ➕ BONUS: CASE B comparison!
 Only if they had the time in minilab1 to do caseB. -->
@@ -1033,7 +1172,7 @@ Here we will tell them to change the q. We want to give them a number that we kn
 <div style="
   max-width: 600px;
   margin: 20px auto;
-  border: 1px solid #4fd99f;
+  border: 1px solid none;
   border-radius: 8px;
   background-color: #cdffea;
   overflow: hidden;
@@ -1068,14 +1207,30 @@ Here we will tell them to change the q. We want to give them a number that we kn
 
 </div>
 
-### Analysis of the output
+Your `pgstar` window should look like something like this (this is NOT the very last model, but the model at which CE starts, number 487):
+
+<!-- ![pgstar_CE_caseA](/thursday/lab3/pgstar_CE_caseA.png) -->
+<a id="fig-CEcaseA"></a>
+
+<a href="/thursday/lab3/pgstar_CE_caseA.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_CE_caseA.png" alt="CE case A figure">
+</a>
+
+**Figure 4.** CE, Case A evolution for a star + BH binary (click to zoom in!).
+
+- Make sure `Ebind(erg)`
+- `mdot_kh` is appearing?
+
+### Analysis of the run
 Comparison with stable mass transfer. The idea is that they will use the energy formalism to get the post-CE orbital separation, and then look into qratio and tdelay
 
 ### References
 
-[^peters1964]: [Peters (1964), *Gravitational Radiation and the Motion of Two Point Masses*](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P?utm_source=chatgpt.com)
+[^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P?utm_source=chatgpt.com)
 [^SS433]: [Wikipedia — SS433](https://en.wikipedia.org/wiki/SS_433)
-[^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), *GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run*](https://arxiv.org/abs/2508.18082)
+[^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run](https://arxiv.org/abs/2508.18082)
+[^lu2022]: [Lu et al. (2022), Stable mass transfer via L2 outflows in massive binaries](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L)
+[^marchant2021]: [Marchant et al. (2021), The role of mass transfer and common envelope evolution in the formation of merging binary black holes](https://ui.adsabs.harvard.edu/abs/2021A&A...650A.107M)
 
 <!-- #### ➕ BONUS1: CASE B comparison!
 Only if they had the time in minilab1 to do caseA.
