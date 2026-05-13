@@ -1,0 +1,44 @@
+&binary_job
+
+/ ! end of binary_job namelist
+
+&binary_controls
+
+   do_tidal_sync = .true.
+   do_j_accretion = .false.
+   ! be 100% sure MB is always off
+   do_jdot_mb = .false.
+   do_jdot_missing_wind = .true.
+
+   ! these controls do nothing if new_ignore_rlof_flag = .true.
+   ! only uncomment if turning mass transfer on
+   !limit_retention_by_mdot_edd = .false.
+   !implicit_scheme_tolerance = 1d-3
+   !max_tries_to_achieve = 400
+   !min_change_factor = 1.025
+   !max_change_factor = 1.5d0
+   !initial_change_factor = 1.2d0
+   !change_factor_fraction = 0.8d0
+   !implicit_lambda = 0.4d0
+
+   ! timestep controls
+   fr = 0.05
+   fr_limit = 1d-2
+   fr_dt_limit = 3000d0
+   fm = 0.5
+   fm_limit = 1d-1
+   fj = 0.005
+   dt_softening_factor = 0.4
+
+   ! tides for radiative envelopes
+   sync_mode_1 = "Uniform"
+   sync_type_1 = "Hut_rad"
+   Ftid_1 = 1
+   do_initial_orbit_sync_1 = .true.
+
+   roche_min_mdot = 1d-10
+   accretor_overflow_terminate = 100.0d0
+   terminate_if_L2_overflow = .true.
+         
+/ ! end of binary_controls namelist
+
