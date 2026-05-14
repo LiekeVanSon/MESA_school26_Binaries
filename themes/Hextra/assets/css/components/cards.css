@@ -10,11 +10,11 @@
   user-select: none;
 }
 
-.hextra-card:hover .hextra-card-icon svg {
+.hextra-card:hover svg {
   color: currentColor;
 }
 
-.hextra-card .hextra-card-icon svg {
+.hextra-card svg {
   width: 1.5rem;
   color: #00000033;
   transition: color 0.3s ease;
@@ -25,22 +25,17 @@
   position: relative;
 }
 
-.dark .hextra-card .hextra-card-icon svg {
+.dark .hextra-card svg {
   color: #ffffff66;
 }
 
-.dark .hextra-card:hover .hextra-card-icon svg {
+.dark .hextra-card:hover svg {
   color: currentColor;
 }
 
 .hextra-card-tag {
   position: absolute;
-  z-index: 10;
   top: 5px;
-  &:where(:dir(ltr)) {
-    right: 5px;
-  }
-  &:where(:dir(rtl)) {
-    left: 5px;
-  }
+  right: 5px;
+  z-index: 10;
 }
