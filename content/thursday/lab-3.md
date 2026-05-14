@@ -1,5 +1,5 @@
 ---
-title: Lab 3
+title: "Lab 3: Stable relationships"
 author: Annachiara Picco (lead), Matthias Fabry, Lucas de Sá, Lieke Van Son
 weight: 4
 math: true
@@ -8,9 +8,9 @@ toc: true
 
 <div style="text-align: justify;">
 
-# Lab 3: Stable relationships
+<!-- # Lab 3: Stable relationships -->
 
-## 0. Introduction
+## Introduction
 
 In this last minilab3 we will pick up on the system you evolved in minilab1 and follow its further evolution into a double black hole binary. Remember that at the end of your minilab1 you had two systems: 
 - One system underwent mass transfer during the Main Sequence (Case A mass transfer), with final properties listed in the below [Table 1](#table-binary).

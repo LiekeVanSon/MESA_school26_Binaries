@@ -1,12 +1,13 @@
 ---
-title: Lab 2
+title: "Lab 2: Stellar Swinging"
 author: Lucas de Sá (lead), Annachiara Picco, Mathias Fabry, Lieke van Son
 weight: 3
 math: true
 toc: true
 ---
 
-# Lab 2: Stellar Swinging
+<!-- # Lab 2: Stellar Swinging -->
+## Overview
 
 *LUCAS: note on the figures, I'm still missing a normal HR track X CHE HR track figure in Move 1; then I will copy the whole evolutionary diagram to the conclusions to match the Lab 1 style instead of leaving fragments sprinkled throughout*
 
