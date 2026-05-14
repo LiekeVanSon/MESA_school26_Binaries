@@ -1,5 +1,6 @@
 ---
 title: "Binary stars: It Takes Two to Tango"
+author: Lieke Van Son (Lead) Matthias Fabry, Annachiara Picco, Lucas de Sá, 
 cascade:
   type: docs
 toc: false
