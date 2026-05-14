@@ -537,18 +537,14 @@ Inside your `inlist1`:
 
 
 ### Computing the time delay
+<a id="eq-tdelay"></a>
 Compact binaries composed of neutron stars and BHs gradually lose orbital energy through the emission of gravitational waves. As a consequence, the orbit shrinks over time until the two compact objects eventually merge.  
 
 The **gravitational-wave time delay** (or simply *delay time*) is the time required for this inspiral and merger to occur **if gravitational-wave emission were the only process acting on the binary orbit**. Delay times are particularly important in astrophysics because they determine *when* mergers happen relative to the formation of the stars, and therefore affect the populations of gravitational-wave sources observed by detectors such as LIGO, Virgo and KAGRA[^GWTC4].
 
 For a circular orbit, the merger timescale derived by Peters (1964)[^peters1964] is
 
-$$
-t_{\rm delay} =
-\frac{5}{256}
-\frac{c^5 a^4}
-{G^3 m_1 m_2 (m_1 + m_2)} ,
-$$
+$$t_{\rm delay} =\frac{5}{256}\frac{c^5 a^4}{G^3 m_1 m_2 (m_1 + m_2)} ,\,\tag{1}$$
 
 where:
 
@@ -1859,24 +1855,23 @@ end do
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's implement: 
-1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar`. 
-2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`.
+If you have time, try to implement:
+1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar` -> this task will teach you how to transport information from `run_star_extras.f90` to `run_binary_extras.f90` with `s% xtra`!
+2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`-> there's nothing difficult in this task, it is basically the same calculation as you did in [here](#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>
    
-Feel free to try yourself if you have time by reading all the hints below, or just copy the full solution from here:
-
-{{< details title="Fully solved `data_for_extra_binary_history_columns`" closed="true" >}}
-```fortran
-do k=1, s% nz
-  if (s% X(k) > 0.1d0) then
-      Ebind = ...
-  else
-      exit
-  end if
-end do
-```
-{{< /details >}}
-
+>[!CAUTION]
+>🚨🚨 No problem if you don't have time to try, but still copy the full solution from here into your `run_binary_extras.f90`:
+>{{< details title="Fully solved `data_for_extra_binary_history_columns`" closed="true" >}}
+>```fortran
+>do k=1, s% nz
+>  if (s% X(k) > 0.1d0) then
+>      Ebind = ...
+>  else
+>      exit
+>  end if
+>end do
+>```
+>{{< /details >}}
 </div>
 
 > [!WARNING]
