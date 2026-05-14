@@ -7,7 +7,10 @@ toc: true
 
 # Lab 2: Stellar Swirling
 
-some general intro
+10:45 AM–12:00 PM
+Timing: 10 min lecture + 1 hour MESA material
+
+
 
 ## Overview/Learning goals
 

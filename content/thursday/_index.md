@@ -17,19 +17,19 @@ This repository contains the Hugo content for the Thursday session of the MESA s
 
 ## Download Starter Files
 
-### Lab 1
+### Lab 1 : 'Give or Take'
 
 - [inlist](/thursday/lab1/inlist)
 - [inlist_project](/thursday/lab1/inlist_project)
 - [inlist_pgstar](/thursday/lab1/inlist_pgstar)
 
-### Lab 2
+### Lab 2: 'Stellar Swing'
 
 - [inlist](/thursday/lab2/inlist)
 - [inlist_project](/thursday/lab2/inlist_project)
 - [inlist_pgstar](/thursday/lab2/inlist_pgstar)
 
-### Lab 3
+### Lab 3: `Stable Relationships'
 
 - [inlist](/thursday/lab3/inlist)
 - [inlist_project](/thursday/lab3/inlist_project)

@@ -1,4 +1,5 @@
 .DS_Store
+static/thursday/extra/.venv 
 
 # Hugo build output
 public/
