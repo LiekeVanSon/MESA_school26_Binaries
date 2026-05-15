@@ -6,49 +6,76 @@ math: true
 toc: true
 ---
 
+
+<span style="color: #e7876c;">Timing: approximately 1.5 hour divided into 2 x 45 min blocks </span>
+
+
 <!-- # Lab 2: Stellar Swinging -->
 ## Overview
 
-*LUCAS: note on the figures, I'm still missing a normal HR track X CHE HR track figure in Move 1; then I will copy the whole evolutionary diagram to the conclusions to match the Lab 1 style instead of leaving fragments sprinkled throughout*
+<!-- *LUCAS: note on the figures, I'm still missing a normal HR track X CHE HR track figure in Move 1; then I will copy the whole evolutionary diagram to the conclusions to match the Lab 1 style instead of leaving fragments sprinkled throughout*
+Lieke: I think the fragments actually work since the landing page of Thursday shows the overview already as well :) -->
 
-In the previous lab, we explored the occurrence of mass transfer in binaries, and saw its effects not only on the stellar mass, but also on its radius and on the orbital separation. Mass transfer is triggered by stellar expansion in close orbits, and, expansion being a common feature of massive stellar evolution, so should mass transfer be in those tight binaries. This needs not be so, however, if even stars are *rapidly rotating*. Rotation can have dramatic effects in stellar evolution, including on the mass-radius relation, and as a consequence on the occurrence of mass transfer. In Lab 2, we will look at the effect of rapid rotation on the structure of $40-100\,\mathrm{M}_\odot$ stars and their BH products. Along the way, we will also learn how to add a brand new history column to our output.
+
+In the previous lab, we have seen how stellar expansion leads to mass transfer, which affects their mass, radius, and orbital separation. 
+
+However, *rapid rotation* can fundamentally change this picture. 
+Rotation can have dramatic effects on the mass-radius relation, and as a consequence on the occurrence of mass transfer. 
+In Lab 2, we will look at the effect of rapid rotation on the structure of $40-100\,\mathrm{M}_\odot$ stars and their BH products. Along the way, we will also learn how to add a brand new history column to our output.
 
 
 ## Move 1: introduction to chemically homogeneous evolution
 
-*LUCAS: I'm worried this intro is still too long; I cut parts and put some in detail boxes for the curious, but even then I can do a second cutting pass with a bit more time; should I consider keeping the details boxes a risk? It would be better for no one to get too distracted...*
+<!-- *LUCAS: I'm worried this intro is still too long; I cut parts and put some in detail boxes for the curious, but even then I can do a second cutting pass with a bit more time; should I consider keeping the details boxes a risk? It would be better for no one to get too distracted...* 
+Lieke: I've cut and simplified text where I could, but please let me know if you disagree -->
+
 
 ![TidalLocking](lab2/figures/intro0tidallylocked.gif)
-Different modes of rotation can induce different kinds of mixing processes throughout the radiative envelope of a star, but in this lab we will focus on a single one: **Eddington-Sweet** (ES), or **meridional**, **circulation**. ES circulation sets in as a consequence of the oblateness of stars that are rotating at an appreciable fraction of their critical rotation rate. In order to remain in equilibrium in this deformed geometry, the radiative envelope develops internal large-scale currents throughout the radiative envelope, where material sinks to the center on the equator, and floats to the surface around the poles, which is ES circulation. Since the convective core is already chemically homogeneous, the result is what we call a **chemically homogeneously evolving**, or CHE, star. 
 
-The time ES circulation takes to transport a mass element all the way from core to surface defines its timescale, which is roughly
+Rapidly rotating stars become rotationally deformed (oblate), which prevents them from being simultaneously in hydrostatic and thermal equilibrium (the von Zeipel paradox). 
+To resolve this, large-scale currents develop throughout the radiative envelope: material sinks toward the center at the equator and rises to the surface at the poles. These **Eddington-Sweet (ES) circulations** circulation[^eddington1929][^sweet1950], or **meridional circulations**,  mix hydrogen from the outer envelope into the convective core, causing the star to evolve as a single well-mixed entity. 
+We call this **chemically homogeneous evolution** (CHE).
+
+
+The time ES timescale (i.e., how long a circulation takes to transport a mass element all the way from core to surface) is roughly
 
 $$\tau_\mathrm{ES} = \frac{\mathrm{\tau_\mathrm{KH}}}{(\Omega/\Omega_\mathrm{c})^2},$$
 
-where $\tau_\mathrm{KH}$ is the star's thermal timescale, $\Omega$ is its angular rotation speed (assuming rigid body rotation), and $\Omega_\mathrm{c}$ is its critical $\Omega$ (at which the centrifugal force equals gravity on the surface). The star must terefore sustain a very high $\Omega$ during the MS to remain CHE. It is generally assumed that this is achieved through tidal forces: in a binary with period of a few days or less, tides are strong enough that we can assume the star is synchronized to the orbital period at birth. That orbital period itself being very short, the star will also be spinning with a short period.
+where $\tau_\mathrm{KH}$ is the star's thermal timescale, $\Omega$ is its angular rotation speed (assuming rigid body rotation), and $\Omega_\mathrm{c}$ is its critical $\Omega$ (at which the centrifugal force equals gravity on the surface). 
+For ES circulations to be effective, we need a short ES timescale, and CHE thus requires the star to maintain near-critical rotation throughout the MS.
+This can be achieved in a very tight binary where tidal synchronization keeps the star spinning rapidly for the duration of the MS.
+
 
 ![Collapse stages of CHE evolution](lab2/figures/che_diagram1.png)
 
-While ES circulation is induced by the tight orbit, it is also what allows the binary to survive without undergoing mass transfer, and eventually a stellar merger. As the core composition evolves through hydrogen burning, the currents in the envelope keep the whole star thoroughly mixed.By the time hydrogen depletes in the core, the surface will also be hydrogen-poor, if not hydrogen-free, and you have a bare He core, or He star, and are on the way to forming a Wolf-Rayet star. He stars are characteriscally compact, and therefore the defining feature of CHE star is that they remain compact during the MS and further contract afterwards. In the HR diagram, their tracks bend to the left (hotter), rather than right (cooler).
+Because CHE stars lack a core-envelope structure, they never develop the expanding envelope that would otherwise drive mass transfer. Instead, they remain compact during the MS and further contract afterwards.
+In the HR diagram, CHE stars evolve to the left (hotter temperatures), rather than expanding to the right as cool RSGs. 
+As they evolve, they become progressively hydrogen-free, and you are left with a bare He star and potentially a Wolf-Rayet star.
 
 ![Collapse stages of CHE evolution](lab2/figures/che_diagram2.png)
 
 {{<details title="💡Is a He star not a Wolf-Rayet star?" closed="true">}}
-Not always! While all Wolf-Rayet stars are He stars, Wolf-Rayet is a (mostly) well-defined collection of spectral types defined by the absence or near-absence of hydrogen lines, and by the presence of certain key emission lines from nitrogen, carbon and/or oxygen. Those lines are only excited at temperatures significantly higher than those characteristic of MS star surfaces - and therefore we should generally expect our star to spend at least some of its time as a He star with an O-type or O/WN spectrum. This last case, a "slash star", is a transitional type between the O-type and the coolest type of WR.
+`Wolf-Rayet' star is an observational classification; a spectral class defined by broad emission lines in nitrogen, carbon and/or oxygen (and the absence or near-absence of hydrogen lines). 
+'Helium star' is a theoretical/structural classification, referring to a star that (for some reason) does not have a hydrogen envelope. 
+So while WR stars are typically interpreted as He stars, not all He stars will observationally be classified as WR stars. 
+<!-- Those lines are only excited at temperatures significantly higher than those characteristic of MS star surfaces - and therefore we should generally expect our star to spend at least some of its time as a He star with an O-type or O/WN spectrum. 
+This last case, a "slash star", is a transitional type between the O-type and the coolest type of WR. -->
 {{< /details >}}
 
 
-In Lab 2, we will explore the conditions under which a star is able to evolve chemically homogeneously, and calculate the resulting black hole (BH) spins that can be expected from this kind of object. Assuming that rotation comes from tidal synchronization, we will vary the initial orbital period of a massive star binary, test what happens if a star is spun-up in the middle of the MS, compute BH spins, and try out variations of AM transport mechanisms.
+<!-- Let's explore the conditions under which a star is able to evolve chemically homogeneously, and calculate the resulting black hole (BH) spins that can be expected from this kind of object.  -->
+<!-- Assuming that rotation comes from tidal synchronization, we will vary the initial orbital period of a massive star binary, test what happens if a star is spun-up in the middle of the MS, compute BH spins, and try out variations of AM transport mechanisms. -->
 
-*LUCAS: looking at this now and at previous labs, I don't think I can fit a theory of 1D implementation of mixing processes here.  I could still put it in slides and explain it live. We should settle this with the labs in hand.*
+<!-- *LUCAS: looking at this now and at previous labs, I don't think I can fit a theory of 1D implementation of mixing processes here.  I could still put it in slides and explain it live. We should settle this with the labs in hand.* -->
+<!-- *Lieke: I din't we will be very much short for time, we can indeed decide when everything else is set in stone, but the lectures should prioritize explaining materials they _need_ to know for the exercises! * -->
 
 ## Move 2: starting in *close position*, or CHE stars in the MS
 ![ClosePosition](lab2/figures/step1close.gif)
-
-We have seen that that the timescale of ES circulation depends primarily on the mass (through the thermal timescale) and the rotation rate of our stars. Assuming that tidal forces are the source of that rotation, let's put our massive stars in a short-period binary like we did in Lab 1 and see what combinations of mass and orbital period produce CHE. 
+ 
+Since the timescale of ES circulation depends primarily on stellar mass and rotation rate, let's place our massive stars in short-period binaries where tides maintain rapid rotation and see what combinations of mass and orbital period produce CHE. 
 
 > [!Note]
-> To get started, set up a work folder for Lab 2, then download to it the `initial_model` folder from **[here](/static/thursday/lab2/initial_model.tar)**  and untar it. Do the same for the `binary_template` folder from **[here](/static/thursday/lab2/binary_template.tar)**.The `initial_model` contains a basic single star setup to generate our ZAMS models. In `binary_template`, the inlists contain most of the settings for our runs, and the `.list` files necessary output. The `src/run_star_extras.f90` contains a custom implementation of stellar winds geared towards CHE stars. We will later go back to the extras file.
+> To get started, set up a work folder for Lab 2, then download to it the `initial_model` folder from **[here](../lab2/initial_model.tar)**  and untar it. Do the same for the `binary_template` folder from **[here](../lab2/binary_template.tar)**.The `initial_model` contains a basic single star setup to generate our ZAMS models. In `binary_template`, the inlists contain most of the settings for our runs, and the `.list` files necessary output. The `src/run_star_extras.f90` contains a custom implementation of stellar winds geared towards CHE stars. We will later go back to the extras file.
 
 With your work folder setup, choose one of the following masses for your stars, which you will carry through to the end of the lab. More massive stars take longer to run, so pick based on how your computer performed in previous labs! 
 
@@ -69,14 +96,13 @@ Add to `inlist_project`,
 ```
 {{</details>}}
 
-CHE stars in binaries are amenable to being treated as twins because they are generally expected to have close masses (when tides are strongest) and suffer near net-zero mass transfer (being compact). We will leverage that fact to cut our runtime in half by solving the primary's structure only, and telling MESA to treat the secondary as if it were identitical to the primary. Relative to simply solving the primary as a single star, running it in a binary with a twin keeps the effect of tides and accounts for both stars' mass-loss in computing the orbital evolution.
-
-*LUCAS: I can't really spend time explaining why no mass transfer twins is a reasonable assumption for CHE, so I stated it; I could not even mention it and go ahead with twin modeling as a computational speed expediency*
+CHE stars in binaries are amenable to being treated as twins because they are generally expected to have nearly equal masses (when tides are strongest) and suffer near net-zero mass transfer (being compact). 
+This allows us to solve only the primary's structure; we'll tell MESA to treat the secondary as if it were identitical to the primary. This cuts our runtime in half!
 
 We will manually adapt the setup in `binary_template` to evolve our stars as twins. MESA already has a setting for this, which you will be able to find in the inlist defaults.
 
 > [!Warning]
-> Even when you set the stars to be treated as twins, you must explicitly set the secondary to have the same mass as the primary. Otherwise, an implementation quirk will make it so that their mass is not the same at startup, and you will get spurious behavior.
+> Even when you set the stars to be treated as twins, you must explicitly set the secondary to have the same mass as the primary.
 
 The `inlist_star` file is already set up for a CHE star and to load `zams.mod` as a starting model. In `inlist_project`,
 1. Point the primary to `inlist_star`, and set the secondary to have the same starting mass as the primary.
@@ -102,7 +128,10 @@ Add
 ```
 {{</details>}}
 
-Regardless of your chosen mass, CHE is always achievable somewhere below $2\,\mathrm{d}$. Within this period range, you will now find an initial $P$ that leads to CHE from the table below, which you will carry to the further parts of the lab. Even when one of your runs fails to go CHE, watch the pgplot window and take note of the termination code. There is also physics in why stars do *not* go CHE.
+
+
+<!-- Regardless of your chosen mass, CHE is always achievable somewhere below $2\,\mathrm{d}$. Within this period range,  -->
+3. Pick an initial $P$ from the table below and set it in `inlist_project`. Then `./mk` and `./rn` your binary.
 
 | $P_\mathrm{orb}/\mathrm{d}$ | $P_\mathrm{orb}/\mathrm{d}$ |
 | :-------------------------- | :-------------------------- |
@@ -113,17 +142,6 @@ Regardless of your chosen mass, CHE is always achievable somewhere below $2\,\ma
 | 1.30 | 1.90 |
 | 1.40 | 2.00 |
 
-*LUCAS: removing the period exploration and instead giving fixed m1,p pairs to students is an easy way to leave more time for later exercises*
-
-Now follow the instructions below,
-
-1. Recall the definition of $\tau_\mathrm{ES}$. Roughly, how close to your choosen mass's $P_{\min}$ do you think your $P_\mathrm{max}$ is? Do you expect $P_{\max}$ to vary much across the mass range?
-
-{{<details title="Solution" closed="true">}}
-This question is about developing intuition for the timescale of ES circulation. It is proportional to the thermal timescale, which is shorter for more massive stars, divided by the rotation rate. Therefore, the more massive star, the more it can get away with slower rotation while still developing fast mixing. Because of this, you can expect $P_{\max}$ to increase with stellar mass and move away from $P_{\min}$. The allowed period range widens with growing mass.
-{{</details>}}
-
-2. Choose an initial period in days and set it in `inlist_project`.
 
 {{<details title="Solution" closed="true">}}
 Nothing changes from Lab 1 here. Simply include
@@ -133,31 +151,46 @@ Nothing changes from Lab 1 here. Simply include
 ```
 {{</details>}}
 
-3. Watch the pgplot window, in particular the HR diagram and the diffusion coefficient plot. Is your star behaving differently from a non-rotating MS star in the HR diagram? What does each diffusion coefficient represent, and how do different mixing modes contribute to mixing from center to surface? Can you tell just from watching them whether your star is going homogeneous or not?  
+
+As your model is running, answer the following questions:
+
+<!-- Even when your run fails to go CHE , watch the pgplot window and take note of the termination code.  -->
+<!-- There is also physics in why stars do *not* go CHE. -->
+
+1. Watch the pgplot window, in particular the HR diagram and the diffusion coefficient plot. Is your star evolving CHE? How can you tell? Look at the different diffusion coefficients, what do they represent, and how do different mixing modes contribute to mixing from center to surface? 
 {{<details title="Solution" closed="true">}}
-If your star is going CHE, as we saw in the introduction, it should move blue-wards in the HR diagram (to the high temperatures, to the left) for almost the entire MS, indicating very little to no expansion. If it starts moving red-wards, MESA will stop the run very soon due to it not going CHE. 
+If your star is going CHE, it should move blue-wards in the HR diagram (to the high temperatures, to the left) for almost the entire MS, indicating very little to no expansion. If it starts moving red-wards, MESA will stop the run very soon due to it not going CHE. 
 
 In the diffusion panel, you should be able to find the convective core (dominated by $D_\mathrm{conv}$) and the overshooting layer above it ($D_\mathrm{ovr}$). Everything above it is the radiative envelope, which, if your star is going CHE, is dominated by the ES circulation ($D_\mathrm{ES}$). The large scale picture is: the core is mixed by convection, the envelope by ES circulation, and the two are connected by convective overshooting. The contribution throughout from $D_\mathrm{GSF}$ corresponds to the Goldreich-Schubert-Fricke instability, another rotational instability.
 
 If your star does not go CHE, you might spot a narrow strip above the overshooting region where $D_\mathrm{ES}$ drops to zero before MESA even stops the run, chemically disconnecting core and envelope. Once the difference between the surface and center abundaces of He reachs $0.2$, the run stops.
 {{</details>}}
 
-4. If your run is stopped before reaching the end of the MS, note the termination message. What was the reason? This should tell you whether you need to move the period up or down.
+
+2. How do you think the period range for CHE depends on initial mass? (Recall the definition of $\tau_\mathrm{ES}$.)
 
 {{<details title="Solution" closed="true">}}
-There are only a few termination messages you should be able to get in a stable run. If you see `Terminate due to primary not evolving homogeneously`, that means your star is not spinning rapidly enough and needs to be in a closer orbit. If you see `termination code: Terminate because of overflowing initial model` (or L2 overflow), it means your stars are so close they would have undergone an episode of likely unstable mass transfer and merged; in this case, you need a wider orbit.
+The timescale of ES circulation scales with the thermal timescale (shorter for more massive stars) divided by the rotation rate. More massive stars can therefore sustain efficient mixing at slower rotation rates, so $P_{\max}$ increases with mass and the allowed period range widens.
 {{</details>}}
 
-Note that MESA still tracks the Roche lobe geometry even as the mass transfer rate is set to zero. This is what allows us to compute stellar structure only once while still self-consistently tracking the occurence of Roche lobe or L2 overflow. 
+3. If your run is stopped before reaching the end of the MS, note the termination message. What was the reason? This should tell you whether you need to move the period up or down to achieve a CHE star.
+
+{{<details title="Solution" closed="true">}}
+There are only a few termination messages you should be getting during this run. If you see `Terminate due to primary not evolving homogeneously`, that means your star is not spinning rapidly enough and needs to be in a closer orbit. If you see `termination code: Terminate because of overflowing initial model` (or L2 overflow), it means your stars are so close they would have undergone an episode of likely unstable mass transfer and merged; in this case, you need a wider orbit.
+{{</details>}}
+
+<!-- Note that MESA still tracks the Roche lobe geometry even as the mass transfer rate is set to zero. This is what allows us to compute stellar structure only once while still self-consistently tracking the occurence of Roche lobe or L2 overflow.  -->
 
 > [!Warning]
 > Regardless of mass, a succesful MS CHE run is not supposed to take more than 8 minutes, potentially no more than 3 min for the low masses. If you picked one of the higher masses and find yourself waiting for longer than this, try a lower mass. 
 
-{{<details title="💡More on very massive stars in the HRD" closed="true">}}
-If you are following the mass-loss rate plot, specially if you picked a greater mass, you might notice it suddenly starts to increase, and the uptick in mass-loss causes your star to dip down in luminositny sharply. Unfortunately, we will not have time in our lab to go in-depth into stellar winds, but this behavior is a direct consequence of the inclusion of MS optically-thick winds in our setup, which are normally characteristic of very massive stars ($\gtrsim100\,\mathrm{M}_\odot$), but can get triggered at lower masses for CHE. As a bonus exercise, you may try later to figure out why that is so by looking at the `wyoming_wind` subroutine implemented in the `run_star_extras`.
+{{<details title="💡More on very massive stars and winds" closed="true">}}
+If you are following the mass-loss rate plot, specially if you picked a greater mass, you might notice it suddenly starts to increase, and the uptick in mass-loss causes your star to dip down in luminositny sharply. 
+This behavior is a direct consequence of the inclusion of MS optically-thick winds in our setup, which are normally characteristic of very massive stars ($\gtrsim100\,\mathrm{M}_\odot$), but can get triggered at lower masses for CHE. As a bonus exercise, you may try later to figure out why that is so by looking at the `wyoming_wind` subroutine implemented in the `run_star_extras`.
 {{</details>}}
 
-By the end of this step, you should have an initial mass, orbital period pair that leads to CHE across the MS, which you will keep for the next exercises. If you run out of time, feel free to check the solution below so you can generate a model for the next step.
+If you ended up picking a period that did _not_ leat to CHE, (i.e., you did not get the `termination code: xa_central_lower_limit`) please pick another period and try again. By the end of this step, you should have an initial mass, orbital period pair that leads to CHE across the MS.
+If you run out of time, feel free to check the solution below so you can generate a model for the next step.
 
 {{<details title="Solution: CHE mass, period pairs" closed="true">}}
 If you are having trouble, some reliable settings to get CHE are:
@@ -177,8 +210,9 @@ If you are having trouble, some reliable settings to get CHE are:
 ## Move 3: do the *rock step*, or post-MS
 ![SpinningUp](lab2/figures/step2rock.gif)
 
-
-Besides BH masses, BH spins also are a key quantity that is imprinted in GW signals and can help lift degeneracies between BH formation channels that populate the same mass range. As rapidly rotating stars, CHE stars are natural candidates for producing high-spin BHs, which would stand out from the current, low-spin-dominated, population of merging BBHs. In order to get a more accurate estimate of the BH spins produced by CHE stars, we will now take one of our models from the previous sessions, and run it up to He depletion by restarting the run from where we stoppped  with `./re`.
+With their high masses and short periods, CHE stars are natural candidates for producing merging binary black hole systems. 
+As rapidly rotating stars, CHE stars are natural candidates for producing high-spin BHs, which would stand out from the current, low-spin-dominated, population of merging BBHs. 
+To get an estimate of the BH spins produced by CHE stars, we will now take one of our models from the previous sessions, and run it up to He depletion by restarting the run from where we stoppped  with `./re`.
 
 
 1. First, change the stopping condition from hydrogen to helium depletion. The restarted run will re-read the inlists and pick this up.
@@ -197,7 +231,7 @@ xa_central_lower_limit(1) = 1d-5
 
 2. Add the "Dynamo" plot to the middle column so that we can see the evolution of the internal specific angular momentum ($j$) profile.
 {{<details title="Solution" closed="true">}}
-Where we had the "abundance-power-mixing" plot we should now have
+In the  `&pgstar` section of `inlist_star`, where we had the "abundance-power-mixing" plot we should now have 'Abundance-Power-Mixing-Dynamo', i.e., 
 ```fortran
 Grid2_plot_name(3) = 'Profile_Panels4'
 Profile_Panels4_title = 'Abundance-Power-Mixing-Dynamo'
@@ -210,7 +244,18 @@ Profile_Panels4_yaxis_name(4) = 'Dynamo'
 {{</details>}}
 
 
-3. Restart your run with `./re`. Watch the HR diagram, the Kippenhahn diagram, the new angular momentum plot in the dynamo panel, and the tidal synchronization timescale in the text summary. How does your star behave? Would it be accurate to say that it never expands at all? Take the time to compare your results to neighbors running different masses, both during and after the MS. Do their tracks look very different from yours?
+Restart your run with `./re`. Watch the new angular momentum plot in the dynamo panel, and the tidal synchronization timescale in the text summary. 
+
+3. Does the angular momentum profile of your star change at all? Comparing with your neighbors, you might find that the answer depends quite a bit on your mass. The initial shape of the profile is characteristic of rigidly-rotating bodies. Does your star retain that shape, or does the profile deform, developing *differential rotation*? --- different layers rotating with different $\Omega$?
+{{<details title="Solution" closed="true">}}
+Only more massive stars develop differential rotation. This is because the driver of differential rotation is wind mass-loss, which only spins down the surface. More massive stars have higher mass-loss rates, and therefore are able to develop differential rotation.
+
+Post-MS, the tidal synchronization timescale grows by orders of magnitude, while the mass-loss continues to rise. The `p_orb_div_p_rot_1` column in pgplot will tell you whether your star's spin period is shorter or longer than the orbital period.
+We see that the synchronization timescale becomes so long that the wind mass-loss becomes the dominant source of torque, and it exclusively spins the star down.
+{{</details>}}
+
+
+4. Now looking at HR diagram and the Kippenhahn diagram: would it be accurate to say that it never expands at all? Take the time to compare your results to neighbors running different masses, both during and after the MS. Do their tracks look very different from yours?
 
 {{<details title="Solution" closed="true">}}
 
@@ -221,25 +266,22 @@ From the Kippenhahn diagram, we can see that that brief expansion happens after 
 Eventually, the core ignite helium and stops contracting. At this point the envelope contracts again, and the star continues to contract as helium is burned. The "hook" feature makes it very easy to identify H shell ignition and He core ignition, when it is present.
 {{</details>}}
 
-4. Has the angular momentum profile of your star changed at all by the end of the run? Comparing with your neighbors, you might find that the answer depends quite a bit on your mass. The initial shape of the profile is characteristic of rigidly-rotating bodies. Does your star retain that shape, or does the profile deform, developing *differential rotation*? --- different layers rotating with different $\Omega$?
-{{<details title="Solution" closed="true">}}
-Only more massive stars develop differential rotation. This is because the driver of differential rotation is wind mass-loss, which only spins down the surface. More massive stars have higher mass-loss rates, and therefore are able to develop differential rotation.
 
-Post-MS, the tidal synchronization timescale grows by orders of magnitude, while the mass-loss continues to rise. The `p_orb_div_p_rot_1` column in pgplot will tell you whether your star's spin period is shorter or longer than the orbital period, but at any rate the synchronization timescale becomes so long that the wind mass-loss becomes the dominant source of torque, and it exclusively spins the star down.
-{{</details>}}
 
-The development of differential rotation is limited by any form of angular momentum (AM) transport inside the star, which will try to redistribute AM away from high-$j$ to low-$j$ regions. By default, we have worked since the beginning with the *Tayler-Spruit dynamo*, which for a wide range of masses is enough to keep the star rigidly rotating to the end of He burning.
+The development of differential rotation is closely linked to angular momentum (AM) transport inside the star, which will try to redistribute AM away from high-$j$ to low-$j$ regions. 
+So far we have used  the *Tayler-Spruit dynamo*, which for a wide range of masses is enough to keep the star rigidly rotating to the end of He burning.
 
-More crucially for BHs, wind mass-loss only spins down the surface of the star, but not the core, which will eventually be the seed for BH formation. Post-MS, the core is already spinning more rapidly than it was at the end of the MS due to conservation of AM and its post-MS contraction, and therefore it needs to rely on AM transport outwards to spin down.
+Note however that wind mass-loss only spins down the surface of the star, but not the core, which will eventually be the seed spin for BH formation. Post-MS, the core is spinning more rapidly than it was at the end of the MS due to the post-MS contraction. To create a slowly spinning BH, it would thus need to efficiently transport the AM outwards.
 
 ## Move 4: *open position* into *underarm twirl*, or the He core spin
 ![OpenPosition](lab2/figures/step3underarm.gif)
 
-In this last part, we will use the mass and spin of our CHE stars at the end of He burning to estimate the produced BH masses and spins under different prescriptions for AM transport. The BH dimensionless spin parameter, $\chi$ (sometimes called $a$), is defined as 
+We will next use the mass and spin of our CHE stars at the end of He burning to estimate the produced BH masses and spins. 
+The BH dimensionless spin parameter, $\chi$ (sometimes called $a$), is defined as 
 
 $$\chi:=\frac{cJ}{GM^2},$$
+and takes on values between $0$ (non-spinning) and $1$ (maximally spinning). 
 
-and takes on values between $0$ and $1$. Our first task will be to implement a new history column through `run_star_extras` named `chi_he_core` that will track this parameter for the He core. While our CHE stars are already all He core (such that the core mass and spin are simply the total mass and spin), explicitly looking for the He core boundary will allow the same column to be used for stars with a hydrogen envelope later.
 
 {{<details title="Why $0<\chi<1$?" closed="true">}}
 
@@ -254,15 +296,24 @@ $$\chi:=\frac{cJ}{GM^2}\leq1,$$
 also encodes the assumption that the BH is electrically neutral, which follows reasonably from stellar evolution.
 {{</details>}}
 
-For implementing a new column in `run_star_extras`, we will rely on a few quantities that are already internally computed in mesa and available through a `star_info` object, instantiated as `s`. Scalar quantities stored in `s` can be recovered as `s% property_name`, while arrays can be recovered as `s% array_name(index or indices)`. The available properties are listed in `star_data\public`. 
+
+We are going to implement a new history column through `run_star_extras` named `chi_he_core` that will track $\chi$ for the He core. 
+While our CHE stars are already almost one big He core (such that the core mass and spin are essentially the total mass and spin), explicitly looking for the He core boundary will allow the same column to be used for stars with a hydrogen envelope later.
+
+
+To implement a new column in `run_star_extras`, we will rely on a few quantities that are internally computed in mesa and available through a `star_info` object, instantiated as `s`. 
+Scalar quantities stored in `s` can be recovered as `s% property_name`, while arrays can be recovered as `s% array_name(index or indices)`. The available properties are listed in `$MESA_DIR/star_data/public`. 
+
 
 > [!Note]
 > MESA arrays run from the surface to the center. The index of the innermost "shell" corresponds to the total number of zones into which the star is divided, which is stored as `s% nz`. Fortran arrays can be sliced as `array(index1:index2)`. 
 
 For calculating physical quantities, MESA already includes a large collection of physical constants in CGS in the `const_def` library. This library is already imported by default in `run_star_extras` and its constants, which you can find in `const/public/`, can be used directly. 
 
+<!-- Let's first make sure we understand how to get properties at the He core boundary.  -->
+MESA already finds and stores information about the He core boundary for us, so to start we just want to note down how to get the numbers we need to compute $\chi$. 
 
-1. Let's first make sure we understand how to get properties at the He core boundary. MESA already finds and stores information about the boundary for us, so to start we just want to note down how to get the numbers we need to compute $\chi$. Browse through `star_data/public` to find them. Keep an eye out for any quantities that are not stored in CGS; these cases are highlighted explicitly.
+1. Browse through `star_data/public` to find relevant parameters at the He core boundary. Keep an eye out for any quantities that are not stored in CGS; these cases are highlighted explicitly.
 {{<details title="Hint" closed="true">}}
 Try running `grep -rin he_core` inside `star_data/public`.
 {{</details>}}
@@ -285,9 +336,10 @@ While the mass is there, we are missing AM. We have, however, the index at the c
 
 Note also that `he_core_mass` is in Msun, not grams. We can convert it to the CGS by multiply it by `Msun` later.
 {{</details>}}
-2. While the He core mass is already available, we will need to compute the He core total AM ourselves by integrating the *specific* AM from the center to the He core boundary,
+
+2. We will need to compute the He core total AM ourselves by integrating the *specific* AM from the center to the He core boundary,
 $$J_\mathrm{He} = \int_0^{M_\mathrm{He}}j_\mathrm{rot}\,\mathrm{d}m.$$
-Look for the necessary arrays again in `star_data/public`.
+Look for the necessary arrays (`j_rot(k)`, and `dm(k)` ) again in `star_data/public`.
 {{<details title="Hint" closed="true">}}
 Try running `grep -rin "angular momentum"` inside `star_data/public`.
 {{</details>}}
@@ -296,7 +348,7 @@ The specific AM array is defined in `star_data/public/star_data_step_input.inc`,
 ```fortran
 ! rotation
 real(dp), pointer, dimension(:) :: j_rot ! (nz)
-! j_rot(k) is specific AM at outer edge of cell k; = i_rot*omega
+ ! j_rot(k) is specific angular momentum at outer edge of cell k; = i_rot*omega
 ```
 While the $\mathrm{d}m$ array --- here, the mass per shell --- is in `star_data/public/star_data_work_input.inc`
 ```fortran
@@ -306,7 +358,7 @@ real(dp), pointer :: dm(:)
 ```
 {{</details>}}
 
-*LUCAS: I thought it would be nice to let students look for the constants and he core parameters themselves, but since the lab is running long we could also just tell them how to call these properties*
+<!-- *LUCAS: I thought it would be nice to let students look for the constants and he core parameters themselves, but since the lab is running long we could also just tell them how to call these properties* -->
 
 3. Knowing which variables to call on, add the `chi_he_core` column through `run_star_extras.f90`. Remember to look for constants in `const/public` if you need them.
 {{<details title="Hint 1: constants" closed="true">}}
@@ -442,4 +494,6 @@ After uploading your profile, you can try running the notebook online. It should
 By the end of this lab, we have encountered first-hand the most dramatic difference between CHE and non-CHE stars --- their compactness, driven by rotation-driven Eddington-Sweet circulation ---, and how post-MS evolution can decouple the surface and core rotation rates.  We have also learned how to compute the BH spin corresponding to a He core, and how that assumption does not trivially hold. As we will return to in Lab 3, accretion can also spin stars up, but under very different circumstances from CHE, and the stellar-BH spin connection remains a fresh  topic.
 
 ## References
+[^eddington1929]: [Eddington (1929), Internal Circulation in Rotating Stars, MNRAS, 90, 54–59](https://ui.adsabs.harvard.edu/abs/1929MNRAS..90...54E)
+[^sweet1950]: [Sweet (1950), the rigorous follow-up treatment](https://ui.adsabs.harvard.edu/abs/1950MNRAS.110..548S)
 [^fullerlu2022]: [Fuller & Lu (2022), Angular momentum transport in massive stars](https://ui.adsabs.harvard.edu/search/q=author%3A%22Fuller%2C%20J%22%20author%3A%22Lu%2C%20W%22%20year%3A2022&sort=date%20desc%2C%20bibcode%20desc&p_=0)

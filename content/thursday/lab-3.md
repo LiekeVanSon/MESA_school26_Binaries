@@ -10,6 +10,10 @@ toc: true
 
 <!-- # Lab 3: Stable relationships -->
 
+
+<span style="color: #e7876c;">Timing: approximately 2 hours divided into 2 x 1 hour blocks </span>
+
+
 ## Introduction
 
 In this last minilab3 we will pick up on the system you evolved in minilab1 and follow its further evolution into a double black hole binary. Remember that at the end of your minilab1 you had two systems: 
@@ -750,9 +754,10 @@ Your `pgstar` window should look like something like this (this is the very last
 <!-- ![pgstar_stable_caseA_new](/thursday/lab3/pgstar_stable_caseA_new.png) -->
 <a id="fig-caseA"></a>
 
-<a href="/thursday/lab3/pgstar_stable_caseA_new.png" target="_blank">
+<!-- <a href="/thursday/lab3/pgstar_stable_caseA_new.png" target="_blank">
   <img src="/thursday/lab3/pgstar_stable_caseA_new.png" alt="Case A figure">
-</a>
+</a> -->
+[![Case A figure](/thursday/lab3/pgstar_stable_caseA_new.png)](/thursday/lab3/pgstar_stable_caseA_new.png)
 
 **Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
 
@@ -1542,9 +1547,10 @@ Your `pgstar` window should look like something like this (this is the very last
 <!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB_new.png) -->
 <a id="fig-caseB"></a>
 
-<a href="/thursday/lab3/pgstar_stable_caseB_new.png" target="_blank">
+<!-- <a href="/thursday/lab3/pgstar_stable_caseB_new.png" target="_blank">
   <img src="/thursday/lab3/pgstar_stable_caseB_new.png" alt="Case B figure">
-</a>
+</a> -->
+[![Case B figure](/thursday/lab3/pgstar_stable_caseB_new.png)](/thursday/lab3/pgstar_stable_caseB_new.png)
 
 **Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
 
