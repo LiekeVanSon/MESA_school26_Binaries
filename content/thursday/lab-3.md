@@ -2011,7 +2011,7 @@ If you have time, try to implement:
 >  names(3) = 'P_postCE(days)'
 >  ! Post-CE orbital separation in cm
 >  a_postCE = (b% s_donor% he_core_mass * Msun) * b% m(2) / &
->      ( (2d0 * b% s_donor% xtra(1)) / standard_cgrav + &
+>      ( (2d0 * abs(b% s_donor% xtra(1))) / standard_cgrav + &
 >      (b% m(1) * b% m(2)) / b% separation )
 >
 >  ! Post-CE orbital period in days
