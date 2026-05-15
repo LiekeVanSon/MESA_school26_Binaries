@@ -1973,8 +1973,8 @@ History_Panels1_other_yaxis_name(2) = 'log10(Mdot_KH)'
   </div>
 
 If you have time, try to implement:
-1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days (<a href="#eq-PpostCE">Eq. (6)</a>) as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar` → this task will teach you how to transport information from `run_star_extras.f90` to `run_binary_extras.f90` with `s% xtra`!
-2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`→ there's nothing difficult in this task, it is basically the same calculation as you did in [here](#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>.
+1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days (<a href="#eq-PpostCE">Eq. (6)</a>) as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar` → you will have to transport the `Ebind` information from `run_star_extras.f90` to `run_binary_extras.f90` with `s% xtra`!
+2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`→ there's nothing difficult in this task, it is basically the same calculation as you did in [here](#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>. But this time, we want to use the masses and separation post-CE!
    
 >[!CAUTION]
 >🚨🚨 No problem if you don't have time to try, but still copy the full solution from here into your `run_binary_extras.f90`:
@@ -2039,7 +2039,7 @@ If you have time, try to implement:
 > Text_Summary1_name(8,4) = 'tdelay_postCE(Gyr)'
 >```
 >{{< /details >}}
-> and bring up the count of the `how_many_extra_binary_history_columns = 4`.
+> and bring up this count: `how_many_extra_binary_history_columns = 4`.
 
 </div>
 
@@ -2087,7 +2087,7 @@ Well done, we're at our third and last run of the day!
 
 </div>
 
-Your `pgstar` window should look like something like this (this is the very last model, right when CE starts, number 560):
+Your `pgstar` window should look like something like this (this is the very last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, number 560):
 
 <!-- ![pgstar_CE_caseA](/thursday/lab3/pgstar_CE_caseA.png) -->
 <a id="fig-CEcaseA"></a>
@@ -2098,8 +2098,8 @@ Your `pgstar` window should look like something like this (this is the very last
 
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
-- Make sure `Ebind(erg)`
-- `mdot_kh` is appearing?
+- Make sure `log10(Mdot_KH)` is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
+- Make sure also the new Text Summary information from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the next discussion session and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!).
 
 ### Analysis of the run: runaway mass transfer!
 Here are some discussion points; you will only need to look at [Figure 4](#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
