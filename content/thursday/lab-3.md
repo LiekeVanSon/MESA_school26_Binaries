@@ -579,7 +579,7 @@ In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's compute the $t_{\mathrm{delay}}$ in Gigayears as an extra binary history column `tdelay(Gyr)` in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part.
+Let's compute the $t_{\mathrm{delay}}$ in Gigayears (<a href="#eq-tdelay">Eq. (1)</a>) as an extra binary history column `tdelay(Gyr)` in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part.
 </div>
 
 <details>
@@ -688,7 +688,7 @@ end function how_many_extra_binary_history_columns
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Search for the string "`TDELAY`" 😏
+  Search for the string "`TDELAY`" in `inlist1` 😏
 
 
   </div>
@@ -762,21 +762,31 @@ Your `pgstar` window should look like something like this (this is the very last
 ### Analysis of the run: Case A mass transfer!
 Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 1](#fig-caseA) (click to zoom in!). Try to think about it and answer together with your table.
 
-1. How much mass did the donor star lose?
+1. Which type of mass transfer do you observe in this star + BH run?  
    {{< details title="Solution" closed="true" >}}
-
+  The mass transfer starts during the Main Sequence → Case A!
+  You can see it from the shape of the Hertzsprung-Russel diagram (ask your TA if you don't know!).
 {{< /details >}}
-1. How much mass did the BH accrete?
-      {{< details title="Solution" closed="true" >}}
 
+2. How much mass did the donor star lose?
+   {{< details title="Solution" closed="true" >}}
+The donor star started from a mass of $39.8\:M_{\odot}$ (see [Table 1](#table-caseA)), and is now $23.95\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $15.85\:M_{\odot}$, which corresponds to 40% of its initial mass!
 {{< /details >}}
-2. How much did the orbit shrink?
+3. Is the donor star stripped to its core?
       {{< details title="Solution" closed="true" >}}
-
+Almost! Look at the Text Summary (`he_core_mass`) and / or the Kippenhahn diagram. The Helium core is $22.50\:M_{\odot}$, and the donor is stripped to a total mass of $23.95\:M_{\odot}$. The Helium core amounts to 93.9% of the star, while the Hydrogen-rich envelope amounts to $23.95−22.50=1.45\:M_{\odot}$, only 6.1%.
 {{< /details >}}
-3. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
+4. How much mass did the BH accrete? Do you understand why?
       {{< details title="Solution" closed="true" >}}
-
+The BH accretor started from a mass of $16.8\:M_{\odot}$ (see [Table 1](#table-caseA)), and is now $16.98\:M_{\odot}$ (see `star_2_mass` value). So it only accreted $0.18\:M_{\odot}$, so it increased its mass by only 1.1%. The Eddington-limited accretion made such that the mass transfer becomes almost completely non-conservative (i.e., all the material is expelled from the binary).
+{{< /details >}}
+5. How much did the orbit evolve during mass transfer? And what is the final period?
+  {{< details title="Solution" closed="true" >}}
+The system started with a period of $4.5$ days, and has followed a sort of parabola-shaped path (see the `log_period_days` plot) that has led to shrinkage. At the end of the mass transfer episode, the orbit is $2.4$ days wide. This amounts to almost 50% overall shrinkage!
+{{< /details >}}
+6. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
+      {{< details title="Solution" closed="true" >}}
+You have calculated the `tdelay(Gyr)` yourself 🌝 You see it is equal to 4.28 Gyr, less than the age of the Universe ($\sim 13.8\:\mathrm{Gyr}$). Yes, we have chirping binary black holes!
 {{< /details >}}
 
 
@@ -1544,19 +1554,24 @@ Your `pgstar` window should look like something like this (this is the very last
 ### Analysis of the run: Case B mass transfer!
 Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 3](#fig-caseB) (click to zoom in!). Try to think about it and answer together with your table.
 
-1. How much mass did the donor star lose?
+1. Which type of mass transfer do you observe in this star + BH run?  
+   {{< details title="Solution" closed="true" >}}
+  The mass transfer starts after the Main Sequence → Case B!
+  You can see it from the shape of the Hertzsprung-Russel diagram (ask your TA if you don't know!).
+{{< /details >}}
+2. How much mass did the donor star lose?
    {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
-1. How much mass did the BH accrete? Any difference with the previous run that was assuming Eddington-limited accretion?
+3. How much mass did the BH accrete? Any difference with the previous run that was assuming Eddington-limited accretion?
       {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
-2. How much did the orbit shrink? Compare with the previous run.
+4. How much did the orbit shrink? Compare with the previous run.
       {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
-1. Will the system merge within the age of the Universe?
+5. Will the system merge within the age of the Universe?
       {{< details title="Solution" closed="true" >}}
 
 {{< /details >}}
@@ -1662,7 +1677,7 @@ Calculate an extra history column `Ebind(erg)` for the binding energy $E_{\mathr
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Your `run_star_extras.f90` looks kinda empty because it is reading running the standard routines in `standard_run_star_extras.inc`. We need to copy those routines in here and modify them. Do you remember where they are? You can always do a 
+  Your `run_star_extras.f90` looks kinda empty because it is running the standard routines in `standard_run_star_extras.inc`. We need to copy those routines in here and modify them. Do you remember where they are? You can always do a 
   
   ```bash
   `grep -nri standard_run_star_extras.inc $MESA_DIR/star`
@@ -2098,8 +2113,8 @@ Your `pgstar` window should look like something like this (this is the very last
 
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
-- Make sure `log10(Mdot_KH)` is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
-- Make sure also the new Text Summary information from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the next discussion session and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!).
+- Make sure that **the Kelvin-Helmholtz rate `log10(Mdot_KH)`** is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
+- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!).
 
 ### Analysis of the run: runaway mass transfer!
 Here are some discussion points; you will only need to look at [Figure 4](#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
@@ -2127,7 +2142,10 @@ Here are some discussion points; you will only need to look at [Figure 4](#fig-C
 
 
 ## 3. Conclusions
-Congratulations for making it till here! 🥳🥳 In this last lab we have completed our overview of binary evolution from Zero Age Main Sequence stars to binary black holes. We have learned three possible ways to form gravitational wave sources from the star + BH configuration: Case A stable mass transfer, Case B stable mass transfer, and common envelope evolution, and all three possibilites have been shown to contribute to the observed sample of gravitational waves detected by LIGO, Virgo and KAGRA interferometers. Whether or not the relationship between star + BH remains stable determines different properties in the BH + BH resulting binary, and singling out the fingerprint of the different types of channel is still a hot topic: this is how the gravitational wave sources that we see today can teach us something about the (love and hate!) history of their parent stellar progenitors ♥️
+Congratulations for making it till here! 🥳🥳 In this last lab we have completed our overview of binary evolution from Zero Age Main Sequence stars to binary black holes. We have learned three possible ways to form gravitational wave sources from the star + BH configuration: Case A stable mass transfer, Case B stable mass transfer, and common envelope evolution, and all three possibilites have been shown to contribute to the observed sample of gravitational waves detected by LIGO, Virgo and KAGRA interferometers[^GWTC4]. 
+
+>[!IMPORTANT]
+>Whether or not the relationship between star + BH remains stable determines different properties in the BH + BH resulting binary, and singling out the fingerprint of the different channels is still a hot topic: this is how the gravitational wave sources that we see today can teach us something about the (love and hate!) history of their parent stellar progenitors ♥️
 
 ## References
 [^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P)
