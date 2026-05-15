@@ -176,7 +176,7 @@ history_interval = 1
 ```
 
 #### Modify `controls` in `inlist1`
-We will add a lot of options here that involve the individual stripped star model. Most of them are purely to make the run faster; we add also a prescription for the convective overshooting and a terminating condition at core-Helium depletion. Going through everything is beyond the scope of this lab (we are focusing on binaries here 🙃 and you have seen many of these already in the previous days), but feel free to dig into them! Remember that the exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/star/defaults/controls.defaults`.
+We will add a lot of options here that involve the individual stripped star model. Most of them are purely to make the run faster; we add also a prescription for the convective overshooting and a terminating condition at core-Helium depletion. Going through everything is beyond the scope of this lab (we are focusing on binaries here 🙃 and you have seen many of these already in the previous days), but feel free to dig into them later if you have time! Remember that the exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/star/defaults/controls.defaults`.
 
 {{< details title="Modified `controls` for `inlist1`" closed="true" >}}
 ```fortran
@@ -515,7 +515,7 @@ Load the right model from your <code>minilab1</code> in your `inlist1`.
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+  Checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
 
   </div>
 </details>
@@ -555,7 +555,7 @@ where:
 
 Notice the strong dependence $t_{\rm delay} \propto a^4$: even modestly wider binaries can take dramatically longer to merge. The dependence on the masses is a bit weaker, but the rule of thumb is that more massive systems will merge faster.
 
-In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\rm Gyr} = 10^9$ years, because this makes it easy to compare them to the age of the Universe ($\approx 13.8$ Gyr). This comparison tells us whether a compact binary has enough time to merge within cosmic history: binaries with $t_{\rm delay} \lesssim 13.8$ Gyr may merge and be observable today as gravitational-wave sources, while systems with longer delay times are effectively undetectable (technically, they have "not yet happened" anywhere in the Universe 🤓).
+In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\rm Gyr} = 10^9$ years, because this makes it easy to compare them to the age of the Universe \approx 13.8$ Gyr). This comparison tells us whether a compact binary has enough time to merge within cosmic history: binaries with $t_{\rm delay} \lesssim 13.8$ Gyr may merge and be observable today as gravitational-wave sources, while systems with longer delay times are effectively undetectable (technically, they have "not yet happened" anywhere in the Universe 🤓).
 
 > [!Note]
 > Remember that **so far, you have initialized a system with a star + BH**, since you have collapsed all the mass of the stripped star of minilab1 into a point mass <code>m2</code>, and initialized your <code>m1</code> to be the accretor of minilab1. **After evolving your system further**, your <code>m1</code> will reach Helium depletion in its core, and at the point it will very close to become the second BH of your system: that's how **you will achieve a BH + BH binary**! From that point onwards, the $t_{\mathrm{delay}}$ calculation will make sense, as the interaction between the two BHs is expected to be only via gravity.
@@ -778,15 +778,19 @@ Almost! Look at the Text Summary (`he_core_mass`) and / or the Kippenhahn diagra
 {{< /details >}}
 4. How much mass did the BH accrete? Do you understand why?
       {{< details title="Solution" closed="true" >}}
-The BH accretor started from a mass of $16.8\:M_{\odot}$ (see [Table 1](#table-caseA)), and is now $16.98\:M_{\odot}$ (see `star_2_mass` value). So it only accreted $0.18\:M_{\odot}$, so it increased its mass by only 1.1%. The Eddington-limited accretion made such that the mass transfer becomes almost completely non-conservative (i.e., all the material is expelled from the binary).
+The BH accretor started from a mass of $16.8\:M_{\odot}$ (see [Table 1](#table-caseA)), and is now $16.98\:M_{\odot}$ (see `star_2_mass` value). Therefore it only accreted $0.18\:M_{\odot}$, so it increased its mass by only 1.1%. The Eddington-limited accretion made such that the mass transfer becomes almost completely non-conservative (i.e., all the material is expelled from the binary).
 {{< /details >}}
-5. How much did the orbit evolve during mass transfer? And what is the final period?
+5. How did the orbit evolve during mass transfer? And what is the final period?
   {{< details title="Solution" closed="true" >}}
 The system started with a period of $4.5$ days, and has followed a sort of parabola-shaped path (see the `log_period_days` plot) that has led to shrinkage. At the end of the mass transfer episode, the orbit is $2.4$ days wide. This amounts to almost 50% overall shrinkage!
 {{< /details >}}
 6. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
       {{< details title="Solution" closed="true" >}}
 You have calculated the `tdelay(Gyr)` yourself 🌝 You see it is equal to 4.28 Gyr, less than the age of the Universe ($\sim 13.8\:\mathrm{Gyr}$). Yes, we have chirping binary black holes!
+{{< /details >}}
+7. How is the final mass ratio of your BH + BH binary?
+      {{< details title="Solution" closed="true" >}}
+The donor will collapse into a BH of mass $23.95\:M_{\odot}$, and the companion BH has a mass of $16.98\:M_{\odot}$. The mass ratio is then $\sim 0.7$! This number is right about what more detailed population synthesis studies expect for stable mass transfer to produce 😌 
 {{< /details >}}
 
 
@@ -803,17 +807,18 @@ Because the $L_2$ point is located farther away from the center of mass than the
 </a>
 **Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$s indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
 
+<a id="eq-Jdot_iso"></a>
 In practice, this introduces an additional contribution to the orbital angular momentum evolution of the binary system, which for simplicity we will write as
 
 $$\dot{J}_{\mathrm{ml}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}},$$
 
 where these $\dot{J}$ is the time derivative of the angular momentum component $J$ (and "ml" = mass loss). The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
 
-$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
+$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,\,\tag{2}$$
 
 while the standard isotropic re-emission contribution is
 
-$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{m_{\mathrm{donor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
+$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{m_{\mathrm{donor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .\,\tag{3}$$
 
 Here:
 
@@ -1342,6 +1347,7 @@ end subroutine my_adjust_mdots
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
+  This is the part in which you will use <a href="#eq-Jdot_iso">Eq. (2)</a> and <a href="#eq-Jdot_iso">Eq. (3)</a>.
   Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_jdot_ml` from `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`! So in the future, you will know where to start. 
 
   {{< details title="Guided skeleton of `my_jdot_ml`" closed="true" >}}
@@ -1559,21 +1565,25 @@ Here are some discussion points for you to understand what happened physically t
   The mass transfer starts after the Main Sequence → Case B!
   You can see it from the shape of the Hertzsprung-Russel diagram (ask your TA if you don't know!).
 {{< /details >}}
-2. How much mass did the donor star lose?
+2. How much mass did the donor star lose? How is it compared to the previous run that was assuming Eddington-limited accretion?
    {{< details title="Solution" closed="true" >}}
-
+The donor star started from a mass of $40.8\:M_{\odot}$ (see [Table 1](#table-caseB)), and is now $24.77\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $16.03\:M_{\odot}$, which corresponds to 40% of its initial mass! More or less, like in the Case A system.
 {{< /details >}}
-3. How much mass did the BH accrete? Any difference with the previous run that was assuming Eddington-limited accretion?
+3. How much mass did the BH accrete? Any difference with the previous run?
       {{< details title="Solution" closed="true" >}}
-
+The BH accretor started from a mass of $17.14\:M_{\odot}$ (see [Table 1](#table-caseB)), and is now... $17.14\:M_{\odot}$ (see `star_2_mass` value)! It accreted absolutely nothing, as we wanted. Our setup is constructed such that $\upsilon+\beta=1$, i.e. 100% of the mass that the donor transfers is expelled from the binary.
 {{< /details >}}
 4. How much did the orbit shrink? Compare with the previous run.
       {{< details title="Solution" closed="true" >}}
-
+The system started with a period of $32.2$ days. At the end of the mass transfer episode, the orbit is $3.0$ days wide. This amounts to 91% overall shrinkage! Quite wild, and for sure wilder than the Eddington-limited case.
 {{< /details >}}
 5. Will the system merge within the age of the Universe?
       {{< details title="Solution" closed="true" >}}
-
+We have in this case a time delay of $7.38$ Gyr. So yes, another chirping binary!
+{{< /details >}}
+6. How is the final mass ratio of your BH + BH binary? Any difference with the previous run?
+      {{< details title="Solution" closed="true" >}}
+The donor will collapse into a BH of mass $24.77\:M_{\odot}$, and the companion BH has a mass of $17.14\:M_{\odot}$. The mass ratio is then $\sim 0.7$! Not much difference with the previous run, and still consistent with population synthesis studies of stable mass transfer 😌 
 {{< /details >}}
 
 <!-- #### ➕ BONUS: CASE B comparison!
@@ -2102,7 +2112,7 @@ Well done, we're at our third and last run of the day!
 
 </div>
 
-Your `pgstar` window should look like something like this (this is the very last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, number 560):
+Your `pgstar` window should look like something like this (this is the very last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, model number 560):
 
 <!-- ![pgstar_CE_caseA](/thursday/lab3/pgstar_CE_caseA.png) -->
 <a id="fig-CEcaseA"></a>
@@ -2114,29 +2124,47 @@ Your `pgstar` window should look like something like this (this is the very last
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
 - Make sure that **the Kelvin-Helmholtz rate `log10(Mdot_KH)`** is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
-- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!).
+- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!) to answer to the conceptual questions.
 
 ### Analysis of the run: runaway mass transfer!
 Here are some discussion points; you will only need to look at [Figure 4](#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
 
 1. How is the mass transfer rate evolving, and how can you see that you are at CE onset?
    {{< details title="Solution" closed="true" >}}
+The mass transfer rate is on a steep journey of ever-growing disaster 😨 You can see it from the `lg_mtransfer_rate` plot, where also we have highlighted the `log10(Mdot_KH)` to show an indication of the timescale over which the star as whole would be able to relax thermally. 
 
+You can also see it from the `rl_relative_overflow` plot, in which you see a plateaux at a value above 1 (i.e. the radius of the star keeps being bigger than its Roche Lobe).
 {{< /details >}}
 
-2. Did you produce a gravitational wave source?
+Assume now that, after CE, your system survives as a binary, and the envelope of the stripped star is fully lifted out of the system. Further, the star will quickly evolve into a BH with mass equal to its own Helium core mass. According to the energy formalism that we used to compute the post-CE properties,
+
+2. Does this star + BH system produce a gravitational wave source?
       {{< details title="Solution" closed="true" >}}
-
+Indeed, since the `tdelay_postCE` amounts to only 30 000 years. This will merge fast 😵‍💫
       {{< /details >}}
 
-3. Is the final orbital separation tighter in this case, with respect to the case of stable mass transfer?
+3. Is the post-CE orbital period tighter in this case, with respect to the case of stable mass transfer?
    {{< details title="Solution" closed="true" >}}
-
+Definitely tighter. In here we have something like $\sim 0.02\:\mathrm{days}=30\:\mathrm{minutes}$! As compared to the stable mass transfer cases, we have 2 order of magnitudes difference. 
       {{< /details >}}
 
-4. Is the final mass ratio of your BH + BH binary different with respect to the stable mass transfer case?
-   {{< details title="Solution" closed="true" >}}
+4. Does this post-CE orbit make sense, i.e. could our two BHs actually fit in it?
+      {{< details title="Solution" closed="true" >}}
+Yes! A binary composed of black holes with masses  $21.94\,M_\odot$ and $M_2 = 5\,M_\odot$ can physically exist with an orbital period of $P = 0.02$ days. Using Kepler’s third law,
 
+$$
+a^3 = \frac{G(M_1+M_2)P^2}{4\pi^2} \approx 0.93\,R_\odot.
+$$
+
+This means the two black holes orbit at a separation comparable to the radius of the Sun 🌞 For comparison, the Schwarzschild radii (a sort of indication of the BHs' size, $\propto \frac{2GM}{c^2}$) are much smaller:
+
+- $\sim 65$ km for the $21.94\,M_\odot$ BH  
+- $\sim 15$ km for the $5\,M_\odot$ BH 
+      {{< /details >}}
+
+1. Is the final mass ratio of your BH + BH binary different with respect to the stable mass transfer case?
+   {{< details title="Solution" closed="true" >}}
+The answer is yes again: the mass ratio in this case would be $\sim 0.23$, much more extreme than in the stable mass transfer case.
       {{< /details >}}
 
 
