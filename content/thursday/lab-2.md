@@ -517,8 +517,8 @@ Everything between the two can be added to the seed BH. This breaks any sort of 
 
 As we will see it is not trivial to form a highly-spinning BH from a highly-spinning star!
 
-A collab notebook has been prepared in order to compute that mass and show you the $j/j_\mathrm{ISCO}$ of all your final models in this [Drive folder](https://drive.google.com/drive/folders/1MrACMSBNhIQRqU4GLg_UQCJomW4FuIE1?usp=sharing). 
-Please rename your last profile.data file according to the instructions.
+A Google Collab notebook has been prepared in order to compute that mass and show you the $j/j_\mathrm{ISCO}$ of all your final models in this [Drive folder](https://drive.google.com/drive/folders/1MrACMSBNhIQRqU4GLg_UQCJomW4FuIE1?usp=sharing).
+Please rename your last profile.data file according to the instructions, then upload it to that folder.
 
 > [!Naming]
 > In order to create labels, the notebook reads your physical settings from the file name. The file you upload should be named `NAME_mX_AMy.data`, where you should replace `NAME` with your name, `X` with your mass (integer) and `y` with your AM transport model tag from the table above. For example, f I ran the $70\,\mathrm{M}_\odot$ star with the 1x TS AM transport model, I would upload my last profile with the name `lucas_m70_AMnu1.data`.
