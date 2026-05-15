@@ -339,7 +339,8 @@ Note also that `he_core_mass` is in Msun, not grams. We can convert it to the CG
 
 2. We will need to compute the He core total AM ourselves by integrating the *specific* AM from the center to the He core boundary,
 $$J_\mathrm{He} = \int_0^{M_\mathrm{He}}j_\mathrm{rot}\,\mathrm{d}m.$$
-Look for the necessary arrays (`j_rot(k)`, and `dm(k)` ) again in `star_data/public`.
+Look for the necessary arrays (`j_rot(k)`, and `dm(k)` ) again in `star_data/public`. 
+How would you write out a the slice of these arrays that captures the He core? 
 {{<details title="Hint" closed="true">}}
 Try running `grep -rin "angular momentum"` inside `star_data/public`.
 {{</details>}}
@@ -356,19 +357,27 @@ real(dp), pointer :: dm(:)
 ! dm(k) is baryonic mass of cell k
 ! dm(k) = s% dq(k)*s% xmstar
 ```
+
+This means you can call the am slice as:
+```fortran
+s% j_rot(s% he_core_k : s% nz)
+```
+and the corresponding mass slice as
+```fortran
+s% dm(s% he_core_k : s% nz)
+```
 {{</details>}}
 
 <!-- *LUCAS: I thought it would be nice to let students look for the constants and he core parameters themselves, but since the lab is running long we could also just tell them how to call these properties* -->
 
-3. Knowing which variables to call on, add the `chi_he_core` column through `run_star_extras.f90`. Remember to look for constants in `const/public` if you need them.
-{{<details title="Hint 1: constants" closed="true">}}
-You will use `clight` and `standard_cgrav` for constants. Remember that the constants, specific AM and masses are already in CGS! 
+3. Tell MESA to expect an extra history column in `src/run_star_extras.f90`
+
+{{<details title="Hint" closed="true">}}
+Find the function `how_many_extra_history_columns`
 {{</details>}}
-{{<details title="Hint 2: integration" close="true">}}
-Since MESA discretizes stellar structure, your integral will be a sum over the product of the `j_rot` and `dm` arrays. Element-wise array products are implemented in `math_lib` with `dot_product`, and array slices can be taken as `array(i1:i2)`. 
-{{</details>}}
+
 {{<details title="Solution" closed="true">}}
-You must first tell MESA to expect one more extra column that it already has.
+Simply increase `how_many_extra_history_columns`. to 2
 ```fortran
    integer function how_many_extra_history_columns(id)
       integer, intent(in) :: id
@@ -380,6 +389,20 @@ You must first tell MESA to expect one more extra column that it already has.
       how_many_extra_history_columns = 2
    end function how_many_extra_history_columns
 ```
+{{</details>}}
+
+
+4. Add the `chi_he_core` column by changing the `data_for_extra_history_columns` subroutine in `run_star_extras.f90`.  
+Remember to look for constants in `const/public` if you need them.
+{{<details title="Hint 1: constants" closed="true">}}
+You will use `clight` and `standard_cgrav` for constants. Remember that the constants, specific AM and masses are already in CGS! 
+{{</details>}}
+{{<details title="Hint 2: integration" close="true">}}
+Since MESA discretizes stellar structure, your integral will be a sum over the product of the `j_rot` and `dm` arrays. Element-wise array products are implemented in `math_lib` with `dot_product`, and array slices can be taken as `array(i1:i2)`. 
+{{</details>}}
+
+{{<details title="Solution" closed="true">}}
+In `data_for_extra_history_columns`, compute $J_{\rm He}$ and with that the dimensionless spin parameter of the core. 
 Then you can name that column and add the computed spin value. Your final implementation should look approximately like this.
 ```fortran
    subroutine data_for_extra_history_columns(id, n, names, vals, ierr)
@@ -406,8 +429,7 @@ Then you can name that column and add the computed spin value. Your final implem
          ! no He core yet
          chi_he_core = 0d0
       else
-         J_he_core = dot_product(s% j_rot(s% he_core_k : s% nz), &                                                                                              
-                                 s% dm(s% he_core_k : s% nz))
+         J_he_core = dot_product(s% j_rot(s% he_core_k : s% nz),  s% dm(s% he_core_k : s% nz))
          chi_he_core = clight * J_he_core / (standard_cgrav * s% he_core_mass * s% he_core_mass * Msun * Msun)
       end if
 
@@ -422,7 +444,9 @@ Once you have included your new column, go ahead and recompile MESA by running `
 
 ![Collapse stages of CHE evolution](lab2/figures/che_diagram3.png)
 
-For the last MESA run of this lab, we would like to test the effect on the final spins of different AM transport mechanisms. We will do this by changing the prescription, adding our new `chi_he_core` column to the text summary in pgplot, and running a small crowd-sourced exercise at the end of the lab. To add the column to the text , modify the `&pgstar` settings in `inlist_star`.
+<!-- 
+adding our new `chi_he_core` column to the text summary in pgplot, and running a small crowd-sourced exercise at the end of the lab.  -->
+Add your newly created column to the text summary in pgplot by modifying the `&pgstar` settings in `inlist_star`.
 {{<details title="Solution" closed="true">}}
 Luckily the last row on column 4 is free, so it is enough to add,
 ```fortran
@@ -430,13 +454,19 @@ Text_Summary1_name(8,4) = 'chi_he_core'
 ```
 {{</details>}}
 
-For the TS dynamo, we can turn it off or apply a flat intensity modifier through the `am_nu_TS_factor` control in `inlist_star`. After opening your `run_star_extras`, you might have noticed the following line 
+For the last MESA run of this lab, we would like to test the effect of different AM transport mechanisms on the final BH spins. 
+We can change the AM transport prescription in a few ways. 
+Firstly, we can either turn the TS dynamo off completely, or apply a flat intensity modifier through the `am_nu_TS_factor` control in `inlist_star`. 
+
+We can also use an entirely different AM transport model, such as the model from Fuller & Lu (2022)[^fullerlu2022]
+While based on the fundamental physical mechanisme (the Tayler instability), their AM transport is significicantly stronger than the standard TS dynamo. 
+Note that we have already implemented this model in `run_star_extras`:
 
 ```fortran
 s% other_am_mixing => TSF_Fuller_Lu22
 ```
 
-While based on the fundamental physical mechanisme (the Tayler instability), the AM transport model by Fuller & Lu (2022)[^fullerlu2022] is significicantly stronger than the standard TS dynamo. To turn it on, we must modify `inlist_star` so that
+To turn it on, we must modify `inlist_star` so that
 
 ```fortran
 &controls
@@ -444,9 +474,12 @@ am_nu_ST_factor = 0
 use_other_am_mixing = .true.
 ```
 
-Note that pointing the `other_am_mixing` hook is necessary in `run_star_extras` for `use_other_am_mixing` (as is already done) to have an effect. 
+Note that pointing the `other_am_mixing` hook is necessary in `run_star_extras` for `use_other_am_mixing` to have an effect. 
 
-Regardless of your stellar mass, you can now choose one of four AM transport alternatives to implement (or keep). Again, try to coordinate so that you and your neighbors pick different ones. All variations except No TS should take roughly the same amount of time, for a given mass, but even No TS should take at most an extra minute to run. The model tag will be used later.
+Choose one of four AM transport alternatives to implement (or keep). 
+**Coordinate with your neighbors pick different ones.** 
+The model tag will be used later.
+<!-- All variations except No TS should take roughly the same amount of time, for a given mass, but even No TS should take at most an extra minute to run.  -->
 
 | AM transport model | Model tag | Settings |
 | :----------------- | :-------- | :------- |
@@ -455,15 +488,16 @@ Regardless of your stellar mass, you can now choose one of four AM transport alt
 | 1x TS | nu1 | `am_nu_ST_factor=1.0d0`, `use_other_am_mixing=.false.` |
 | FullerLu | fullerlu | `am_nu_ST_factor=0`, `use_other_am_mixing=.true.` |
 
+1. Run your model!
 Because we are changing fundamental physics, this time we will have to restart the entire run from ZAMS, which you can do by simply calling `./rn`. Expect that the run will take at least 10 minutes, which you can use to read ahead on the final crowd-sourcing exercise, or discuss your results with your colleagues.
 
 > [!Warning]
 > The entire run should still take 10 to 15 minutes, most of it spend in the MS. If you notice your run is past 10 minutes and your star still has not reached hydrogen depletion (check the center_h1), ask for someone to have a look. For the next step you can always use the final profile from Move 2, which corresponds to the 1x TS model.
 
-Once your run is concluded, you might find that $\chi>1$, but that should not be possible! How do you interpret that?
+Once your run is concluded, you might find that $\chi>1$!? How do you interpret this?
 
 {{<details title="Solution" closed="true">}}
-The direct reason why we are able to find $\chi>1$ is, of course, that we do not actually have a $\chi>1$ BH. We have a $\chi>1$ He core, which is very far from a relativistic regime. What we are finding is more precisely put as: if all the mass and AM in this He core were to turn into a BH, it would have $\chi>1$. If that is assumed not to happen in Nature, then the conclusion is that *not all* the mass and AM can actually make it into the eventual BH.
+The direct reason why we are able to find $\chi>1$ is that we do not actually have a BH with $\chi>1$. We have a $\chi>1$ He core, which is very far from a relativistic regime. What we are finding is more precisely put as: if all the mass and AM in this He core were to turn into a BH, it would have $\chi>1$. Since we expect this cannot happen in Nature, the conclusion is that *not all* the mass and AM can actually make it into the eventual BH.
 {{</details>}}
 
 Regardless of what $\chi$ you find, this is only a very rough approximation for what kind of BH will eventually be produced. We can do one better by accounting for the AM structure of the star.
@@ -471,27 +505,36 @@ Regardless of what $\chi$ you find, this is only a very rough approximation for 
 # Move 4: now switch partners! or crowd-sourcing BH spins
 ![CrowdDancing](lab2/figures/step4crowd.gif)
 
-The *innermost stable circular orbit* (ISCO) around a BH is the highest AM orbit matter can enter around it without going over the speed of light; it is also the truncation radius of an accretion disk. If we assume that the innermost $2.5\,\mathrm{M}_\odot$ of our star (roughly the maximum neutron star mass) form a seed BH upon core-collapse, we can walk outwards from there, and ask each mass shell we cross: is the specific AM $j$ of this shell greater than the corresponding $j_\mathrm{ISCO}$, assuming an orbit around all the mass below?
+The *innermost stable circular orbit* (ISCO) is the smallest stable orbit around a BH, and sets the truncation radius of an accretion disk. Assuming the innermost $2.5\,\mathrm{M}_\odot$ form a seed BH at core-collapse, we can walk outward through the star and ask for each mass shell: is the specific AM $j$ of this shell greater than the corresponding $j_\mathrm{ISCO}$, assuming an orbit around all the mass interior to this point?
 
 ![Innermost stable circular orbit, rotating x nonrotating BH](lab2/figures/isco_rxte.jpg)
 *Credit: NASA/CXC/M.Weiss*
 
-Anywhere where $j/j_\mathrm{ISCO}>1$ *cannot* be accreted onto the BH without losing AM first and is likely to settle into a disk before being accreted or *ejected*. While we cannot simulate a disk, we can estimate the *prompt* BH mass and spin, which is the seed mass + the sum of mass shells fulfilling $j/j_\mathrm{ISCO}>1$. In order to do this, we start at the layer enclosing $2.5\,\mathrm{M}_\odot$, and find the first layer above it where $j/j_\mathrm{ISCO}=1$. Everything between the two can be added to the seed BH. This breaks any sort of trivial mapping between the stellar spin and the BH spin, and as we will see in the final plot, across multiple masses and AM transport models, it is not trivial to form a highly-spinning BH from a highly-spinning star!
+Anywhere where $j/j_\mathrm{ISCO}>1$ *cannot* be accreted onto the BH without losing AM first and is likely to settle into a disk before being accreted or *ejected*. 
+While we cannot simulate a disk, we can estimate the *prompt* BH mass and spin, which is the seed mass + the sum of mass shells fulfilling $j/j_\mathrm{ISCO}>1$.
+To do this we start at the layer enclosing $2.5\,\mathrm{M}_\odot$, and find the first layer above it where $j/j_\mathrm{ISCO}=1$. 
+Everything between the two can be added to the seed BH. This breaks any sort of trivial mapping between the stellar spin and the BH spin. 
 
-A collab notebook has been prepared in order to compute that mass and show you the $j/j_\mathrm{ISCO}$ of all your final models in this Drive folder. Please rename your last profile.data file according to the instructions.
+As we will see it is not trivial to form a highly-spinning BH from a highly-spinning star!
+
+A collab notebook has been prepared in order to compute that mass and show you the $j/j_\mathrm{ISCO}$ of all your final models in this [Drive folder](https://drive.google.com/drive/folders/1MrACMSBNhIQRqU4GLg_UQCJomW4FuIE1?usp=sharing). 
+Please rename your last profile.data file according to the instructions.
 
 > [!Naming]
 > In order to create labels, the notebook reads your physical settings from the file name. The file you upload should be named `NAME_mX_AMy.data`, where you should replace `NAME` with your name, `X` with your mass (integer) and `y` with your AM transport model tag from the table above. For example, f I ran the $70\,\mathrm{M}_\odot$ star with the 1x TS AM transport model, I would upload my last profile with the name `lucas_m70_AMnu1.data`.
 
-After uploading your profile, you can try running the notebook online. It should automatically pickup your file (if not, check the naming), add it to $j/j_\mathrm{ISCO}$ plot, and compute the prompt mass and spin. How would you explain the emerging patterns over mass and AM transport?
+After uploading your profile, you can try running the notebook online. It should automatically pickup your file (if not, check the naming), add it to $j/j_\mathrm{ISCO}$ plot, and compute the prompt mass and spin.
+Can you explain the emerging patterns over mass and AM transport?
 
-*LUCAS: below is a very wip example of the crowd source plot; I don't have the drive folder setup yet but the plot code works*
 
-![Crowd-sourcing example](lab2/figures/bh_spins_v2_isco.png)
+<!-- *LUCAS: below is a very wip example of the crowd source plot; I don't have the drive folder setup yet but the plot code works*
+![Crowd-sourcing example](lab2/figures/bh_spins_v2_isco.png) -->
 
 ## Conclusions
 
-By the end of this lab, we have encountered first-hand the most dramatic difference between CHE and non-CHE stars --- their compactness, driven by rotation-driven Eddington-Sweet circulation ---, and how post-MS evolution can decouple the surface and core rotation rates.  We have also learned how to compute the BH spin corresponding to a He core, and how that assumption does not trivially hold. As we will return to in Lab 3, accretion can also spin stars up, but under very different circumstances from CHE, and the stellar-BH spin connection remains a fresh  topic.
+By the end of this lab, we have encountered first-hand the most dramatic difference between CHE and non-CHE stars, and how post-MS evolution can decouple the surface and core rotation rates.  
+We have also learned how to compute the BH spin corresponding to a He core, and how that assumption does not trivially hold. 
+<!-- As we will return to in Lab 3, accretion can also spin stars up, but under very different circumstances from CHE, and the stellar-BH spin connection remains a fresh topic. -->
 
 ## References
 [^eddington1929]: [Eddington (1929), Internal Circulation in Rotating Stars, MNRAS, 90, 54–59](https://ui.adsabs.harvard.edu/abs/1929MNRAS..90...54E)
