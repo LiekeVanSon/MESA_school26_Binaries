@@ -2127,6 +2127,7 @@ Here are some discussion points; you will only need to look at [Figure 4](#fig-C
 
 
 ## 3. Conclusions
+Congratulations for making it till here! 🥳🥳 In this last lab we have completed our overview of binary evolution from Zero Age Main Sequence stars to binary black holes. We have learned three possible ways to form gravitational wave sources from the star + BH configuration: Case A stable mass transfer, Case B stable mass transfer, and common envelope evolution, and all three possibilites have been shown to contribute to the observed sample of gravitational waves detected by LIGO, Virgo and KAGRA interferometers. Whether or not the relationship between star + BH remains stable determines different properties in the BH + BH resulting binary, and singling out the fingerprint of the different types of channel is still a hot topic: this is how the gravitational wave sources that we see today can teach us something about the (love and hate!) history of their parent stellar progenitors ♥️
 
 ## References
 [^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P)
