@@ -7,7 +7,7 @@ toc: false
 math: true
 ---
 
-_Authors: Lieke Van Son (Lead), Matthias Fabry, Annachiara Picco, Lucas de Sá_
+*Authors: Lieke Van Son (Lead), Matthias Fabry, Annachiara Picco, Lucas de Sá*
 
 ## Overview
 
