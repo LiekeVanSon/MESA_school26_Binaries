@@ -438,6 +438,8 @@ Playing with `pgstar` can be very entertaining, but for this lab we will use a p
 
 {{< /details>}}
 
+Also add `pause_before_terminate = .true.` to `&star_job` just below `pgstar_flag = .true.` if you'd like to take a moment to admire your final pgstar window after every run.
+
 <!-- #### Get `final1_caseA.mod` and `final2_caseA.mod` -->
 <p style="font-weight:600; font-size:1.2em; margin-top:1.7em; margin-bottom:1em">
 Get <code>final1_caseA.mod</code> and <code>final2_caseA.mod</code>
