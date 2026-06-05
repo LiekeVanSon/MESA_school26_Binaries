@@ -877,11 +877,11 @@ These efficiency factors determine how conservative the mass transfer is:
 
 - \(\text{\colorbox{#e57373}{$\upsilon + \beta = 1$}}\)  → all transferred material is expelled from the system → <span style="color:#b00020; font-weight:bold;">THIS WILL BE OUR CASE IN THIS PART B!</span>
 - $\upsilon + \beta = 0$  → fully conservative mass transfer (everything is retained in the system).
-- $\epsilon\equiv\upsilon+\beta$  → this is the same $\epsilon$ that you saw in lab1 (where $\epsilon=1$ is for conservative mass transfer, and $\epsilon=0$ is fully non-conservative), but this time it is modified to our purpose of having only two types of mass leakage: the isotropic re-emission mode, and $L_2$ overflow.
+- $\epsilon\equiv\upsilon+\beta$  → this plays the same role as $\epsilon = 1 - \alpha - \beta - \delta$ that you saw in lab1 (where $\epsilon=1$ is for conservative mass transfer, and $\epsilon=0$ is fully non-conservative), but this time it is modified to our purpose of having only two types of mass leakage: the isotropic re-emission mode, and $L_2$ overflow.
 
 
 {{< details title="Curiosity: observational motivation of $L_2$ outflows 🌀" closed="true" >}}
-  $L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in <a href="#fig-L2">Figure 2</a>) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources[^lu2022]. An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[^bowler2010]. While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
+  $L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in <a href="#fig-L2">Figure 2</a>) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources [(Lu et al. 2022)](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L). An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[(Bowler 2010)](https://ui.adsabs.harvard.edu/abs/2010A%26A...521A..81B). While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
 {{< /details >}}
 
 > [!IMPORTANT]
@@ -2241,6 +2241,7 @@ Congratulations for making it till here! 🥳🥳 In this last lab we have compl
 
 ## References
 [^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P)
+
 [^SS433]: [Wikipedia — SS433](https://en.wikipedia.org/wiki/SS_433)
 [^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run](https://arxiv.org/abs/2508.18082)
 [^lu2022]: [Lu et al. (2022), Stable mass transfer via L2 outflows in massive binaries](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L)
